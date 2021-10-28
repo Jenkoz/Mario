@@ -1,4 +1,5 @@
 #include "Sprite.h"
+#include "Camera.h"
 
 CSprite::CSprite(int id, int left, int top, int right, int bottom, LPTEXTURE tex)
 {
@@ -33,8 +34,9 @@ CSprite::CSprite(int id, int left, int top, int right, int bottom, LPTEXTURE tex
 void CSprite::Draw(float x, float y)
 {
 	CGame* g = CGame::GetInstance();
+	CCamera* cam = CCamera::GetInstance();
 	float cx, cy;
-	g->GetCamPos(cx, cy);
+	cam->GetCamPos(cx, cy);
 
 	cx = (FLOAT)floor(cx);
 	cy = (FLOAT)floor(cy);
@@ -45,6 +47,7 @@ void CSprite::Draw(float x, float y)
 	y = (FLOAT)floor(y);
 
 	D3DXMatrixTranslation(&matTranslation, x - cx, g->GetBackBufferHeight() - y + cy, 0.1f);
+	//D3DXMatrixTranslation(&matTranslation, x , g->GetBackBufferHeight() - y , 0.1f);
 
 	this->sprite.matWorld = (this->matScaling * matTranslation);
 

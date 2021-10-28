@@ -6,6 +6,7 @@
 #include "Brick.h"
 #include "Mario.h"
 #include "Goomba.h"
+#include "Camera.h"
 //#include "Koopas.h"
 
 
@@ -22,6 +23,7 @@ protected:
 
 	void _ParseSection_ASSETS(string line);
 	void _ParseSection_OBJECTS(string line);
+	void _ParseSection_MAPS(string line);
 
 	void LoadAssets(LPCWSTR assetFile);
 	

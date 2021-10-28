@@ -4,7 +4,7 @@ mario.txt
 brick.txt
 coin.txt
 goomba.txt
-cloud.txt
+assets\cloud.txt
 #
 [OBJECTS]
 # type	x	y	extra_settings per object type
@@ -56,9 +56,9 @@ cloud.txt
 2	300	10
 
 #Platform
-5	90	136	16	15	16	51000	52000	53000
-5	120	90	16	16	8	20001	20001	20001
-
+#id	x	y	cell_width	cell_height	length	sprite_begin	sprite_middle	sprite_end 
+6	90	136	16	15	16	51000	52000	53000
+6	120	90	16	16	8	20001	20001	20001
 #Portal 
-50	300	120	316	160	2
+50	300	120	160	160	3
 

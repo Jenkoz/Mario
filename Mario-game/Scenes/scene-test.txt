@@ -1,0 +1,34 @@
+# list of object assets to load in this scene
+[ASSETS]
+mario.txt
+coin.txt
+assets\cloud.txt
+assets\ground.txt
+#
+[OBJECTS]
+# type	x	y	extra_settings per object type
+# type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopas,
+# See OBJECT_TYPE constants in AssetIDs.h
+
+# MARIO
+0	20	10
+
+#COIN
+#4	100	120
+#4	120	120
+#4	140	120
+#4	160	120
+#4	180	120
+
+#Platform
+#id	x	y	cell_width	cell_height	length	sprite_begin	sprite_middle	sprite_end 
+6	0	432	16	16	39	61000	62000	63000
+#6	624	164	16	16	10	61000	62000	63000
+
+#Portal
+#id	x	y	r	b	scene_id
+#50	200	160	216	180	1
+
+[MAP]
+#id	filePath.png	maxCol	maxRow	filePath.txt
+700000	textures\tiles.png	73	21	textures\map-tiles.txt

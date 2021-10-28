@@ -10,6 +10,17 @@
 
 #include "Collision.h"
 
+CMario* CMario::__instance = NULL;
+
+CMario* CMario::GetInstance()
+{
+	if (__instance == NULL)
+		__instance = new CMario();
+	return __instance;
+}
+CMario::CMario()
+{
+}
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	vy += ay * dt;

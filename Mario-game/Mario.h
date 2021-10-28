@@ -121,7 +121,10 @@ class CMario : public CGameObject
 	int GetAniIdBig();
 	int GetAniIdSmall();
 
+	static CMario* __instance;
 public:
+	static CMario* GetInstance();
+	CMario();
 	CMario(float x, float y) : CGameObject(x, y)
 	{
 		isSitting = false;
