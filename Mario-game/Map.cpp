@@ -50,9 +50,10 @@ void CMaps::LoadResourses(int mapId, LPCWSTR pathTile, int maxCol, int maxRow, L
 }
 void CMaps::Render(float cam_x, float cam_y) 
 {
-	for (int i = 0; i < row; ++i)
+
+	for (int i = cam_y/TILE_HEIGHT; i < (cam_y + SCREEN_HEIGHT)/TILE_WIDTH; ++i)
 	{
-		for (int j = 0; j < col; ++j)
+		for (int j = cam_x/TILE_WIDTH; j < (cam_x + SCREEN_WIDTH)/TILE_WIDTH; ++j)
 		{
 			if (mapTiles[i][j] >= 0)
 			{

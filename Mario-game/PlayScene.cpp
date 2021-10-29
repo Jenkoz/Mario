@@ -281,9 +281,10 @@ void CPlayScene::Update(DWORD dt)
 
 void CPlayScene::Render()
 {
-	
-	float cam_x = 0, cam_y = 0;
-	//CMaps::GetInstance()->Render(cam_x, cam_y);
+	float cam_x, cam_y;
+	CCamera::GetInstance()->GetCamPos(cam_x, cam_y);
+	//DebugOut(L" %f %f \n", cam_x, cam_y);
+	CMaps::GetInstance()->Render(cam_x, cam_y);
 	for (int i = 0; i < objects.size(); i++)
 		objects[i]->Render();
 }

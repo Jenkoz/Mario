@@ -1,5 +1,6 @@
 #include "Camera.h"
 #include "Mario.h"
+#include "Map.h"
 CCamera* CCamera::__instance = NULL;
 
 CCamera* CCamera::GetInstance()
@@ -29,13 +30,16 @@ RECT CCamera::GetBound()
 
 void CCamera::Update(float cx, float cy)
 {
-	DebugOut(L" %f %f \n", cx, cy);
+	/*DebugOut(L" %f %f \n", cx, cy);*/
 	CGame *game = CGame::GetInstance();
 	cx -= game->GetBackBufferWidth() / 2;
 	cy -= game->GetBackBufferHeight() / 2;
 	if (cx < 0) cx = 0;
+	DebugOut(L" %f %f \n", cx, cy);
+	float mapEnd = CMaps::GetInstance()->GetWidthMap();
+	if (cx >= mapEnd - game->GetBackBufferWidth() / 2) cx = mapEnd - game->GetBackBufferWidth() / 2;
 	
-	SetCamPos(cx, 280.f/*cy*/);
+	SetCamPos(cx, 256.f/*cy*/);
 	//DebugOut(L" %f %f \n", cx, cy);
 }
 
