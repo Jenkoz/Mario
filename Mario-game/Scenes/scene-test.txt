@@ -10,7 +10,7 @@ assets\ground.txt
 # See OBJECT_TYPE constants in AssetIDs.h
 
 # MARIO
-0	2256	256
+0	10	256
 
 #COIN
 #4	100	120
