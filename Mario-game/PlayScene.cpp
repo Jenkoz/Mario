@@ -121,8 +121,13 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		break;
 	case OBJECT_TYPE_GOOMBA: 
 	{
-		int lvl = atoi(tokens[3].c_str());
-		obj = new CGoomba(x, y, lvl); break;
+		int lvl_goomba = atoi(tokens[3].c_str());
+		obj = new CGoomba(x, y, lvl_goomba); break;
+	}
+	case OBJECT_TYPE_KOOPA:
+	{
+		int lvl_koopa = atoi(tokens[3].c_str());
+		obj = new CKoopa(x, y, lvl_koopa); break;
 	}
 	case OBJECT_TYPE_BRICK: obj = new CBrick(x,y); break;
 	case OBJECT_TYPE_COIN: obj = new CCoin(x, y); break;
@@ -198,7 +203,6 @@ void CPlayScene::LoadAssets(LPCWSTR assetFile)
 		string line(str);
 
 		if (line[0] == '#') continue;	// skip comment lines	
-
 		if (line == "[SPRITES]") { section = ASSETS_SECTION_SPRITES; continue; };
 		if (line == "[ANIMATIONS]") { section = ASSETS_SECTION_ANIMATIONS; continue; };
 		if (line[0] == '[') { section = SCENE_SECTION_UNKNOWN; continue; }

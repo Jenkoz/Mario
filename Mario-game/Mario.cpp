@@ -5,6 +5,7 @@
 #include "Game.h"
 
 #include "Goomba.h"
+#include "Koopa.h"
 #include "Coin.h"
 #include "Portal.h"
 
@@ -65,13 +66,15 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithCoin(e);
 	else if (dynamic_cast<CPortal*>(e->obj))
 		OnCollisionWithPortal(e);
+	else if (dynamic_cast<CKoopa*>(e->obj))
+		OnCollisionWithKoopa(e);
 }
 
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 {
 	CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
 
-	// jump on top >> kill Goomba and deflect a bit 
+	// jump on top >> make paragoomba a goomba, if there's a goomba, it kills goomba
 	if (e->ny < 0)
 	{
 		DebugOut(L">>> GOOMBA LEVEL IS %d >>> \n", goomba->GetState());
@@ -119,6 +122,53 @@ void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
 {
 	CPortal* p = (CPortal*)e->obj;
 	CGame::GetInstance()->InitiateSwitchScene(p->GetSceneId());
+}
+
+void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
+{
+	CKoopa* koopa = dynamic_cast<CKoopa*>(e->obj);
+
+	// jump on top >> make koopa a shell
+	if (e->ny < 0)
+	{
+		DebugOut(L">>> KOOPA LEVEL IS %d >>> \n", koopa->GetState());
+		if (koopa->GetState() != SHELL_STATE_IDLING)
+		{
+			if (koopa->GetState() == KOOPA_STATE_WALKING)
+			{
+				koopa->SetState(SHELL_STATE_IDLING);
+				DebugOut(L">>> KOOPA LEVEL DOWN to %d >>> \n", koopa->GetState());
+			}
+			else
+				koopa->SetState(SHELL_STATE_IDLING);
+			vy = -MARIO_JUMP_DEFLECT_SPEED;
+		}
+	}
+	// kick the shell
+	/*else if (e->nx < 0)
+	{
+		
+	}*/
+	else // hit by koopa
+	{
+		if (untouchable == 0)
+		{
+			if (koopa->GetState() != SHELL_STATE_IDLING)
+			{
+				if (level > MARIO_LEVEL_SMALL)
+				{
+					level = MARIO_LEVEL_SMALL;
+					StartUntouchable();
+				}
+				else
+				{
+					DebugOut(L">>> Mario DIE >>> \n");
+					SetState(MARIO_STATE_DIE);
+				}
+			}
+		}
+	}
+
 }
 
 //
