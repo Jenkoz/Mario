@@ -3,6 +3,7 @@
 mario.txt
 coin.txt
 assets\ground.txt
+goomba.txt
 #
 [OBJECTS]
 # type	x	y	extra_settings per object type
@@ -18,6 +19,9 @@ assets\ground.txt
 #4	140	120
 #4	160	120
 #4	180	120
+
+#goomba
+2	300	300	2
 
 #Platform
 #id	x	y	cell_width	cell_height	length	sprite_begin	sprite_middle	sprite_end 

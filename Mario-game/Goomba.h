@@ -8,17 +8,26 @@
 #define GOOMBA_BBOX_WIDTH 16
 #define GOOMBA_BBOX_HEIGHT 14
 #define GOOMBA_BBOX_HEIGHT_DIE 7
+#define PARAGOOMBA_BBOX_WIDTH 20
+#define PARAGOOMBA_BBOX_HEIGHT 20
+
 
 #define GOOMBA_DIE_TIMEOUT 500
 
 #define GOOMBA_STATE_WALKING 100
 #define GOOMBA_STATE_DIE 200
+#define PARAGOOMBA_STATE_WALKING 300
+#define PARAGOOMBA_STATE_JUMPING 400
 
 #define ID_ANI_GOOMBA_WALKING 5000
 #define ID_ANI_GOOMBA_DIE 5001
+#define ID_ANI_PARAGOOMBA_WALKING 5002
+#define ID_ANI_PARAGOOMBA_JUMPING 5003
 
 class CGoomba : public CGameObject
 {
+	int level;
+
 protected:
 	float ax;				
 	float ay; 
@@ -36,6 +45,7 @@ protected:
 	virtual void OnCollisionWith(LPCOLLISIONEVENT e);
 
 public: 	
-	CGoomba(float x, float y);
+	void SetLevel(int lvl) { this->level = lvl; }
+	CGoomba(float x, float y, int lvl);
 	virtual void SetState(int state);
 };

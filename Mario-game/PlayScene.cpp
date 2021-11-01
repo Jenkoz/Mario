@@ -119,7 +119,11 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 		DebugOut(L"[INFO] Player object has been created!\n");
 		break;
-	case OBJECT_TYPE_GOOMBA: obj = new CGoomba(x,y); break;
+	case OBJECT_TYPE_GOOMBA: 
+	{
+		int lvl = atoi(tokens[3].c_str());
+		obj = new CGoomba(x, y, lvl); break;
+	}
 	case OBJECT_TYPE_BRICK: obj = new CBrick(x,y); break;
 	case OBJECT_TYPE_COIN: obj = new CCoin(x, y); break;
 
@@ -273,7 +277,7 @@ void CPlayScene::Update(DWORD dt)
 	// Update camera to follow mario
 	float cx, cy;
 	player->GetPosition(cx, cy);
-	DebugOut(L" %f %f \n", cx, cy);
+	//DebugOut(L" %f %f \n", cx, cy);
 	
 	CCamera::GetInstance()->Update(cx, cy);
 	PurgeDeletedObjects();
@@ -284,7 +288,7 @@ void CPlayScene::Render()
 	float cam_x, cam_y;
 	CCamera::GetInstance()->GetCamPos(cam_x, cam_y);
 	//DebugOut(L" %f %f \n", cam_x, cam_y);
-	CMaps::GetInstance()->Render(cam_x, cam_y);
+	//CMaps::GetInstance()->Render(cam_x, cam_y);
 	for (int i = 0; i < objects.size(); i++)
 		objects[i]->Render();
 }

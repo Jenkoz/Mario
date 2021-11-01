@@ -35,7 +35,7 @@ void CCamera::Update(float cx, float cy)
 	cx -= game->GetBackBufferWidth() / 2;
 	cy -= game->GetBackBufferHeight() / 2;
 	if (cx < 0) cx = 0;
-	DebugOut(L" %f %f \n", cx, cy);
+	//DebugOut(L" %f %f \n", cx, cy);
 	float mapEnd = CMaps::GetInstance()->GetWidthMap();
 	if (cx >= mapEnd - game->GetBackBufferWidth() / 2) cx = mapEnd - game->GetBackBufferWidth() / 2;
 	

@@ -66,9 +66,6 @@
     <ClCompile Include="Utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Portal.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Mario.cpp">
       <Filter>GameObject\Mario</Filter>
     </ClCompile>
@@ -85,9 +82,6 @@
       <Filter>GameObject\Misc</Filter>
     </ClCompile>
     <ClCompile Include="Goomba.cpp">
-      <Filter>GameObject\Enemy\Goomba</Filter>
-    </ClCompile>
-    <ClCompile Include="ParaGoomba.cpp">
       <Filter>GameObject\Enemy\Goomba</Filter>
     </ClCompile>
     <ClCompile Include="ColourBlock.cpp">
@@ -117,6 +111,9 @@
     <ClCompile Include="Platform.cpp">
       <Filter>GameObject\Ground</Filter>
     </ClCompile>
+    <ClCompile Include="Portal.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimationFrame.h">
@@ -143,9 +140,6 @@
     <ClInclude Include="Utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Portal.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Mario.h">
       <Filter>GameObject\Mario</Filter>
     </ClInclude>
@@ -165,9 +159,6 @@
       <Filter>GameObject\Misc</Filter>
     </ClInclude>
     <ClInclude Include="Goomba.h">
-      <Filter>GameObject\Enemy\Goomba</Filter>
-    </ClInclude>
-    <ClInclude Include="ParaGoomba.h">
       <Filter>GameObject\Enemy\Goomba</Filter>
     </ClInclude>
     <ClInclude Include="ColourBlock.h">
@@ -205,6 +196,9 @@
     </ClInclude>
     <ClInclude Include="Platform.h">
       <Filter>GameObject\Ground</Filter>
+    </ClInclude>
+    <ClInclude Include="Portal.h">
+      <Filter>GameObject</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,12 +1,31 @@
 #include "Goomba.h"
+#include "debug.h"
 
-CGoomba::CGoomba(float x, float y):CGameObject(x, y)
+CGoomba::CGoomba(float x, float y, int lvl) :CGameObject(x, y)
 {
+	this->level = lvl;
 	this->ax = 0;
 	this->ay = GOOMBA_GRAVITY;
 	die_start = -1;
-	SetState(GOOMBA_STATE_WALKING);
+	switch (this->level)
+	{
+		case 1:
+		{
+			SetState(GOOMBA_STATE_WALKING);
+			break;
+		}
+		case 2:
+		{
+			SetState(PARAGOOMBA_STATE_WALKING);
+			break;
+		}
+		default:
+			DebugOut(L"[ERROR] Invalid Goomba type: %d\n", this->level);
+			return;
+	}
 }
+
+
 
 void CGoomba::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {
@@ -17,12 +36,19 @@ void CGoomba::GetBoundingBox(float &left, float &top, float &right, float &botto
 		right = left + GOOMBA_BBOX_WIDTH;
 		bottom = top + GOOMBA_BBOX_HEIGHT_DIE;
 	}
-	else
+	if (this->level == 1)
 	{ 
 		left = x - GOOMBA_BBOX_WIDTH/2;
 		top = y - GOOMBA_BBOX_HEIGHT/2;
 		right = left + GOOMBA_BBOX_WIDTH;
 		bottom = top + GOOMBA_BBOX_HEIGHT;
+	}
+	else if (this->level == 2)
+	{
+		left = x - PARAGOOMBA_BBOX_WIDTH / 2;
+		top = y - PARAGOOMBA_BBOX_HEIGHT / 2;
+		right = left + PARAGOOMBA_BBOX_WIDTH;
+		bottom = top + PARAGOOMBA_BBOX_HEIGHT;
 	}
 }
 
@@ -65,14 +91,19 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 void CGoomba::Render()
 {
-	int aniId = ID_ANI_GOOMBA_WALKING;
+	
+	int aniId = -1;
+	if (this->level == 1)
+		aniId = ID_ANI_GOOMBA_WALKING;
+	else if (this->level == 2)
+		aniId = ID_ANI_PARAGOOMBA_WALKING;
 	if (state == GOOMBA_STATE_DIE) 
 	{
 		aniId = ID_ANI_GOOMBA_DIE;
 	}
 
 	CAnimations::GetInstance()->Get(aniId)->Render(x,y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void CGoomba::SetState(int state)
@@ -88,6 +119,9 @@ void CGoomba::SetState(int state)
 			ay = 0; 
 			break;
 		case GOOMBA_STATE_WALKING: 
+			vx = -GOOMBA_WALKING_SPEED;
+			break;
+		case PARAGOOMBA_STATE_WALKING:
 			vx = -GOOMBA_WALKING_SPEED;
 			break;
 	}
