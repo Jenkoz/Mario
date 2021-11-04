@@ -4,21 +4,37 @@ void CBrick::Render()
 {
 	CAnimations* animations = CAnimations::GetInstance();
 	int aniId = -1;
-	if (type == BRICK_TYPE_DISABLE)
-		aniId = ID_ANI_BRICK_TYPE_DISABLE;
-	else if (type == BRICK_TYPE_NORMAL)
-		aniId = ID_ANI_BRICK_TYPE_NORMAL;
-	else if (type == BRICK_TYPE_QUESTION)
-		aniId = ID_ANI_BRICK_TYPE_QUESTION;
+	
+	if (state == BRICK_STATE_DISABLE)
+		aniId = ID_ANI_BRICK_STATE_DISABLE;
+	else if (state == BRICK_STATE_NORMAL)
+		aniId = ID_ANI_BRICK_STATE_NORMAL;
+	else if (state == BRICK_STATE_QUESTION)
+		aniId = ID_ANI_BRICK_STATE_QUESTION;
 	animations->Get(aniId)->Render(x, y);
 	//RenderBoundingBox();
 }
 
 
-void CBrick::Update(DWORD dt)
-{
 
+void CBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+{
+	CGameObject::Update(dt);
+	float posCurrentY = y;
+	if (state == BRICK_STATE_DISABLE)
+		vy = -BRICK_JUMP_DEFLECT_Y;
+
+	CGameObject::Update(dt, coObjects);
+	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
+
+void CBrick::OnNoCollision(DWORD dt)
+{
+	//float posCurrentY = y;
+	//y += vy * dt;
+	//y = posCurrentY;
+};
+
 
 void CBrick::GetBoundingBox(float &l, float &t, float &r, float &b)
 {

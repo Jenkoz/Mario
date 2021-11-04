@@ -8,6 +8,7 @@
 #include "Koopa.h"
 #include "Coin.h"
 #include "Portal.h"
+#include "Brick.h"
 
 #include "Collision.h"
 
@@ -68,6 +69,27 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithPortal(e);
 	else if (dynamic_cast<CKoopa*>(e->obj))
 		OnCollisionWithKoopa(e);
+	else if (dynamic_cast<CBrick*>(e->obj))
+		OnCollisionWithBrick(e);
+}
+
+void CMario::OnCollisionWithBrick(LPCOLLISIONEVENT e)
+{
+	CBrick* brick = dynamic_cast<CBrick*>(e->obj);
+
+	if (e->ny > 0)
+	{
+		if (level == MARIO_LEVEL_BIG)
+		{
+			if (brick->GetState() != BRICK_STATE_DISABLE)
+				brick->SetState(BRICK_STATE_DISABLE);
+		}
+		else if (level == MARIO_LEVEL_SMALL)
+		{
+			if (brick->GetState() == BRICK_STATE_QUESTION)
+				brick->SetState(BRICK_STATE_DISABLE);
+		}
+	}
 }
 
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -133,15 +155,14 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 		DebugOut(L">>> KOOPA LEVEL IS %d >>> \n", koopa->GetState());
 		if (koopa->GetState() != SHELL_STATE_IDLING)
 		{
-			if (koopa->GetState() == KOOPA_STATE_WALKING)
+			if (koopa->GetState() == KOOPA_STATE_WALKING_LEFT || koopa->GetState() == KOOPA_STATE_WALKING_RIGHT)
 			{
 				koopa->SetState(SHELL_STATE_IDLING);
 				DebugOut(L">>> KOOPA LEVEL DOWN to %d >>> \n", koopa->GetState());
+				vy = -MARIO_JUMP_DEFLECT_SPEED;
 			}
-			else
-				koopa->SetState(SHELL_STATE_IDLING);
-			vy = -MARIO_JUMP_DEFLECT_SPEED;
 		}
+		
 	}
 	else // hit by koopa
 	{
@@ -167,7 +188,10 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 	{
 		if (koopa->GetState() == SHELL_STATE_IDLING)
 		{
-			koopa->SetState(SHELL_STATE_ROLLING);
+			if (e->nx > 0)
+				koopa->SetState(SHELL_STATE_ROLLING_LEFT);
+			else if (e->nx < 0)
+				koopa->SetState(SHELL_STATE_ROLLING_RIGHT);
 		}
 	}
 	else // hit by SHELL
@@ -328,7 +352,7 @@ void CMario::Render()
 
 	animations->Get(aniId)->Render(x, y);
 
-	//RenderBoundingBox();
+	RenderBoundingBox();
 
 	DebugOutTitle(L"Coins: %d", coin);
 }

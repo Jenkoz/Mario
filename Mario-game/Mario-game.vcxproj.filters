@@ -21,9 +21,6 @@
     <Filter Include="GameObject\Enemy">
       <UniqueIdentifier>{b8cbea0d-36dd-49af-ac2e-3279c2417094}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GameObject\Misc">
-      <UniqueIdentifier>{7ffda150-eeb9-4e86-b94a-cfbc480ff212}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GameObject\Enemy\Goomba">
       <UniqueIdentifier>{f5ccc622-5122-4f04-89cf-02de2bec239a}</UniqueIdentifier>
     </Filter>
@@ -35,6 +32,15 @@
     </Filter>
     <Filter Include="GameObject\Platform">
       <UniqueIdentifier>{4f0828fd-bf5a-440a-a443-a771e29dc823}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Brick">
+      <UniqueIdentifier>{42c4a02e-7dfc-43d4-8eb6-c6f9098248ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Items">
+      <UniqueIdentifier>{bc27d2f8-641e-4421-b9ec-116fd3d565e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Portal">
+      <UniqueIdentifier>{a8710274-37f7-4085-a902-e653b446632d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -71,20 +77,11 @@
     <ClCompile Include="GameObject.cpp">
       <Filter>GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="Coin.cpp">
-      <Filter>GameObject\Misc</Filter>
-    </ClCompile>
-    <ClCompile Include="Brick.cpp">
-      <Filter>GameObject\Misc</Filter>
-    </ClCompile>
     <ClCompile Include="Goomba.cpp">
       <Filter>GameObject\Enemy\Goomba</Filter>
     </ClCompile>
     <ClCompile Include="ColourPlatform.cpp">
       <Filter>GameObject\Platform</Filter>
-    </ClCompile>
-    <ClCompile Include="QuestionBrick.cpp">
-      <Filter>GameObject\Misc</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>GameEngine</Filter>
@@ -107,11 +104,20 @@
     <ClCompile Include="Platform.cpp">
       <Filter>GameObject\Platform</Filter>
     </ClCompile>
-    <ClCompile Include="Portal.cpp">
-      <Filter>GameObject</Filter>
-    </ClCompile>
     <ClCompile Include="Koopa.cpp">
       <Filter>GameObject\Enemy\Koopa</Filter>
+    </ClCompile>
+    <ClCompile Include="Brick.cpp">
+      <Filter>GameObject\Brick</Filter>
+    </ClCompile>
+    <ClCompile Include="QuestionBrick.cpp">
+      <Filter>GameObject\Brick</Filter>
+    </ClCompile>
+    <ClCompile Include="Coin.cpp">
+      <Filter>GameObject\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="Portal.cpp">
+      <Filter>GameObject\Portal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -121,20 +127,11 @@
     <ClInclude Include="GameObject.h">
       <Filter>GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="Coin.h">
-      <Filter>GameObject\Misc</Filter>
-    </ClInclude>
-    <ClInclude Include="Brick.h">
-      <Filter>GameObject\Misc</Filter>
-    </ClInclude>
     <ClInclude Include="Goomba.h">
       <Filter>GameObject\Enemy\Goomba</Filter>
     </ClInclude>
     <ClInclude Include="ColourPlatform.h">
       <Filter>GameObject\Platform</Filter>
-    </ClInclude>
-    <ClInclude Include="QuestionBrick.h">
-      <Filter>GameObject\Misc</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>GameEngine</Filter>
@@ -165,9 +162,6 @@
     </ClInclude>
     <ClInclude Include="Platform.h">
       <Filter>GameObject\Platform</Filter>
-    </ClInclude>
-    <ClInclude Include="Portal.h">
-      <Filter>GameObject</Filter>
     </ClInclude>
     <ClInclude Include="Koopa.h">
       <Filter>GameObject\Enemy\Koopa</Filter>
@@ -201,6 +195,18 @@
     </ClInclude>
     <ClInclude Include="Scene.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Brick.h">
+      <Filter>GameObject\Brick</Filter>
+    </ClInclude>
+    <ClInclude Include="QuestionBrick.h">
+      <Filter>GameObject\Brick</Filter>
+    </ClInclude>
+    <ClInclude Include="Coin.h">
+      <Filter>GameObject\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="Portal.h">
+      <Filter>GameObject\Portal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
