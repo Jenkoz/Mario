@@ -115,9 +115,9 @@ class CMario : public CGameObject
 	int coin; 
 
 	void OnCollisionWithBrick(LPCOLLISIONEVENT e);
-	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithCoin(LPCOLLISIONEVENT e);
 	void OnCollisionWithPortal(LPCOLLISIONEVENT e);
+	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithKoopa(LPCOLLISIONEVENT e);
 
 	int GetAniIdBig();

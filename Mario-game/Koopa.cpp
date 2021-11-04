@@ -1,4 +1,6 @@
 #include "Koopa.h"
+#include "Goomba.h"
+#include "Mario.h"
 #include "debug.h"
 
 CKoopa::CKoopa(float x, float y, int lvl) :CGameObject(x, y)
@@ -20,6 +22,32 @@ CKoopa::CKoopa(float x, float y, int lvl) :CGameObject(x, y)
 	}
 }
 
+
+
+void CKoopa::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
+{
+	CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
+
+	// kill goomba by hit
+	if (goomba->GetState() != GOOMBA_STATE_DIE)
+		if (state == SHELL_STATE_ROLLING_LEFT || state == SHELL_STATE_ROLLING_RIGHT)
+			if ( e->nx != 0)
+			{
+				goomba->SetState(GOOMBA_STATE_DIE);
+			}
+}
+
+void CKoopa::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
+{
+	CKoopa* koopa = dynamic_cast<CKoopa*>(e->obj);
+	if (state == SHELL_STATE_ROLLING_LEFT || state == SHELL_STATE_ROLLING_RIGHT)
+		if (koopa->GetState() != SHELL_STATE_ROLLING_LEFT || koopa->GetState() != SHELL_STATE_ROLLING_RIGHT)
+			return;
+			/*if (e->nx != 0)
+			{
+				koopa->SetState(GOOMBA_STATE_DIE);
+			}*/
+}
 
 
 void CKoopa::GetBoundingBox(float& left, float& top, float& right, float& bottom)
@@ -55,17 +83,19 @@ void CKoopa::OnNoCollision(DWORD dt)
 
 void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 {
-	if (!e->obj->IsBlocking()) return;
-	if (dynamic_cast<CKoopa*>(e->obj)) return;
-
-	if (e->ny != 0)
+	if (e->ny != 0 && e->obj->IsBlocking())
 	{
 		vy = 0;
 	}
-	else if (e->nx != 0)
+	else if (e->nx != 0 && e->obj->IsBlocking())
 	{
 		vx = -vx;
 	}
+	if (dynamic_cast<CKoopa*>(e->obj))
+		OnCollisionWithKoopa(e);
+	else if (dynamic_cast<CGoomba*>(e->obj))
+		OnCollisionWithGoomba(e);
+
 }
 
 void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)

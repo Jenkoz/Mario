@@ -60,17 +60,15 @@ void CGoomba::OnNoCollision(DWORD dt)
 
 void CGoomba::OnCollisionWith(LPCOLLISIONEVENT e)
 {
-	if (!e->obj->IsBlocking()) return; 
-	if (dynamic_cast<CGoomba*>(e->obj)) return; 
-
-	if (e->ny != 0 )
+	if (e->ny != 0 && e->obj->IsBlocking())
 	{
 		vy = 0;
 	}
-	else if (e->nx != 0)
+	else if (e->nx != 0 && e->obj->IsBlocking())
 	{
 		vx = -vx;
 	}
+	if (dynamic_cast<CGoomba*>(e->obj)) return; 
 }
 
 void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
