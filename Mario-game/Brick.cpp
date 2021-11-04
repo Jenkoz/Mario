@@ -3,8 +3,21 @@
 void CBrick::Render()
 {
 	CAnimations* animations = CAnimations::GetInstance();
-	animations->Get(ID_ANI_BRICK)->Render(x, y);
+	int aniId = -1;
+	if (type == BRICK_TYPE_DISABLE)
+		aniId = ID_ANI_BRICK_TYPE_DISABLE;
+	else if (type == BRICK_TYPE_NORMAL)
+		aniId = ID_ANI_BRICK_TYPE_NORMAL;
+	else if (type == BRICK_TYPE_QUESTION)
+		aniId = ID_ANI_BRICK_TYPE_QUESTION;
+	animations->Get(aniId)->Render(x, y);
 	//RenderBoundingBox();
+}
+
+
+void CBrick::Update(DWORD dt)
+{
+
 }
 
 void CBrick::GetBoundingBox(float &l, float &t, float &r, float &b)

@@ -82,7 +82,6 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 		{ 
 			if (goomba->GetState() == PARAGOOMBA_STATE_WALKING)
 			{
-				goomba->SetLevel(1);
 				goomba->SetState(GOOMBA_STATE_WALKING);
 				DebugOut(L">>> GOOMBA LEVEL DOWN to %d >>> \n", goomba->GetState());
 			}
@@ -144,11 +143,6 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 			vy = -MARIO_JUMP_DEFLECT_SPEED;
 		}
 	}
-	// kick the shell
-	/*else if (e->nx < 0)
-	{
-		
-	}*/
 	else // hit by koopa
 	{
 		if (untouchable == 0)
@@ -168,7 +162,33 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 			}
 		}
 	}
-
+	// kick the shell
+	if (e->nx != 0)
+	{
+		if (koopa->GetState() == SHELL_STATE_IDLING)
+		{
+			koopa->SetState(SHELL_STATE_ROLLING);
+		}
+	}
+	else // hit by SHELL
+	{
+		if (untouchable == 0)
+		{
+			if (koopa->GetState() != SHELL_STATE_IDLING)
+			{
+				if (level > MARIO_LEVEL_SMALL)
+				{
+					level = MARIO_LEVEL_SMALL;
+					StartUntouchable();
+				}
+				else
+				{
+					DebugOut(L">>> Mario DIE >>> \n");
+					SetState(MARIO_STATE_DIE);
+				}
+			}
+		}
+	}
 }
 
 //

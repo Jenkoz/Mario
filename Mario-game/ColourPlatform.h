@@ -8,9 +8,9 @@
 #define CLBLOCK_BBOX_WIDTH 16
 #define CLBLOCK_BBOX_HEIGHT 16
 
-class CColourBlock : public CGameObject {
+class CColourPlatform : public CGameObject {
 public:
-	CColourBlock(float x, float y) : CGameObject(x, y) {}
+	CColourPlatform(float x, float y) : CGameObject(x, y) {}
 	void Render();
 	void Update(DWORD dt) {}
 	void GetBoundingBox(float& l, float& t, float& r, float& b);

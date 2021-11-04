@@ -36,12 +36,8 @@ void CMaps::LoadResourses(int mapId, LPCWSTR pathTile, int maxCol, int maxRow, L
 		{
 			int left = (TILE_WIDTH + 1) * c;
 			int top = (TILE_HEIGHT + 1) * r;
-			int right =  (TILE_WIDTH + 1) * (c + 1) ;
+			int right =  (TILE_WIDTH + 1) * (c + 1);
 			int bottom = (TILE_HEIGHT + 1) * (r + 1);
-			if(r == 0)
-				top = 1;
-			if (c == 0)
-				left = 1;
 			sprites->Add(idTile + mapId, left, top, right, bottom, texMap);
 
 			idTile++;

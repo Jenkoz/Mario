@@ -30,11 +30,11 @@
     <Filter Include="GameObject\Enemy\Koopa">
       <UniqueIdentifier>{d8757974-5001-4402-a175-715c2380569c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GameObject\Ground">
-      <UniqueIdentifier>{4f0828fd-bf5a-440a-a443-a771e29dc823}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GameEngine">
       <UniqueIdentifier>{98c0f5ea-ed2a-4522-a56e-017ca4d43b69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Platform">
+      <UniqueIdentifier>{4f0828fd-bf5a-440a-a443-a771e29dc823}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -80,8 +80,8 @@
     <ClCompile Include="Goomba.cpp">
       <Filter>GameObject\Enemy\Goomba</Filter>
     </ClCompile>
-    <ClCompile Include="ColourBlock.cpp">
-      <Filter>GameObject\Ground</Filter>
+    <ClCompile Include="ColourPlatform.cpp">
+      <Filter>GameObject\Platform</Filter>
     </ClCompile>
     <ClCompile Include="QuestionBrick.cpp">
       <Filter>GameObject\Misc</Filter>
@@ -105,7 +105,7 @@
       <Filter>GameEngine</Filter>
     </ClCompile>
     <ClCompile Include="Platform.cpp">
-      <Filter>GameObject\Ground</Filter>
+      <Filter>GameObject\Platform</Filter>
     </ClCompile>
     <ClCompile Include="Portal.cpp">
       <Filter>GameObject</Filter>
@@ -130,8 +130,8 @@
     <ClInclude Include="Goomba.h">
       <Filter>GameObject\Enemy\Goomba</Filter>
     </ClInclude>
-    <ClInclude Include="ColourBlock.h">
-      <Filter>GameObject\Ground</Filter>
+    <ClInclude Include="ColourPlatform.h">
+      <Filter>GameObject\Platform</Filter>
     </ClInclude>
     <ClInclude Include="QuestionBrick.h">
       <Filter>GameObject\Misc</Filter>
@@ -164,7 +164,7 @@
       <Filter>GameEngine</Filter>
     </ClInclude>
     <ClInclude Include="Platform.h">
-      <Filter>GameObject\Ground</Filter>
+      <Filter>GameObject\Platform</Filter>
     </ClInclude>
     <ClInclude Include="Portal.h">
       <Filter>GameObject</Filter>

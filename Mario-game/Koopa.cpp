@@ -112,7 +112,7 @@ void CKoopa::SetState(int state)
 		vx = -KOOPA_WALKING_SPEED;
 		break;
 	case SHELL_STATE_ROLLING:
-		vx = -SHELL_ROLLING_SPEED;
+		vx = SHELL_ROLLING_SPEED;
 		break;
 	}
 }

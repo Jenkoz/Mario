@@ -129,7 +129,11 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		int lvl_koopa = atoi(tokens[3].c_str());
 		obj = new CKoopa(x, y, lvl_koopa); break;
 	}
-	case OBJECT_TYPE_BRICK: obj = new CBrick(x,y); break;
+	case OBJECT_TYPE_BRICK: 
+	{
+		int _type = atoi(tokens[3].c_str());
+		obj = new CBrick(x,y, _type); break;
+	}
 	case OBJECT_TYPE_COIN: obj = new CCoin(x, y); break;
 
 	case OBJECT_TYPE_PLATFORM:
@@ -292,7 +296,7 @@ void CPlayScene::Render()
 	float cam_x, cam_y;
 	CCamera::GetInstance()->GetCamPos(cam_x, cam_y);
 	//DebugOut(L" %f %f \n", cam_x, cam_y);
-	//CMaps::GetInstance()->Render(cam_x, cam_y);
+	CMaps::GetInstance()->Render(cam_x, cam_y);
 	for (int i = 0; i < objects.size(); i++)
 		objects[i]->Render();
 }

@@ -1,18 +1,23 @@
 # list of object assets to load in this scene
 [ASSETS]
 mario.txt
-coin.txt
-assets\ground.txt
+brick.txt
 goomba.txt
 koopa.txt
+assets\ground.txt
 #
 [OBJECTS]
 # type	x	y	extra_settings per object type
-# type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopa,
+# type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopa, 4 = Coin,
 # See OBJECT_TYPE constants in AssetIDs.h
 
 # MARIO
 0	10	256
+
+#Brick
+1	50	350	1
+1	90	350	2
+1	130	350	3
 
 #COIN
 #4	100	120
