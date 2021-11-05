@@ -11,15 +11,11 @@ void CPlatform::Render()
 	float xx = x; 
 	CSprites * s = CSprites::GetInstance();
 
-	s->Get(this->spriteIdBegin)->Draw(xx, y);
-	xx += this->cellWidth;
-	for (int i = 1; i < this->length - 1; i++)
+	for (int i = 0; i < this->length - 1; i++)
 	{
-		s->Get(this->spriteIdMiddle)->Draw(xx, y);
+		s->Get(this->spriteId)->Draw(xx, y);
 		xx += this->cellWidth;
 	}
-	if (length>1)
-		s->Get(this->spriteIdEnd)->Draw(xx, y);
 
 	//
 	//RenderBoundingBox();

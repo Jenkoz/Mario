@@ -119,6 +119,9 @@
     <ClCompile Include="Portal.cpp">
       <Filter>GameObject\Portal</Filter>
     </ClCompile>
+    <ClCompile Include="Mushroom.cpp">
+      <Filter>GameObject\Items</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mario.h">
@@ -207,6 +210,9 @@
     </ClInclude>
     <ClInclude Include="Portal.h">
       <Filter>GameObject\Portal</Filter>
+    </ClInclude>
+    <ClInclude Include="Mushroom.h">
+      <Filter>GameObject\Items</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

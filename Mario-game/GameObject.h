@@ -30,6 +30,7 @@ protected:
 
 	bool isDeleted; 
 
+
 public: 
 	float width;
 	float height;
@@ -52,6 +53,11 @@ public:
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects = NULL) {};
 	virtual void Render() = 0;
 	virtual void SetState(int state) { this->state = state; }
+	// 1 = block, 0 = skip
+	virtual void GetFilterBlockLeft(int& l)   { l = 1; }
+	virtual void GetFilterBlockTop(int& t)    { t = 1; }
+	virtual void GetFilterBlockRight(int& r)  { r = 1; }
+	virtual void GetFilterBlockBottom(int& b) { b = 1; }
 
 	//
 	// Collision ON or OFF ? This can change depending on object's state. For example: die
