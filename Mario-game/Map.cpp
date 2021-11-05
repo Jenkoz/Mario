@@ -46,8 +46,7 @@ void CMaps::LoadResourses(int mapId, LPCWSTR pathTile, int maxCol, int maxRow, L
 }
 void CMaps::Render(float cam_x, float cam_y) 
 {
-
-	for (int i = cam_y/TILE_HEIGHT; i < (cam_y + SCREEN_HEIGHT)/TILE_WIDTH; ++i)
+	for (int i = cam_y/TILE_HEIGHT; i < (cam_y + SCREEN_HEIGHT)/TILE_HEIGHT; ++i)
 	{
 		for (int j = cam_x/TILE_WIDTH; j < (cam_x + SCREEN_WIDTH)/TILE_WIDTH; ++j)
 		{
@@ -64,11 +63,11 @@ void CMaps::Render(float cam_x, float cam_y)
 
 float CMaps::GetWidthMap()
 {
-	return col * TILE_WIDTH + TILE_WIDTH;
+	return col * TILE_WIDTH - TILE_WIDTH * 6;
 }
 float CMaps::GetHeightMap()
 {
-	return row * TILE_HEIGHT + TILE_HEIGHT;
+	return row * TILE_HEIGHT;
 }
 
 CMaps* CMaps::GetInstance()

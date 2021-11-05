@@ -19,10 +19,7 @@ void CBrick::Render()
 
 void CBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	CGameObject::Update(dt);
-	float posCurrentY = y;
-	if (state == BRICK_STATE_DISABLE)
-		vy = -BRICK_JUMP_DEFLECT_Y;
+	
 
 	CGameObject::Update(dt, coObjects);
 	CCollision::GetInstance()->Process(this, dt, coObjects);
@@ -30,10 +27,9 @@ void CBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void CBrick::OnNoCollision(DWORD dt)
 {
-	//float posCurrentY = y;
-	//y += vy * dt;
-	//y = posCurrentY;
-};
+
+}
+
 
 
 void CBrick::GetBoundingBox(float &l, float &t, float &r, float &b)

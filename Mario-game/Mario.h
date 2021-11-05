@@ -108,6 +108,7 @@ class CMario : public CGameObject
 	float ax;				// acceleration on x 
 	float ay;				// acceleration on y 
 
+	int life;
 	int level; 
 	int untouchable; 
 	ULONGLONG untouchable_start;
@@ -119,6 +120,7 @@ class CMario : public CGameObject
 	void OnCollisionWithPortal(LPCOLLISIONEVENT e);
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithKoopa(LPCOLLISIONEVENT e);
+	void OnCollisionWithMushroom(LPCOLLISIONEVENT e);
 
 	int GetAniIdBig();
 	int GetAniIdSmall();
@@ -139,10 +141,14 @@ public:
 		untouchable_start = -1;
 		isOnPlatform = false;
 		coin = 0;
+		life = 4;
 	}
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void Render();
 	void SetState(int state);
+	
+	int GetLevel() { return this->level; }
+	void LifeUp() { life++; }
 
 	int IsCollidable()
 	{ 

@@ -195,28 +195,24 @@ void CCollision::Filter( LPGAMEOBJECT objSrc,
 		if (c->isDeleted) continue;
 		if (c->obj->IsDeleted()) continue; 
 
-		// ignore collision event with object having IsBlocking = 0 (like coin, mushroom, etc)
-		if (filterBlock == 1 && !c->obj->IsBlocking()) 
-		{
-			continue;
-		}
-
-
 		if (filterBlock == 1)
 		{
+			// ignore collision event with object having IsBlocking = 0 (like coin, mushroom, etc)
+			if (!c->obj->IsBlocking())
+				continue;
 			//block from top direction
-			int t;
+			/*int t;
 			c->obj->GetFilterBlockTop(t);
 			if (c->ny < 0 && !t)
-				continue;
+				continue;*/
 			//block from left direction
 			int l;
-			c->obj->GetFilterBlockTop(l);
+			c->obj->GetFilterBlockLeft(l);
 			if (c->nx < 0 && !l)
 				continue;
 			//block from right direction
 			int r;
-			c->obj->GetFilterBlockTop(r);
+			c->obj->GetFilterBlockRight(r);
 			if (c->nx > 0 && !r)
 				continue;
 			//block from bottom direction

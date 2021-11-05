@@ -9,6 +9,7 @@
 #include "Coin.h"
 #include "Portal.h"
 #include "Brick.h"
+#include "Mushroom.h"
 
 #include "Collision.h"
 
@@ -22,6 +23,7 @@ CMario* CMario::GetInstance()
 }
 CMario::CMario()
 {
+
 }
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
@@ -71,6 +73,8 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithKoopa(e);
 	else if (dynamic_cast<CBrick*>(e->obj))
 		OnCollisionWithBrick(e);
+	else if (dynamic_cast<CMushroom*>(e->obj))
+		OnCollisionWithMushroom(e);
 }
 
 void CMario::OnCollisionWithBrick(LPCOLLISIONEVENT e)
@@ -215,6 +219,30 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 	}
 }
 
+void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
+{
+	CMushroom* mushroom = (CMushroom*)e->obj;
+	
+	//Headbutt the brick to reveal the Mushroom
+	if (e->ny > 0 && mushroom->GetState() == MUSHROOM_STATE_IDLE)
+	{
+		mushroom->SetState(MUSHROOM_STATE_RISING);
+	}
+	if (mushroom->GetState() == MUSHROOM_STATE_MOVING)
+	{
+		if (GetState() == MARIO_LEVEL_SMALL)
+		{
+			SetLevel(MARIO_LEVEL_BIG);
+			e->obj->Delete();
+		}
+		else if (GetState() == MARIO_LEVEL_BIG)
+		{
+			LifeUp();
+			e->obj->Delete();
+		}
+	}
+}
+
 //
 // Get animation ID for small Mario
 //
@@ -342,13 +370,16 @@ void CMario::Render()
 {
 	CAnimations* animations = CAnimations::GetInstance();
 	int aniId = -1;
-
 	if (state == MARIO_STATE_DIE)
 		aniId = ID_ANI_MARIO_DIE;
 	else if (level == MARIO_LEVEL_BIG)
+	{
 		aniId = GetAniIdBig();
+	}
 	else if (level == MARIO_LEVEL_SMALL)
+	{
 		aniId = GetAniIdSmall();
+	}
 
 	animations->Get(aniId)->Render(x, y);
 
@@ -436,6 +467,8 @@ void CMario::SetState(int state)
 
 	CGameObject::SetState(state);
 }
+
+
 
 void CMario::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {

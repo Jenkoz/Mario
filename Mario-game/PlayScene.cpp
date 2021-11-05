@@ -8,6 +8,7 @@
 #include "Sprites.h"
 #include "Portal.h"
 #include "Coin.h"
+#include "Mushroom.h"
 #include "Platform.h"
 #include "ColourPlatform.h"
 #include "Map.h"
@@ -136,6 +137,8 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CBrick(x,y, _type); break;
 	}
 	case OBJECT_TYPE_COIN: obj = new CCoin(x, y); break;
+
+	case OBJECT_TYPE_MUSHROOM: obj = new CMushroom(x, y); break;
 
 	case OBJECT_TYPE_PLATFORM:
 	{
@@ -302,7 +305,6 @@ void CPlayScene::Render()
 {
 	float cam_x, cam_y;
 	CCamera::GetInstance()->GetCamPos(cam_x, cam_y);
-	//DebugOut(L" %f %f \n", cam_x, cam_y);
 	CMaps::GetInstance()->Render(cam_x, cam_y);
 	for (int i = 0; i < objects.size(); i++)
 		objects[i]->Render();
