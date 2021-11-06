@@ -221,21 +221,25 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 
 void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 {
-	CMushroom* mushroom = (CMushroom*)e->obj;
+	CMushroom* mushroom = dynamic_cast<CMushroom*>(e->obj);
 	
 	//Headbutt the brick to reveal the Mushroom
 	if (e->ny > 0 && mushroom->GetState() == MUSHROOM_STATE_IDLE)
 	{
+		DebugOut(L"state mushroom: %d \n", mushroom->GetState());
 		mushroom->SetState(MUSHROOM_STATE_RISING);
 	}
+
+	// Eat mushroom
 	if (mushroom->GetState() == MUSHROOM_STATE_MOVING)
 	{
-		if (GetState() == MARIO_LEVEL_SMALL)
+		DebugOut(L"state mushroom: %d \n", mushroom->GetState());
+		if (level == MARIO_LEVEL_SMALL)
 		{
 			SetLevel(MARIO_LEVEL_BIG);
 			e->obj->Delete();
 		}
-		else if (GetState() == MARIO_LEVEL_BIG)
+		else if (level == MARIO_LEVEL_BIG)
 		{
 			LifeUp();
 			e->obj->Delete();

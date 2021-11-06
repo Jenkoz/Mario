@@ -12,6 +12,7 @@ CMushroom::CMushroom(float x, float y) : CGameObject(x, y)
 	ay = 0; 
 	y_start = y; 
 	type = MUSHROOM_TYPE_RED;
+	state = MUSHROOM_STATE_IDLE;
 }
 
 void CMushroom::Render()
@@ -23,7 +24,7 @@ void CMushroom::Render()
 	else if (type == MUSHROOM_TYPE_RED)
 		aniId = ID_ANI_MUSHROOM_RED;
 	CAnimations::GetInstance()->Get(aniId)->Render(x, y);
-	//RenderBoundingBox();
+	RenderBoundingBox();
 }
 
 
@@ -49,7 +50,6 @@ void CMushroom::OnCollisionWith(LPCOLLISIONEVENT e)
 			vx = -vx;
 		}
 	}
-
 }
 
 
@@ -81,8 +81,6 @@ void CMushroom::SetState(int state)
 		vy = 0;
 		break;
 	case MUSHROOM_STATE_RISING:
-		vx = 0;
-		ax = 0;
 		vy = -MUSHROOM_RISE_SPEED;
 		break;
 	case MUSHROOM_STATE_MOVING:

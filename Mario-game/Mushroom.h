@@ -6,7 +6,7 @@
 
 
 #define MUSHROOM_GRAVITY 0.002f
-#define MUSHROOM_MOVING_SPEED 0.05f
+#define MUSHROOM_MOVING_SPEED 0.08f
 #define MUSHROOM_RISE_SPEED 0.01f
 
 #define MUSHROOM_STATE_IDLE 100
@@ -30,13 +30,15 @@ class CMushroom : public CGameObject
 	int type;
 public:
 	CMushroom(float x, float y); 
-	void Render();
-	void Update(DWORD dt) {}
-	void GetBoundingBox(float& l, float& t, float& r, float& b);
-	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
+	virtual void Render();
+	virtual void Update(DWORD dt) {}
+	virtual void GetBoundingBox(float& l, float& t, float& r, float& b);
+	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
+	virtual int IsBlocking() { return 0; }
+	virtual int IsCollidable() { return 1; };
+ 	virtual void OnCollisionWith(LPCOLLISIONEVENT e);
+	virtual void OnNoCollision(DWORD dt);
+	int GetState() { return this->state; }
+	virtual void SetState(int state);
 	void SetType(int type);
-	int IsBlocking() { return 0; }
-	void OnCollisionWith(LPCOLLISIONEVENT e);
-	void OnNoCollision(DWORD dt);
-	void SetState(int state);
 };

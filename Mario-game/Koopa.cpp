@@ -8,7 +8,6 @@ CKoopa::CKoopa(float x, float y, int lvl) :CGameObject(x, y)
 	this->level = lvl;
 	this->ax = 0;
 	this->ay = KOOPA_GRAVITY;
-	die_start = -1;
 	switch (this->level)
 	{
 	case 1:

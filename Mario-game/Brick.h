@@ -26,9 +26,9 @@ class CBrick : public CGameObject {
 	float currentY;
 public:
 	CBrick(float x, float y, int _type) : CGameObject(x, y) { SetState(_type); ay = BRICK_GRAVITY; currentY = y; vy = 0; }
-	void Render();
-	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
-	void GetBoundingBox(float& l, float& t, float& r, float& b);
-	void OnNoCollision(DWORD dt);
-	int isBlocking(){ return 1; }
+	virtual void Render();
+	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
+	virtual void GetBoundingBox(float& l, float& t, float& r, float& b);
+	virtual void OnNoCollision(DWORD dt);
+	virtual int isBlocking(){ return 1; }
 };
