@@ -5,12 +5,12 @@ void CBrick::Render()
 	CAnimations* animations = CAnimations::GetInstance();
 	int aniId = -1;
 	
-	if (state == BRICK_STATE_DISABLE)
-		aniId = ID_ANI_BRICK_STATE_DISABLE;
-	else if (state == BRICK_STATE_NORMAL)
-		aniId = ID_ANI_BRICK_STATE_NORMAL;
-	else if (state == BRICK_STATE_QUESTION)
-		aniId = ID_ANI_BRICK_STATE_QUESTION;
+	if (type == BRICK_TYPE_DISABLE)
+		aniId = ID_ANI_BRICK_TYPE_DISABLE;
+	else if (type == BRICK_TYPE_NORMAL)
+		aniId = ID_ANI_BRICK_TYPE_NORMAL;
+	else if (type == BRICK_TYPE_QUESTION)
+		aniId = ID_ANI_BRICK_TYPE_QUESTION;
 	animations->Get(aniId)->Render(x, y);
 	//RenderBoundingBox();
 }

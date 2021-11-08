@@ -85,13 +85,13 @@ void CMario::OnCollisionWithBrick(LPCOLLISIONEVENT e)
 	{
 		if (level == MARIO_LEVEL_BIG)
 		{
-			if (brick->GetState() != BRICK_STATE_DISABLE)
-				brick->SetState(BRICK_STATE_DISABLE);
+			if (brick->GetType() != BRICK_TYPE_DISABLE)
+				brick->SetType(BRICK_TYPE_DISABLE);
 		}
 		else if (level == MARIO_LEVEL_SMALL)
 		{
-			if (brick->GetState() == BRICK_STATE_QUESTION)
-				brick->SetState(BRICK_STATE_DISABLE);
+			if (brick->GetType() == BRICK_TYPE_QUESTION)
+				brick->SetType(BRICK_TYPE_DISABLE);
 		}
 	}
 }
