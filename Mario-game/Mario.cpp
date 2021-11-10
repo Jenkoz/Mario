@@ -7,6 +7,7 @@
 #include "Goomba.h"
 #include "Koopa.h"
 #include "Coin.h"
+#include "DCoin.h"
 #include "Portal.h"
 #include "Brick.h"
 #include "Mushroom.h"
@@ -67,6 +68,8 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithGoomba(e);
 	else if (dynamic_cast<CCoin*>(e->obj))
 		OnCollisionWithCoin(e);
+	else if (dynamic_cast<CDCoin*>(e->obj))
+		OncollisionWithDCoin(e);
 	else if (dynamic_cast<CPortal*>(e->obj))
 		OnCollisionWithPortal(e);
 	else if (dynamic_cast<CKoopa*>(e->obj))
@@ -139,8 +142,24 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 
 void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 {
-	e->obj->Delete();
-	coin++;
+	CDCoin* dcoin = dynamic_cast<CDCoin*>(e->obj);
+	if (e->ny > 0 && dcoin->GetState() == DCOIN_STATE_IDLING)
+	{
+		DebugOut(L"Dcoin state = %d\n", dcoin->GetState());
+		dcoin->SetState(DCOIN_STATE_BOUNCING);
+		coin++;
+	}
+}
+
+void CMario::OncollisionWithDCoin(LPCOLLISIONEVENT e)
+{
+	/*CDCoin* dcoin = dynamic_cast<CDCoin*>(e->obj);
+	if (e->ny > 0 && dcoin->GetState() == DCOIN_STATE_IDLING) 
+	{
+		DebugOut(L"Dcoin state = &d\n", dcoin->GetState());
+		dcoin->SetState(DCOIN_STATE_BOUNCING);
+		coin++;
+	}*/
 }
 
 void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)

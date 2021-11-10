@@ -17,8 +17,8 @@
 #define MUSHROOM_TYPE_GREEN 2
 
 
-#define MUSHROOM_BBOX_WIDTH 16
-#define MUSHROOM_BBOX_HEIGHT 16
+#define MUSHROOM_BBOX_WIDTH 15
+#define MUSHROOM_BBOX_HEIGHT 15
 
 #define ID_ANI_MUSHROOM_RED   12000
 #define ID_ANI_MUSHROOM_GREEN 12001
@@ -30,15 +30,17 @@ class CMushroom : public CGameObject
 	int type;
 public:
 	CMushroom(float x, float y); 
-	virtual void Render();
-	virtual void Update(DWORD dt) {}
-	virtual void GetBoundingBox(float& l, float& t, float& r, float& b);
-	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
-	virtual int IsBlocking() { return 0; }
-	virtual int IsCollidable() { return 1; };
- 	virtual void OnCollisionWith(LPCOLLISIONEVENT e);
-	virtual void OnNoCollision(DWORD dt);
+	void Render();
+	void Update(DWORD dt) {}
+	void GetBoundingBox(float& l, float& t, float& r, float& b);
+	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
+
+	int IsBlocking() { return 0; }
+	int IsCollidable() { return 1; };
+
+ 	void OnCollisionWith(LPCOLLISIONEVENT e);
+	void OnNoCollision(DWORD dt);
 	int GetState() { return this->state; }
-	virtual void SetState(int state);
+	void SetState(int state);
 	void SetType(int type);
 };

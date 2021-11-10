@@ -6,13 +6,25 @@
 #include "Utils.h"
 #include "Textures.h"
 #include "Sprites.h"
-#include "Portal.h"
+#include "Camera.h"
+
+// PLAYER
+#include "Mario.h"
+
+// OBJECTS
+#include "Goomba.h"
+#include "Koopa.h"
 #include "Coin.h"
+#include "DCoin.h"
 #include "Mushroom.h"
 #include "Platform.h"
 #include "ColourPlatform.h"
-#include "Map.h"
+#include "Portal.h"
 
+
+// MAP
+#include "Map.h"
+// KEY
 #include "SampleKeyEventHandler.h"
 
 using namespace std;
@@ -134,10 +146,17 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_BRICK: 
 	{
 		int _type = atoi(tokens[3].c_str());
-		obj = new CBrick(x,y, _type); break;
+		obj = new CBrick(x, y, _type); 
+		break;
 	}
 	case OBJECT_TYPE_COIN: obj = new CCoin(x, y); break;
-
+	case OBJECT_TYPE_DCOIN: 
+	{
+		int multiCoin = atoi(tokens[3].c_str());
+		obj = new CDCoin(x, y, multiCoin);
+		DebugOut(L"DCoin has been created");
+		break;
+	}
 	case OBJECT_TYPE_MUSHROOM: obj = new CMushroom(x, y); break;
 
 	case OBJECT_TYPE_PLATFORM:

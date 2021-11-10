@@ -34,4 +34,5 @@ public:
 	virtual int isBlocking(){ return 1; }
 	int GetType() { return type; }
 	void SetType(int _type) { type = _type; }
+
 };

@@ -7,6 +7,7 @@
 #define ID_TEX_MARIO 0
 #define ID_TEX_ENEMY 10
 #define ID_TEX_MISC 20
+#define ID_TEX_MISC_2 21
 #define ID_TEX_TILE 30
 
 
@@ -18,6 +19,7 @@
 #define OBJECT_TYPE_GROUND 5
 #define OBJECT_TYPE_PLATFORM 6
 #define OBJECT_TYPE_MUSHROOM 7
+#define OBJECT_TYPE_DCOIN 8
 
 #define OBJECT_TYPE_PORTAL	50
 
