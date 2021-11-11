@@ -153,8 +153,8 @@ void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 	CDCoin* dcoin = dynamic_cast<CDCoin*>(e->obj);
 	if (e->ny > 0 && dcoin->GetState() == DCOIN_STATE_IDLING)
 	{
-		DebugOut(L"Dcoin state = %d\n", dcoin->GetState());
 		dcoin->SetState(DCOIN_STATE_BOUNCING);
+		DebugOut(L"Dcoin state = %d\n", dcoin->GetState());
 		coin++;
 	}
 }
@@ -183,13 +183,11 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 	// jump on top >> make koopa a shell
 	if (e->ny < 0)
 	{
-		DebugOut(L">>> KOOPA LEVEL IS %d >>> \n", koopa->GetState());
 		if (koopa->GetState() != SHELL_STATE_IDLING)
 		{
 			if (koopa->GetState() == KOOPA_STATE_WALKING_LEFT || koopa->GetState() == KOOPA_STATE_WALKING_RIGHT)
 			{
 				koopa->SetState(SHELL_STATE_IDLING);
-				DebugOut(L">>> KOOPA LEVEL DOWN to %d >>> \n", koopa->GetState());
 				vy = -MARIO_JUMP_DEFLECT_SPEED;
 			}
 		}

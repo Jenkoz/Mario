@@ -11,6 +11,7 @@ public:
 		int sprite_id) : CPlatform(x, y,
 			cell_width, cell_height, length, type,
 			sprite_id) {}
+
 	void GetFilterBlockLeft(int& l) { l = 0; }
 	void GetFilterBlockRight(int& r) { r = 0; }
 	void GetFilterBlockBottom(int& b) { b = 0; }

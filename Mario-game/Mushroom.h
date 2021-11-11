@@ -40,6 +40,7 @@ public:
 
  	void OnCollisionWith(LPCOLLISIONEVENT e);
 	void OnNoCollision(DWORD dt);
+
 	int GetState() { return this->state; }
 	void SetState(int state);
 	void SetType(int type);
