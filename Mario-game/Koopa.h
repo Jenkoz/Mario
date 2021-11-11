@@ -18,15 +18,17 @@
 
 #define SHELL_IDLING_TIMEOUT 8000
 
-#define KOOPA_STATE_WALKING_LEFT 100
-#define KOOPA_STATE_WALKING_RIGHT 200
-#define SHELL_STATE_IDLING 300
-#define SHELL_STATE_ROLLING_LEFT 400
-#define SHELL_STATE_ROLLING_RIGHT 500
+#define KOOPA_STATE_WALKING_LEFT 10
+#define KOOPA_STATE_WALKING_RIGHT 20
+#define SHELL_STATE_IDLING 30
+#define SHELL_STATE_ROLLING_LEFT 40
+#define SHELL_STATE_ROLLING_RIGHT 50
 
-#define ID_ANI_KOOPA_WALKING 6000
-#define ID_ANI_SHELL_IDLING 6001
-#define ID_ANI_SHELL_ROLLING 6002
+#define ID_ANI_KOOPA_WALKING_LEFT 6000
+#define ID_ANI_KOOPA_WALKING_RIGHT 6001
+#define ID_ANI_SHELL_IDLING 6002
+#define ID_ANI_SHELL_ROLLING 6003
+
 
 class CKoopa : public CGameObject
 {
@@ -45,7 +47,7 @@ protected:
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	virtual void Render();
 
-	virtual int IsCollidable() { return 1; };
+	virtual int IsCollidable() { return 1; }
 	virtual int IsBlocking() { return 0; }
 
 

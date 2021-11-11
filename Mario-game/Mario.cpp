@@ -66,10 +66,10 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 
 	if (dynamic_cast<CGoomba*>(e->obj))
 		OnCollisionWithGoomba(e);
-	else if (dynamic_cast<CCoin*>(e->obj))
-		OnCollisionWithCoin(e);
 	else if (dynamic_cast<CDCoin*>(e->obj))
 		OncollisionWithDCoin(e);
+	else if (dynamic_cast<CCoin*>(e->obj))
+		OnCollisionWithCoin(e);
 	else if (dynamic_cast<CPortal*>(e->obj))
 		OnCollisionWithPortal(e);
 	else if (dynamic_cast<CKoopa*>(e->obj))
@@ -150,24 +150,24 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 
 void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 {
-	CDCoin* dcoin = dynamic_cast<CDCoin*>(e->obj);
-	if (e->ny > 0 && dcoin->GetState() == DCOIN_STATE_IDLING)
+	CCoin* coin = dynamic_cast<CCoin*>(e->obj);
+	DebugOut(L">>Coin state = %d<<\n", coin->GetState());
+	if (coin->GetState() == COIN_STATE_IDLE)
 	{
-		dcoin->SetState(DCOIN_STATE_BOUNCING);
-		DebugOut(L"Dcoin state = %d\n", dcoin->GetState());
+		coin->Delete();
 		coin++;
 	}
 }
 
 void CMario::OncollisionWithDCoin(LPCOLLISIONEVENT e)
 {
-	/*CDCoin* dcoin = dynamic_cast<CDCoin*>(e->obj);
-	if (e->ny > 0 && dcoin->GetState() == DCOIN_STATE_IDLING) 
+	CDCoin* dcoin = dynamic_cast<CDCoin*>(e->obj);
+	DebugOut(L"Dcoin state = %d\n", dcoin->GetState());
+	if (e->ny > 0 && dcoin->GetState() == DCOIN_STATE_IDLING)
 	{
-		DebugOut(L"Dcoin state = &d\n", dcoin->GetState());
 		dcoin->SetState(DCOIN_STATE_BOUNCING);
 		coin++;
-	}*/
+	}
 }
 
 void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
@@ -219,8 +219,7 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 		{
 			if (e->nx > 0)
 				koopa->SetState(SHELL_STATE_ROLLING_LEFT);
-			else if (e->nx < 0)
-				koopa->SetState(SHELL_STATE_ROLLING_RIGHT);
+			else koopa->SetState(SHELL_STATE_ROLLING_RIGHT);
 		}
 	}
 	else // hit by SHELL
