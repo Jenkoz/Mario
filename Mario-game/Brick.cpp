@@ -19,7 +19,12 @@ void CBrick::Render()
 
 void CBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	
+	vy += ay * dt;
+	if (this->y < start_y - 8.0f && GetState() == BRICK_STATE_BOUNCING)
+	{
+		SetState(BRICK_STATE_IDLING);
+		y = start_y;
+	}
 
 	CGameObject::Update(dt, coObjects);
 	CCollision::GetInstance()->Process(this, dt, coObjects);
@@ -27,7 +32,23 @@ void CBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void CBrick::OnNoCollision(DWORD dt)
 {
+	y += vy * dt;
 
+}
+
+void CBrick::SetState(int state)
+{
+	CGameObject::SetState(state);
+
+	switch (state)
+	{
+	case BRICK_STATE_IDLING:
+		vy = 0.0f;
+		break;
+	case BRICK_STATE_BOUNCING:
+		vy = - BRICK_BOUNCING_DEFLECT_Y;
+		break;
+	}
 }
 
 
