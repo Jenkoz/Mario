@@ -66,8 +66,6 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 
 	if (dynamic_cast<CGoomba*>(e->obj))
 		OnCollisionWithGoomba(e);
-	else if (dynamic_cast<CDCoin*>(e->obj))
-		OncollisionWithDCoin(e);
 	else if (dynamic_cast<CCoin*>(e->obj))
 		OnCollisionWithCoin(e);
 	else if (dynamic_cast<CPortal*>(e->obj))
@@ -159,16 +157,6 @@ void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 	}
 }
 
-void CMario::OncollisionWithDCoin(LPCOLLISIONEVENT e)
-{
-	CDCoin* dcoin = dynamic_cast<CDCoin*>(e->obj);
-	DebugOut(L"Dcoin state = %d\n", dcoin->GetState());
-	if (e->ny > 0 && dcoin->GetState() == DCOIN_STATE_IDLING)
-	{
-		dcoin->SetState(DCOIN_STATE_BOUNCING);
-		coin++;
-	}
-}
 
 void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
 {
@@ -247,13 +235,6 @@ void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 {
 	CMushroom* mushroom = dynamic_cast<CMushroom*>(e->obj);
 	
-	//Headbutt the brick to reveal the Mushroom
-	if (e->ny > 0 && mushroom->GetState() == MUSHROOM_STATE_IDLE)
-	{
-		DebugOut(L"state mushroom: %d \n", mushroom->GetState());
-		mushroom->SetState(MUSHROOM_STATE_RISING);
-	}
-
 	// Eat mushroom
 	if (mushroom->GetState() == MUSHROOM_STATE_MOVING)
 	{

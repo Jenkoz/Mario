@@ -1,6 +1,7 @@
 #include "Camera.h"
 #include "Mario.h"
 #include "Map.h"
+#include "PlayScene.h"
 CCamera* CCamera::__instance = NULL;
 
 CCamera* CCamera::GetInstance()
@@ -17,19 +18,12 @@ CCamera::CCamera()
 	this->width = SCREEN_WIDTH;
 	this->height = SCREEN_HEIGHT;
 }
-RECT CCamera::GetBound()
-{
-	RECT bound;
 
-	bound.left = cam_x;
-	bound.top = cam_y;
-	bound.right = cam_x + width;;
-	bound.bottom = cam_y + height;
-	return bound;
-}
-
-void CCamera::Update(float cx, float cy)
+void CCamera::Update()
 {
+	CMario* player = ((CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer());
+	float cx, cy;
+	player->GetPosition(cx, cy);
 	/*DebugOut(L" %f %f \n", cx, cy);*/
 	CGame *game = CGame::GetInstance();
 	cx -= game->GetBackBufferWidth() / 2;

@@ -31,6 +31,7 @@ public:
 	virtual void Update(DWORD dt);
 	virtual void Render();
 	virtual void Unload();
+	virtual void LoadObject(LPGAMEOBJECT obj);
 
 	LPGAMEOBJECT GetPlayer() { return player; }
 

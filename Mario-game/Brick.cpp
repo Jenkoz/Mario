@@ -1,4 +1,7 @@
 #include "Brick.h"
+#include "Mushroom.h"
+#include "DCoin.h"
+#include "debug.h"
 
 void CBrick::Render()
 {
@@ -12,29 +15,41 @@ void CBrick::Render()
 	else if (type == BRICK_TYPE_QUESTION)
 		aniId = ID_ANI_BRICK_TYPE_QUESTION;
 	animations->Get(aniId)->Render(x, y);
-	//RenderBoundingBox();
+	RenderBoundingBox();
 }
 
 
 
 void CBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	vy += ay * dt;
+	y += vy * dt;
 	if (this->y < start_y - 8.0f && GetState() == BRICK_STATE_BOUNCING)
 	{
-		SetState(BRICK_STATE_IDLING);
-		y = start_y;
+		vy = BRICK_BOUNCING_DEFLECT_Y;
 	}
+	if (this->y > start_y - 1 && GetState() == BRICK_STATE_BOUNCING)
+	{
+		y = start_y;
+		CGameObject* obj = NULL;
+		SetState(BRICK_STATE_IDLING);
+		switch (itemId)
+		{
+		case 1: 
+			obj = new CMushroom(x, y);
+			break;
+		case 2:
+			obj = new CDCoin(x, y, 0);
+			break;
+		}
+		obj->SetPosition(x, y);
+		((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->LoadObject(obj);
+	}
+
 
 	CGameObject::Update(dt, coObjects);
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
 
-void CBrick::OnNoCollision(DWORD dt)
-{
-	y += vy * dt;
-
-}
 
 void CBrick::SetState(int state)
 {

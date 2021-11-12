@@ -110,9 +110,6 @@
     <ClCompile Include="Brick.cpp">
       <Filter>GameObject\Brick</Filter>
     </ClCompile>
-    <ClCompile Include="QuestionBrick.cpp">
-      <Filter>GameObject\Brick</Filter>
-    </ClCompile>
     <ClCompile Include="Coin.cpp">
       <Filter>GameObject\Items</Filter>
     </ClCompile>
@@ -203,9 +200,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Brick.h">
-      <Filter>GameObject\Brick</Filter>
-    </ClInclude>
-    <ClInclude Include="QuestionBrick.h">
       <Filter>GameObject\Brick</Filter>
     </ClInclude>
     <ClInclude Include="Coin.h">

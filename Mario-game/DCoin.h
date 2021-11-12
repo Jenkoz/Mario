@@ -1,13 +1,15 @@
 #pragma once
 #include "Coin.h"
+#include "PlayScene.h"
+#include "Mario.h"
 
 
 #define DCOIN_GRAVITY 0.2f 
 #define DCOIN_BOUNCING_SPEED 0.2f
 
-#define DCOIN_STATE_IDLING 1
+//#define DCOIN_STATE_IDLING 1
 #define DCOIN_STATE_BOUNCING 2
-#define DCOIN_STATE_FALLING 3
+
 
 #define DCOIN_BBOX_WIDTH 15
 #define DCOIN_BBOX_HEIGHT	15
@@ -16,7 +18,6 @@
 
 class CDCoin : public CCoin 
 {
-	float ay;
 	float start_y;
 	int isMultiCoin;
 public:
@@ -24,8 +25,7 @@ public:
 	{ 
 		isMultiCoin = _isMultiCoin;
 		start_y = y;
-		ay = 0;
-		SetState(DCOIN_STATE_IDLING);
+		SetState(DCOIN_STATE_BOUNCING);
 	}
 	void Render();
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
@@ -33,8 +33,7 @@ public:
 	int IsCollidable() { return 1; };
 	int IsBlocking() { return 0; }
 
-	void OnCollisionWith(LPCOLLISIONEVENT e);
-	void OnNoCollision(DWORD dt);
+
 	void GetBoundingBox(float& l, float& t, float& r, float& b);
 	void SetState(int state);
 };

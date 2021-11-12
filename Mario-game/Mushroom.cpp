@@ -12,7 +12,7 @@ CMushroom::CMushroom(float x, float y) : CGameObject(x, y)
 	ay = 0; 
 	y_start = y; 
 	type = MUSHROOM_TYPE_RED;
-	state = MUSHROOM_STATE_IDLE;
+	SetState(MUSHROOM_STATE_RISING);
 }
 
 void CMushroom::Render()
@@ -76,10 +76,10 @@ void CMushroom::SetState(int state)
 
 	switch (state)
 	{
-	case MUSHROOM_STATE_IDLE:
-		vx = 0;
-		vy = 0;
-		break;
+	//case MUSHROOM_STATE_IDLE:
+	//	vx = 0;
+	//	vy = 0;
+	//	break;
 	case MUSHROOM_STATE_RISING:
 		vy = -MUSHROOM_RISE_SPEED;
 		break;

@@ -10,14 +10,12 @@ coin.txt
 #
 [OBJECTS]
 # type	x	y	extra_settings per object type
-# type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopa, 4 = Coin, 7 = mushroom, 8 = Dcoin
+# type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopa, 4 = Coin
 # See OBJECT_TYPE constants in AssetIDs.h
 
 # MARIO
 0	10	256
 
-#MUSHROOM
-7	240	320
 
 #COIN
 #4	100	120
@@ -32,18 +30,19 @@ coin.txt
 
 #Brick 
 # type: 1 = disabled, 2 = normal, 3 = Question
-#id	x	y	type
-1	192	368	3
-1	176	368	3
-1	224	320	3
-1	240	320	3
+# itemId: 0 = none, 1 = mushroom, 2 = coin
+#id	x	y	type	itemId
+1	192	368	3	2
+1	176	368	3	2
+1	224	320	3	2
+1	240	320	3	1
 
 #goomba
-#2	224	416	1
+2	224	416	2
 2	528	416	1
 
 #koopa
-3	224	400	1
+#3	224	400	1
 3	576	368	1
 
 

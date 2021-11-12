@@ -2,6 +2,7 @@
 #include "Brick.h"
 
 
+
 void CDCoin::Render()
 {
 	CAnimations* animations = CAnimations::GetInstance();
@@ -13,27 +14,22 @@ void CDCoin::Render()
 
 void CDCoin::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	vy += ay * dt;
-
-	if ((this->y < start_y - 32.0f) && GetState() == DCOIN_STATE_BOUNCING)
+	y += vy * dt;
+	CMario* player = ((CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer());
+	if (this->y > start_y  && GetState() == DCOIN_STATE_BOUNCING)
 	{
 		y = start_y;
 		isDeleted = true;
-		return;
+		player->CoinUp();
+	}
+	if ((this->y < start_y - 32.0f) && GetState() == DCOIN_STATE_BOUNCING)
+	{
+		vy = +DCOIN_BOUNCING_SPEED;
 	}
 	CGameObject::Update(dt, coObjects);
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
 
-void CDCoin::OnCollisionWith(LPCOLLISIONEVENT e)
-{
-
-}
-
-void CDCoin::OnNoCollision(DWORD dt)
-{
-	y += vy * dt;
-}
 
 void CDCoin::GetBoundingBox(float& l, float& t, float& r, float& b)
 {
@@ -51,9 +47,6 @@ void CDCoin::SetState(int state)
 	{
 	case DCOIN_STATE_BOUNCING:
 		vy = - DCOIN_BOUNCING_SPEED;
-		break;
-	case DCOIN_STATE_IDLING:
-		vy = 0;
 		break;
 	}
 }

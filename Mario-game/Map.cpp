@@ -46,6 +46,9 @@ void CMaps::LoadResourses(int mapId, LPCWSTR pathTile, int maxCol, int maxRow, L
 }
 void CMaps::Render(float cam_x, float cam_y) 
 {
+	float xx, yy;
+	CCamera::GetInstance()->GetCamPos(xx, yy);
+	DebugOut(L"x = %f, y = %f", xx, yy);
 	for (int i = cam_y/TILE_HEIGHT; i < (cam_y + SCREEN_HEIGHT)/TILE_HEIGHT; ++i)
 	{
 		for (int j = cam_x/TILE_WIDTH; j < (cam_x + SCREEN_WIDTH)/TILE_WIDTH; ++j)

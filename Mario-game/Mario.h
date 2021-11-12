@@ -117,7 +117,6 @@ class CMario : public CGameObject
 
 	void OnCollisionWithBrick(LPCOLLISIONEVENT e);
 	void OnCollisionWithCoin(LPCOLLISIONEVENT e);
-	void OncollisionWithDCoin(LPCOLLISIONEVENT e);
 	void OnCollisionWithPortal(LPCOLLISIONEVENT e);
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithKoopa(LPCOLLISIONEVENT e);
@@ -150,6 +149,7 @@ public:
 	
 	int GetLevel() { return this->level; }
 	void LifeUp() { life++; }
+	void CoinUp() { coin++; }
 
 	int IsCollidable()
 	{ 

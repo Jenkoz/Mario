@@ -59,6 +59,10 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 {
 	if (e->ny != 0 && e->obj->IsBlocking())
 	{
+		if (e->ny < 0)
+		{
+			//e->obj->GetPosition();
+		}
 		vy = 0;
 	}
 	else if (e->nx != 0 && e->obj->IsBlocking())

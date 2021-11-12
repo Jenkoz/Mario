@@ -146,18 +146,11 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_BRICK: 
 	{
 		int _type = atoi(tokens[3].c_str());
-		obj = new CBrick(x, y, _type); 
+		int _itemId = atoi(tokens[4].c_str());
+		obj = new CBrick(x, y, _type, _itemId); 
 		break;
 	}
 	case OBJECT_TYPE_COIN: obj = new CCoin(x, y); break;
-	case OBJECT_TYPE_DCOIN: 
-	{
-		int multiCoin = atoi(tokens[3].c_str());
-		obj = new CDCoin(x, y, multiCoin);
-		DebugOut(L"DCoin has been created");
-		break;
-	}
-	case OBJECT_TYPE_MUSHROOM: obj = new CMushroom(x, y); break;
 
 	case OBJECT_TYPE_PLATFORM:
 	{
@@ -298,9 +291,10 @@ void CPlayScene::Update(DWORD dt)
 	// TO-DO: This is a "dirty" way, need a more organized way 
 
 	vector<LPGAMEOBJECT> coObjects;
-	for (size_t i = 1; i < objects.size(); i++)
+	for (size_t i = 0; i < objects.size(); i++)
 	{
-		coObjects.push_back(objects[i]);
+		if (objects[i] != player)
+			coObjects.push_back(objects[i]);
 	}
 
 	for (size_t i = 0; i < objects.size(); i++)
@@ -312,11 +306,9 @@ void CPlayScene::Update(DWORD dt)
 	if (player == NULL) return; 
 
 	// Update camera to follow mario
-	float cx, cy;
-	player->GetPosition(cx, cy);
-	//DebugOut(L" %f %f \n", cx, cy);
+
 	
-	CCamera::GetInstance()->Update(cx, cy);
+	CCamera::GetInstance()->Update();
 	PurgeDeletedObjects();
 }
 
@@ -324,6 +316,7 @@ void CPlayScene::Render()
 {
 	float cam_x, cam_y;
 	CCamera::GetInstance()->GetCamPos(cam_x, cam_y);
+
 	CMaps::GetInstance()->Render(cam_x, cam_y);
 	for (int i = 0; i < objects.size(); i++)
 		objects[i]->Render();
@@ -357,6 +350,11 @@ void CPlayScene::Unload()
 	player = NULL;
 
 	DebugOut(L"[INFO] Scene %d unloaded! \n", id);
+}
+
+void CPlayScene::LoadObject(LPGAMEOBJECT obj)
+{
+	objects.push_back(obj);
 }
 
 bool CPlayScene::IsGameObjectDeleted(const LPGAMEOBJECT& o) { return o == NULL; }
