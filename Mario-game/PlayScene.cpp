@@ -306,18 +306,13 @@ void CPlayScene::Update(DWORD dt)
 	if (player == NULL) return; 
 
 	// Update camera to follow mario
-
-	
 	CCamera::GetInstance()->Update();
 	PurgeDeletedObjects();
 }
 
 void CPlayScene::Render()
 {
-	float cam_x, cam_y;
-	CCamera::GetInstance()->GetCamPos(cam_x, cam_y);
-
-	CMaps::GetInstance()->Render(cam_x, cam_y);
+	CMaps::GetInstance()->Render();
 	for (int i = 0; i < objects.size(); i++)
 		objects[i]->Render();
 }

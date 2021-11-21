@@ -112,13 +112,13 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 	// jump on top >> make paragoomba a goomba, if there's a goomba, it kills goomba
 	if (e->ny < 0)
 	{
-		DebugOut(L">>> GOOMBA LEVEL IS %d >>> \n", goomba->GetState());
+		//DebugOut(L">>> GOOMBA LEVEL IS %d >>> \n", goomba->GetState());
 		if (goomba->GetState() != GOOMBA_STATE_DIE)
 		{ 
 			if (goomba->GetState() == PARAGOOMBA_STATE_WALKING)
 			{
 				goomba->SetState(GOOMBA_STATE_WALKING);
-				DebugOut(L">>> GOOMBA LEVEL DOWN to %d >>> \n", goomba->GetState());
+				//DebugOut(L">>> GOOMBA LEVEL DOWN to %d >>> \n", goomba->GetState());
 			}
 			else
 				goomba->SetState(GOOMBA_STATE_DIE);
@@ -149,7 +149,7 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 {
 	CCoin* coin = dynamic_cast<CCoin*>(e->obj);
-	DebugOut(L">>Coin state = %d<<\n", coin->GetState());
+	//DebugOut(L">>Coin state = %d<<\n", coin->GetState());
 	if (coin->GetState() == COIN_STATE_IDLE)
 	{
 		coin->Delete();
@@ -238,7 +238,7 @@ void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 	// Eat mushroom
 	if (mushroom->GetState() == MUSHROOM_STATE_MOVING)
 	{
-		DebugOut(L"state mushroom: %d \n", mushroom->GetState());
+		//DebugOut(L"state mushroom: %d \n", mushroom->GetState());
 		if (level == MARIO_LEVEL_SMALL)
 		{
 			SetLevel(MARIO_LEVEL_BIG);

@@ -24,17 +24,14 @@ void CCamera::Update()
 	CMario* player = ((CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer());
 	float cx, cy;
 	player->GetPosition(cx, cy);
-	/*DebugOut(L" %f %f \n", cx, cy);*/
 	CGame *game = CGame::GetInstance();
 	cx -= game->GetBackBufferWidth() / 2;
 	cy -= game->GetBackBufferHeight() / 2;
 	if (cx < 0) cx = 0;
-	//DebugOut(L" %f %f \n", cx, cy);
 	float mapEnd = CMaps::GetInstance()->GetWidthMap();
 	if (cx + game->GetBackBufferWidth() >= mapEnd) 
 		cx = mapEnd - game->GetBackBufferWidth();
 	SetCamPos(cx, 256.f/*cy*/);
-	//DebugOut(L" %f %f \n", cx, cy);
 }
 
 

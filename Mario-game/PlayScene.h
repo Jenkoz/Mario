@@ -33,6 +33,7 @@ public:
 	virtual void Unload();
 	virtual void LoadObject(LPGAMEOBJECT obj);
 
+	vector<LPGAMEOBJECT> GetObjects() { return this->objects; }
 	LPGAMEOBJECT GetPlayer() { return player; }
 
 	void Clear();

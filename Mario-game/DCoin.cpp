@@ -16,7 +16,7 @@ void CDCoin::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	y += vy * dt;
 	CMario* player = ((CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer());
-	if (this->y > start_y  && GetState() == DCOIN_STATE_BOUNCING)
+	if (this->y > start_y && GetState() == DCOIN_STATE_BOUNCING)
 	{
 		y = start_y;
 		isDeleted = true;

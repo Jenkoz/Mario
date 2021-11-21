@@ -1,7 +1,10 @@
 #include "Koopa.h"
 #include "Goomba.h"
+#include "ColourPlatform.h"
+
 #include "Mario.h"
 #include "debug.h"
+#include "PlayScene.h"
 
 CKoopa::CKoopa(float x, float y, int lvl) :CGameObject(x, y)
 {
@@ -48,6 +51,32 @@ void CKoopa::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 			}*/
 }
 
+void CKoopa::OnCollisionWithColourPlatform(LPCOLLISIONEVENT e)
+{
+	CColourPlatform* cPlatform = dynamic_cast<CColourPlatform*>(e->obj);
+	vector<LPGAMEOBJECT> coObjects = ((LPPLAYSCENE)(CGame::GetInstance()->GetCurrentScene()))->GetObjects();
+
+	if (state == KOOPA_STATE_WALKING_LEFT || state == KOOPA_STATE_WALKING_RIGHT)
+
+		for (UINT i = 0; i < coObjects.size(); i++)
+		{
+			if (e->ny < 0 && cPlatform == coObjects[i])
+			{
+				if (cPlatform == coObjects[i])
+				{
+					cPlatform = (CColourPlatform*)coObjects[i];
+					DebugOut(L"x = %f \n", x);
+					if (x <= cPlatform->GetBeginPlatform() )
+						SetState(KOOPA_STATE_WALKING_RIGHT);
+					else if (x + KOOPA_BBOX_WIDTH >= cPlatform->GetEndPlatform())
+						SetState(KOOPA_STATE_WALKING_LEFT);
+				}
+				vy = 0;
+			}
+		}
+}
+
+
 
 void CKoopa::OnNoCollision(DWORD dt)
 {
@@ -59,10 +88,6 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 {
 	if (e->ny != 0 && e->obj->IsBlocking())
 	{
-		if (e->ny < 0)
-		{
-			//e->obj->GetPosition();
-		}
 		vy = 0;
 	}
 	else if (e->nx != 0 && e->obj->IsBlocking())
@@ -80,7 +105,8 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithKoopa(e);
 	else if (dynamic_cast<CGoomba*>(e->obj))
 		OnCollisionWithGoomba(e);
-
+	else if (dynamic_cast<CColourPlatform*>(e->obj))
+		OnCollisionWithColourPlatform(e);
 }
 
 void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
@@ -113,7 +139,7 @@ void CKoopa::Render()
 	
 
 	CAnimations::GetInstance()->Get(aniId)->Render(x, y);
-	//RenderBoundingBox();
+	RenderBoundingBox();
 }
 
 void CKoopa::SetState(int state)
@@ -124,6 +150,7 @@ void CKoopa::SetState(int state)
 	case SHELL_STATE_IDLING:
 		die_start = GetTickCount64();
 		vx = SHELL_IDLING_SPEED;
+		y = SHELL_IDLING_BBOX_HEIGHT;
 		break;
 	case KOOPA_STATE_WALKING_LEFT:
 		vx = -KOOPA_WALKING_SPEED;

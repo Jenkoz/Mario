@@ -76,10 +76,6 @@ void CMushroom::SetState(int state)
 
 	switch (state)
 	{
-	//case MUSHROOM_STATE_IDLE:
-	//	vx = 0;
-	//	vy = 0;
-	//	break;
 	case MUSHROOM_STATE_RISING:
 		vy = -MUSHROOM_RISE_SPEED;
 		break;

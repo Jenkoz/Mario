@@ -44,11 +44,11 @@ void CMaps::LoadResourses(int mapId, LPCWSTR pathTile, int maxCol, int maxRow, L
 		}
 	}
 }
-void CMaps::Render(float cam_x, float cam_y) 
+void CMaps::Render() 
 {
-	float xx, yy;
-	CCamera::GetInstance()->GetCamPos(xx, yy);
-	DebugOut(L"x = %f, y = %f", xx, yy);
+	float cam_x, cam_y;
+	CCamera::GetInstance()->GetCamPos(cam_x, cam_y);
+	//DebugOut(L"x = %f, y = %f \n", cam_x, cam_y);
 	for (int i = cam_y/TILE_HEIGHT; i < (cam_y + SCREEN_HEIGHT)/TILE_HEIGHT; ++i)
 	{
 		for (int j = cam_x/TILE_WIDTH; j < (cam_x + SCREEN_WIDTH)/TILE_WIDTH; ++j)

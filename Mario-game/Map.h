@@ -27,7 +27,7 @@ public:
 	CMaps();
 	~CMaps();
 	void LoadResourses(int mapId, LPCWSTR pathImg, int maxCol, int maxRow, LPCWSTR pathTxt);
-	void Render(float posX,float posY);
+	void Render();
 	float GetWidthMap();
 	float GetHeightMap();
 	static CMaps* GetInstance();
