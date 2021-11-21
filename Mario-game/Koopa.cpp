@@ -150,7 +150,6 @@ void CKoopa::SetState(int state)
 	case SHELL_STATE_IDLING:
 		die_start = GetTickCount64();
 		vx = SHELL_IDLING_SPEED;
-		y = SHELL_IDLING_BBOX_HEIGHT;
 		break;
 	case KOOPA_STATE_WALKING_LEFT:
 		vx = -KOOPA_WALKING_SPEED;
