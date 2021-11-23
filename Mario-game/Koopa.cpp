@@ -65,7 +65,6 @@ void CKoopa::OnCollisionWithColourPlatform(LPCOLLISIONEVENT e)
 				if (cPlatform == coObjects[i])
 				{
 					cPlatform = (CColourPlatform*)coObjects[i];
-					DebugOut(L"x = %f \n", x);
 					if (x <= cPlatform->GetBeginPlatform() )
 						SetState(KOOPA_STATE_WALKING_RIGHT);
 					else if (x + KOOPA_BBOX_WIDTH >= cPlatform->GetEndPlatform())

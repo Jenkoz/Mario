@@ -112,11 +112,12 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 	// jump on top >> make paragoomba a goomba, if there's a goomba, it kills goomba
 	if (e->ny < 0)
 	{
-		//DebugOut(L">>> GOOMBA LEVEL IS %d >>> \n", goomba->GetState());
 		if (goomba->GetState() != GOOMBA_STATE_DIE)
 		{ 
-			if (goomba->GetState() == PARAGOOMBA_STATE_WALKING)
+			if (goomba->GetLevel() == 2)
 			{
+				DebugOut(L">>> GOOMBA LEVEL %d >>> \n", goomba->GetLevel());
+				goomba->SetLevel(1);
 				goomba->SetState(GOOMBA_STATE_WALKING);
 				//DebugOut(L">>> GOOMBA LEVEL DOWN to %d >>> \n", goomba->GetState());
 			}
@@ -175,8 +176,8 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 		{
 			if (koopa->GetState() == KOOPA_STATE_WALKING_LEFT || koopa->GetState() == KOOPA_STATE_WALKING_RIGHT)
 			{
-				koopa->SetState(SHELL_STATE_IDLING);
 				vy = -MARIO_JUMP_DEFLECT_SPEED;
+				koopa->SetState(SHELL_STATE_IDLING);
 			}
 		}
 		
