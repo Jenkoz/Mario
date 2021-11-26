@@ -42,6 +42,9 @@
     <Filter Include="GameObject\Portal">
       <UniqueIdentifier>{a8710274-37f7-4085-a902-e653b446632d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\Enemy\PiranhaPlant">
+      <UniqueIdentifier>{cf220481-6a9e-481b-8d6e-9ccc3fb20dcd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -121,6 +124,9 @@
     </ClCompile>
     <ClCompile Include="DCoin.cpp">
       <Filter>GameObject\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="PiranhaPlant.cpp">
+      <Filter>GameObject\Enemy\PiranhaPlant</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -213,6 +219,9 @@
     </ClInclude>
     <ClInclude Include="DCoin.h">
       <Filter>GameObject\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="PiranhaPlant.h">
+      <Filter>GameObject\Enemy\PiranhaPlant</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
