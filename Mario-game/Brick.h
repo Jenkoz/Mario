@@ -40,6 +40,8 @@ public:
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	virtual void GetBoundingBox(float& l, float& t, float& r, float& b);
 
+	void RevealItem();
+
 	virtual int isBlocking(){ return 1; }
 	virtual int IsCollidable() { return 1; }
 	int GetType() { return type; }

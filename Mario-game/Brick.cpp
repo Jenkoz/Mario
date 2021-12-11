@@ -2,6 +2,7 @@
 #include "Mushroom.h"
 #include "DCoin.h"
 #include "debug.h"
+#include "Leaf.h"
 
 void CBrick::Render()
 {
@@ -30,19 +31,9 @@ void CBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	if (this->y > start_y - 1 && GetState() == BRICK_STATE_BOUNCING)
 	{
 		y = start_y;
-		CGameObject* obj = NULL;
 		SetState(BRICK_STATE_IDLING);
-		switch (itemId)
-		{
-		case 1: 
-			obj = new CMushroom(x, y);
-			break;
-		case 2:
-			obj = new CDCoin(x, y, 0);
-			break;
-		}
-		obj->SetPosition(x, y);
-		((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->LoadObject(obj);
+		SetType(BRICK_TYPE_DISABLE);
+		RevealItem();
 	}
 
 
@@ -74,4 +65,22 @@ void CBrick::GetBoundingBox(float &l, float &t, float &r, float &b)
 	t = y - BRICK_BBOX_HEIGHT/2;
 	r = l + BRICK_BBOX_WIDTH;
 	b = t + BRICK_BBOX_HEIGHT;
+}
+
+void CBrick::RevealItem()
+{
+	CGameObject* obj = NULL;
+	switch (itemId)
+	{
+	case 1:
+		obj = new CMushroom(x, y);
+		break;
+	case 2:
+		obj = new CDCoin(x, y, 0);
+		break;
+	case 3:
+		obj = new CLeaf(x, y);
+	}
+	obj->SetPosition(x, y);
+	((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->LoadObject(obj);
 }

@@ -15,9 +15,6 @@
     <Filter Include="GameObject\Mario">
       <UniqueIdentifier>{627abeff-90f1-407a-923a-6cdb900e9f4f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GameObject\Mario\MarioState">
-      <UniqueIdentifier>{84da4ac6-1da8-4d26-a752-042caaee95ed}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GameObject\Enemy">
       <UniqueIdentifier>{b8cbea0d-36dd-49af-ac2e-3279c2417094}</UniqueIdentifier>
     </Filter>
@@ -128,6 +125,9 @@
     <ClCompile Include="PiranhaPlant.cpp">
       <Filter>GameObject\Enemy\PiranhaPlant</Filter>
     </ClCompile>
+    <ClCompile Include="Leaf.cpp">
+      <Filter>GameObject\Items</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mario.h">
@@ -222,6 +222,9 @@
     </ClInclude>
     <ClInclude Include="PiranhaPlant.h">
       <Filter>GameObject\Enemy\PiranhaPlant</Filter>
+    </ClInclude>
+    <ClInclude Include="Leaf.h">
+      <Filter>GameObject\Items</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

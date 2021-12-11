@@ -87,10 +87,9 @@ void CMario::OnCollisionWithBrick(LPCOLLISIONEVENT e)
 		// Big mario can hit normal brick
 		if (level == MARIO_LEVEL_BIG)
 		{
-			if (brick->GetType() == BRICK_TYPE_QUESTION)
+			if (brick->GetType() != BRICK_TYPE_DISABLE)
 			{
 				brick->SetState(BRICK_STATE_BOUNCING);
-				brick->SetType(BRICK_TYPE_DISABLE);
 			}
 		}
 		// Small mario can only hit the question brick
@@ -99,7 +98,6 @@ void CMario::OnCollisionWithBrick(LPCOLLISIONEVENT e)
 			if (brick->GetType() == BRICK_TYPE_QUESTION)
 			{
 				brick->SetState(BRICK_STATE_BOUNCING);
-				brick->SetType(BRICK_TYPE_DISABLE);
 			}
 		}
 	}

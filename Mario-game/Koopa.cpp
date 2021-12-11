@@ -1,5 +1,6 @@
 #include "Koopa.h"
 #include "Goomba.h"
+#include "Brick.h"
 #include "ColourPlatform.h"
 
 #include "Mario.h"
@@ -75,6 +76,19 @@ void CKoopa::OnCollisionWithColourPlatform(LPCOLLISIONEVENT e)
 		}
 }
 
+void CKoopa::OnCollisionWithBrick(LPCOLLISIONEVENT e)
+{
+	CBrick* brick = dynamic_cast<CBrick*>(e->obj);
+
+	if (brick->GetType() != BRICK_TYPE_DISABLE)
+		if (state == SHELL_STATE_ROLLING_LEFT || state == SHELL_STATE_ROLLING_RIGHT)
+			if (e->nx != 0)
+			{
+				brick->SetType(BRICK_TYPE_DISABLE);
+				brick->RevealItem();
+			}
+}
+
 
 
 void CKoopa::OnNoCollision(DWORD dt)
@@ -106,6 +120,8 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithGoomba(e);
 	else if (dynamic_cast<CColourPlatform*>(e->obj))
 		OnCollisionWithColourPlatform(e);
+	else if (dynamic_cast<CBrick*>(e->obj))
+		OnCollisionWithBrick(e);
 }
 
 void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
