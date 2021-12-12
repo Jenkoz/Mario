@@ -29,7 +29,7 @@ class CMushroom : public CGameObject
 	float y_start;
 	int type;
 public:
-	CMushroom(float x, float y); 
+	CMushroom(float x, float y, int type); 
 	void Render();
 	void Update(DWORD dt) {}
 	void GetBoundingBox(float& l, float& t, float& r, float& b);
@@ -44,4 +44,5 @@ public:
 	int GetState() { return this->state; }
 	void SetState(int state);
 	void SetType(int type);
+	int GetType() { return type; }
 };

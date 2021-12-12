@@ -5,12 +5,12 @@
 
 
 
-CMushroom::CMushroom(float x, float y) : CGameObject(x, y)
+CMushroom::CMushroom(float x, float y, int type) : CGameObject(x, y)
 {
 	ax = 0; 
 	ay = 0; 
 	y_start = y; 
-	type = MUSHROOM_TYPE_RED;
+	this->type = type;
 	SetState(MUSHROOM_STATE_RISING);
 }
 

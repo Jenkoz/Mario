@@ -29,13 +29,7 @@ class CBrick : public CGameObject {
 	int type;
 	int itemId;
 public:
-	CBrick(float x, float y, int _type, int _itemId) : CGameObject(x, y) 
-	{ 
-		this->type = _type; 
-		this->itemId = _itemId;
-		start_y = y; 
-		SetState(BRICK_STATE_IDLING);
-	}
+	CBrick(float x, float y, int _type, int _itemId);
 	virtual void Render();
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	virtual void GetBoundingBox(float& l, float& t, float& r, float& b);

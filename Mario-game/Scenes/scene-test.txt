@@ -28,13 +28,13 @@ leaf.txt
 
 #Brick 
 # type: 1 = disabled, 2 = normal, 3 = Question
-# itemId: 0 = none, 1 = mushroom, 2 = coin, 3 = leaf
+# itemId: 0 = none, 1 = ultility, 2 = coin, 
 #id	x	y	type	itemId
 1	192	368	3	2
 1	176	368	3	2
 1	224	320	3	2
 1	240	320	3	1
-1	656	400	3	3
+1	656	400	3	1
 
 #goomba
 2	224	416	2

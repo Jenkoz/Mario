@@ -4,6 +4,14 @@
 #include "debug.h"
 #include "Leaf.h"
 
+CBrick::CBrick(float x, float y, int _type, int _itemId) : CGameObject(x, y)
+{
+	this->type = _type;
+	this->itemId = _itemId;
+	start_y = y;
+	SetState(BRICK_STATE_IDLING);
+}
+
 void CBrick::Render()
 {
 	CAnimations* animations = CAnimations::GetInstance();
@@ -69,17 +77,24 @@ void CBrick::GetBoundingBox(float &l, float &t, float &r, float &b)
 
 void CBrick::RevealItem()
 {
+	int item;
 	CGameObject* obj = NULL;
+	CMario* player = ((CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer());
 	switch (itemId)
 	{
 	case 1:
-		obj = new CMushroom(x, y);
+	{
+		if (player->GetLevel() == MARIO_LEVEL_SMALL)
+			obj = new CMushroom(x, y, MUSHROOM_TYPE_RED);
+		else if (player->GetLevel() == MARIO_LEVEL_BIG)
+			obj = new CLeaf(x, y);
+		else if (player->GetLevel() == MARIO_LEVEL_RACCOON)
+			obj = new CMushroom(x, y, MUSHROOM_TYPE_GREEN);
 		break;
+	}
 	case 2:
 		obj = new CDCoin(x, y, 0);
 		break;
-	case 3:
-		obj = new CLeaf(x, y);
 	}
 	obj->SetPosition(x, y);
 	((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->LoadObject(obj);
