@@ -215,6 +215,7 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 			if (koopa->GetState() == KOOPA_STATE_WALKING_LEFT || koopa->GetState() == KOOPA_STATE_WALKING_RIGHT)
 			{
 				vy = -MARIO_JUMP_DEFLECT_SPEED;
+				koopa->setLastState(koopa->GetState());
 				koopa->SetState(SHELL_STATE_IDLING);
 			}
 		}
