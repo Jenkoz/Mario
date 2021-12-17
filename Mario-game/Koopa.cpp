@@ -9,6 +9,9 @@
 
 CKoopa::CKoopa(float x, float y, int lvl) :CGameObject(x, y)
 {
+	isBeingHeld = false;
+	isVulnerable = false;
+	last_state = -1;
 	this->level = lvl;
 	this->ax = 0;
 	this->ay = KOOPA_GRAVITY;
@@ -130,6 +133,8 @@ void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	vy += ay * dt;
 	vx += ax * dt;
 
+	CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+
 	if ((state == SHELL_STATE_IDLING) && (GetTickCount64() - wakingUp_timer > SHELL_IDLING_TIMEOUT))
 	{
 		SetState(KOOPA_STATE_WAKING);
@@ -141,6 +146,38 @@ void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		switchState();
 		wakingUp_timeout = 0;
 		return;
+	}
+
+
+	if (!mario->isHolding && isBeingHeld && isVulnerable)
+	{
+		isBeingHeld = false;
+		isVulnerable = false;
+		if ( state == SHELL_STATE_IDLING && !isBeingHeld && !isVulnerable)
+		{
+			nx = mario->GetMarioDirection();
+			if (nx > 0)
+				SetState(SHELL_STATE_ROLLING_RIGHT);
+			else if (nx < 0)
+				SetState(SHELL_STATE_ROLLING_LEFT);
+		}
+	}
+	if (isBeingHeld)
+	{
+		if (mario->GetLevel() != MARIO_LEVEL_SMALL)
+			y = mario->GetY() - 3; //TODO change const number
+		else y = mario->GetY() + 5;
+		vy = 0;
+		int tmp = (int)mario->GetMarioDirection();
+		x = mario->GetX() + tmp * (MARIO_BIG_BBOX_WIDTH);
+		if (mario->GetLevel() == MARIO_LEVEL_SMALL)
+		{
+			if (tmp > 0)
+				x = mario->GetX() + tmp * (MARIO_SMALL_BBOX_WIDTH);
+			else
+				x = mario->GetX() + tmp * (KOOPA_BBOX_WIDTH);
+			y -= (MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT);
+		}
 	}
 
 
@@ -174,6 +211,7 @@ void CKoopa::SetState(int state)
 	switch (state)
 	{
 	case SHELL_STATE_IDLING:
+		isVulnerable = true;
 		wakingUp_timer = GetTickCount64();
 		vx = 0;
 		break;
@@ -202,6 +240,7 @@ void CKoopa::switchState()
 	{
 		y -= (KOOPA_BBOX_HEIGHT - SHELL_BBOX_HEIGHT) / 2;
 		SetState(last_state);
+		isVulnerable = false;
 	}
 }
 

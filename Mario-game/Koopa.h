@@ -39,7 +39,6 @@ class CKoopa : public CGameObject
 	void OnCollisionWithBrick(LPCOLLISIONEVENT e);
 
 
-
 protected:
 	float ax;
 	float ay;
@@ -59,6 +58,8 @@ protected:
 
 public:
 
+	BOOLEAN isBeingHeld;
+	BOOLEAN isVulnerable;
 	void SetLevel(int lvl) { this->level = lvl; }
 	CKoopa(float x, float y, int lvl);
 	virtual void SetState(int state);

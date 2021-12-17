@@ -4,11 +4,12 @@
 #include "Game.h"
 
 #include "Mario.h"
+#include "Koopa.h"
 #include "PlayScene.h"
 
 void CSampleKeyHandler::OnKeyDown(int KeyCode)
 {
-	DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
+	//DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
 	CMario* mario = (CMario *)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer(); 
 
 	switch (KeyCode)
@@ -42,6 +43,7 @@ void CSampleKeyHandler::OnKeyUp(int KeyCode)
 	//DebugOut(L"[INFO] KeyUp: %d\n", KeyCode);
 
 	CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+
 	switch (KeyCode)
 	{
 	case DIK_S:
@@ -49,6 +51,10 @@ void CSampleKeyHandler::OnKeyUp(int KeyCode)
 		break;
 	case DIK_DOWN:
 		mario->SetState(MARIO_STATE_SIT_RELEASE);
+		break;
+	case DIK_A:
+		mario->isHolding = false;
+		mario->SetState(MARIO_STATE_KICK);
 		break;
 	}
 }
