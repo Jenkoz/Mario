@@ -3,6 +3,7 @@
 #include "DCoin.h"
 #include "debug.h"
 #include "Leaf.h"
+#include "PSwitch.h"
 
 CBrick::CBrick(float x, float y, int _type, int _itemId) : CGameObject(x, y)
 {
@@ -10,6 +11,7 @@ CBrick::CBrick(float x, float y, int _type, int _itemId) : CGameObject(x, y)
 	this->itemId = _itemId;
 	start_y = y;
 	SetState(BRICK_STATE_IDLING);
+	isCoinPBBrick = false;
 }
 
 void CBrick::Render()
@@ -24,7 +26,7 @@ void CBrick::Render()
 	else if (type == BRICK_TYPE_QUESTION)
 		aniId = ID_ANI_BRICK_TYPE_QUESTION;
 	animations->Get(aniId)->Render(x, y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 
@@ -32,11 +34,17 @@ void CBrick::Render()
 void CBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	y += vy * dt;
-	if (this->y < start_y - 8.0f && GetState() == BRICK_STATE_BOUNCING)
+
+	if (state == BRICK_STATE_BREAK)
+	{
+		RevealItem();
+		Delete();
+	}
+	if (this->y < start_y - 8.0f && state == BRICK_STATE_BOUNCING && type == BRICK_TYPE_QUESTION)
 	{
 		vy = BRICK_BOUNCING_DEFLECT_Y;
 	}
-	if (this->y > start_y - 1 && GetState() == BRICK_STATE_BOUNCING)
+	if (this->y > start_y - 1 && state == BRICK_STATE_BOUNCING && type == BRICK_TYPE_QUESTION)
 	{
 		y = start_y;
 		SetState(BRICK_STATE_IDLING);
@@ -62,6 +70,9 @@ void CBrick::SetState(int state)
 	case BRICK_STATE_BOUNCING:
 		vy = - BRICK_BOUNCING_DEFLECT_Y;
 		break;
+	case BRICK_STATE_BREAK:
+		vy = 0.0f;
+		break;
 	}
 }
 
@@ -77,7 +88,6 @@ void CBrick::GetBoundingBox(float &l, float &t, float &r, float &b)
 
 void CBrick::RevealItem()
 {
-	int item;
 	CGameObject* obj = NULL;
 	CMario* player = ((CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer());
 	switch (itemId)
@@ -94,6 +104,12 @@ void CBrick::RevealItem()
 	}
 	case 2:
 		obj = new CDCoin(x, y, 0);
+		break;
+	case 3:
+		obj = new CCoin(x, y, isCoinPBBrick);
+		break;
+	case 4:
+		obj = new CPSwitch(x, y);
 		break;
 	}
 	obj->SetPosition(x, y);

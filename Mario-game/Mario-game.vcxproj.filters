@@ -36,11 +36,17 @@
     <Filter Include="GameObject\Items">
       <UniqueIdentifier>{bc27d2f8-641e-4421-b9ec-116fd3d565e1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GameObject\Portal">
-      <UniqueIdentifier>{a8710274-37f7-4085-a902-e653b446632d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GameObject\Enemy\PiranhaPlant">
       <UniqueIdentifier>{cf220481-6a9e-481b-8d6e-9ccc3fb20dcd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Other">
+      <UniqueIdentifier>{d50d8d77-f3c1-4836-a4e6-31a117a4c00c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Other\Portal">
+      <UniqueIdentifier>{a8710274-37f7-4085-a902-e653b446632d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Other\PSwitch">
+      <UniqueIdentifier>{ac778298-f741-4f53-a644-9755685a1cea}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -114,7 +120,7 @@
       <Filter>GameObject\Items</Filter>
     </ClCompile>
     <ClCompile Include="Portal.cpp">
-      <Filter>GameObject\Portal</Filter>
+      <Filter>GameObject\Other\Portal</Filter>
     </ClCompile>
     <ClCompile Include="Mushroom.cpp">
       <Filter>GameObject\Items</Filter>
@@ -127,6 +133,9 @@
     </ClCompile>
     <ClCompile Include="Leaf.cpp">
       <Filter>GameObject\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="PSwitch.cpp">
+      <Filter>GameObject\Other\PSwitch</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -212,7 +221,7 @@
       <Filter>GameObject\Items</Filter>
     </ClInclude>
     <ClInclude Include="Portal.h">
-      <Filter>GameObject\Portal</Filter>
+      <Filter>GameObject\Other\Portal</Filter>
     </ClInclude>
     <ClInclude Include="Mushroom.h">
       <Filter>GameObject\Items</Filter>
@@ -225,6 +234,9 @@
     </ClInclude>
     <ClInclude Include="Leaf.h">
       <Filter>GameObject\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="PSwitch.h">
+      <Filter>GameObject\Other\PSwitch</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -17,7 +17,7 @@
 
 #define MARIO_GRAVITY			0.002f
 
-#define MARIO_JUMP_DEFLECT_SPEED  0.3f
+#define MARIO_JUMP_DEFLECT_SPEED  0.5f
 
 #define MARIO_STATE_DIE				-10
 #define MARIO_STATE_IDLE			0
@@ -186,6 +186,7 @@ class CMario : public CGameObject
 	void OnCollisionWithKoopa(LPCOLLISIONEVENT e);
 	void OnCollisionWithMushroom(LPCOLLISIONEVENT e);
 	void OnCollisionWithLeaf(LPCOLLISIONEVENT e);
+	void OnCollisionWithPSwitch(LPCOLLISIONEVENT e);
 
 	int GetAniIdBig();
 	int GetAniIdSmall();
@@ -235,6 +236,7 @@ public:
 	int GetMarioDirection() { return this->nx; }
 	float GetY() { return this->y; }
 	float GetX() { return this->x; }
+	float GetCenter();
 
 
 	void OnNoCollision(DWORD dt);

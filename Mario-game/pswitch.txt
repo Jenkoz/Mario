@@ -1,0 +1,15 @@
+# id	left	top	right	bottom	texture_id
+[SPRITES]
+# IDLING
+70000	155	143	172	160	21
+70001	177	143	194	160	21
+
+# PRESSED
+70002	199	143	216	160	21
+
+# ani_id	sprite1_id	time1	sprite2_id	time2	...
+[ANIMATIONS]
+# IDLING
+17070	70000	200	70001	200
+# PRESSED
+17071	70002	100

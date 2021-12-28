@@ -18,7 +18,7 @@ void CPlatform::Render()
 	}
 
 	//
-	//RenderBoundingBox();
+	RenderBoundingBox();
 	//
 }
 void CPlatform::RenderBoundingBox()

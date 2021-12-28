@@ -39,6 +39,9 @@ public:
 	void GetPosition(float &x, float &y) { x = this->x; y = this->y; }
 	void GetSpeed(float &vx, float &vy) { vx = this->vx; vy = this->vy; }
 
+	virtual float GetBeginPlatform() { return x; }
+	virtual float GetEndPlatform() { return x + 16; }
+
 	int GetState() { return this->state; }
 	virtual void Delete() { isDeleted = true;  }
 	bool IsDeleted() { return isDeleted; }

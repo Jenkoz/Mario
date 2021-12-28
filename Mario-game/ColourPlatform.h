@@ -15,5 +15,6 @@ public:
 	void GetFilterBlockLeft(int& l) { l = 0; }
 	void GetFilterBlockRight(int& r) { r = 0; }
 	void GetFilterBlockBottom(int& b) { b = 0; }
+
 };
 

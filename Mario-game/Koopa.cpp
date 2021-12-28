@@ -56,23 +56,23 @@ void CKoopa::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 			}*/
 }
 
-void CKoopa::OnCollisionWithColourPlatform(LPCOLLISIONEVENT e)
+void CKoopa::OnCollisionWithPlatform(LPCOLLISIONEVENT e)
 {
-	CColourPlatform* cPlatform = dynamic_cast<CColourPlatform*>(e->obj);
+	CPlatform * platform = dynamic_cast<CPlatform*>(e->obj);
 	vector<LPGAMEOBJECT> coObjects = ((LPPLAYSCENE)(CGame::GetInstance()->GetCurrentScene()))->GetObjects();
 
 	if (state == KOOPA_STATE_WALKING_LEFT || state == KOOPA_STATE_WALKING_RIGHT)
 
 		for (UINT i = 0; i < coObjects.size(); i++)
 		{
-			if (e->ny < 0 && cPlatform == coObjects[i])
+			if (e->ny < 0 && platform == coObjects[i])
 			{
-				if (cPlatform == coObjects[i])
+				if (platform == coObjects[i])
 				{
-					cPlatform = (CColourPlatform*)coObjects[i];
-					if (x <= cPlatform->GetBeginPlatform() )
+					platform = (CPlatform*)coObjects[i];
+					if (x <= platform->GetBeginPlatform() - KOOPA_BBOX_WIDTH / 2)
 						SetState(KOOPA_STATE_WALKING_RIGHT);
-					else if (x + KOOPA_BBOX_WIDTH >= cPlatform->GetEndPlatform())
+					else if (x + KOOPA_BBOX_WIDTH/2 >= platform->GetEndPlatform())
 						SetState(KOOPA_STATE_WALKING_LEFT);
 				}
 				vy = 0;
@@ -84,12 +84,36 @@ void CKoopa::OnCollisionWithBrick(LPCOLLISIONEVENT e)
 {
 	CBrick* brick = dynamic_cast<CBrick*>(e->obj);
 
-	if (brick->GetType() != BRICK_TYPE_DISABLE)
 		if (state == SHELL_STATE_ROLLING_LEFT || state == SHELL_STATE_ROLLING_RIGHT)
 			if (e->nx != 0)
 			{
-				brick->SetType(BRICK_TYPE_DISABLE);
-				brick->RevealItem();
+				if (brick->GetType() == BRICK_TYPE_QUESTION)
+				{
+					brick->SetType(BRICK_TYPE_DISABLE);
+					brick->RevealItem();
+				}
+				else if (brick->GetType() == BRICK_TYPE_NORMAL)
+				{
+					brick->Delete();
+				}
+			}
+		vector<LPGAMEOBJECT> coObjects = ((LPPLAYSCENE)(CGame::GetInstance()->GetCurrentScene()))->GetObjects();
+
+		if (state == KOOPA_STATE_WALKING_LEFT || state == KOOPA_STATE_WALKING_RIGHT)
+			for (UINT i = 0; i < coObjects.size(); i++)
+			{
+				if (e->ny < 0 && brick == coObjects[i])
+				{
+					if (brick == coObjects[i])
+					{
+						brick = (CBrick*)coObjects[i];
+						if (x <= brick->GetBeginPlatform() - KOOPA_BBOX_WIDTH/2)
+							SetState(KOOPA_STATE_WALKING_RIGHT);
+						else if (x + KOOPA_BBOX_WIDTH/2 >= brick->GetEndPlatform() )
+							SetState(KOOPA_STATE_WALKING_LEFT);
+					}
+					vy = 0;
+				}
 			}
 }
 
@@ -122,8 +146,8 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithKoopa(e);
 	else if (dynamic_cast<CGoomba*>(e->obj))
 		OnCollisionWithGoomba(e);
-	else if (dynamic_cast<CColourPlatform*>(e->obj))
-		OnCollisionWithColourPlatform(e);
+	else if (dynamic_cast<CPlatform*>(e->obj))
+		OnCollisionWithPlatform(e);
 	else if (dynamic_cast<CBrick*>(e->obj))
 		OnCollisionWithBrick(e);
 }
@@ -202,7 +226,7 @@ void CKoopa::Render()
 	
 
 	CAnimations::GetInstance()->Get(aniId)->Render(x, y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void CKoopa::SetState(int state)
@@ -214,6 +238,7 @@ void CKoopa::SetState(int state)
 		isVulnerable = true;
 		wakingUp_timer = GetTickCount64();
 		vx = 0;
+		y += (KOOPA_BBOX_HEIGHT - SHELL_BBOX_HEIGHT) / 2;
 		break;
 	case KOOPA_STATE_WALKING_LEFT:
 		vx = -KOOPA_WALKING_SPEED;

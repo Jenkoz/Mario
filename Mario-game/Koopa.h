@@ -5,10 +5,10 @@
 #define KOOPA_WALKING_SPEED	0.030f
 #define SHELL_ROLLING_SPEED 0.2f
 
-#define KOOPA_BBOX_WIDTH 16
+#define KOOPA_BBOX_WIDTH 15
 #define KOOPA_BBOX_HEIGHT 24
 
-#define SHELL_BBOX_WIDTH 16
+#define SHELL_BBOX_WIDTH 15
 #define SHELL_BBOX_HEIGHT 14
 
 
@@ -35,9 +35,8 @@ class CKoopa : public CGameObject
 
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithKoopa(LPCOLLISIONEVENT e);
-	void OnCollisionWithColourPlatform(LPCOLLISIONEVENT e);
+	void OnCollisionWithPlatform(LPCOLLISIONEVENT e);
 	void OnCollisionWithBrick(LPCOLLISIONEVENT e);
-
 
 protected:
 	float ax;
@@ -65,7 +64,7 @@ public:
 	virtual void SetState(int state);
 
 	void switchState();
-
+	float GetCenter() { return x + KOOPA_BBOX_WIDTH; }
 	void setLastState(int state) { last_state = state; }
 
 	virtual void OnNoCollision(DWORD dt);

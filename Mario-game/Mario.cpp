@@ -13,6 +13,7 @@
 #include "Brick.h"
 #include "Mushroom.h"
 #include "Leaf.h"
+#include "PSwitch.h"
 
 #include "Collision.h"
 
@@ -55,6 +56,13 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
 
+float CMario::GetCenter()
+{
+	if (level != MARIO_LEVEL_SMALL)
+		return x + MARIO_BIG_BBOX_WIDTH;
+	else return x + MARIO_SMALL_BBOX_WIDTH;
+}
+
 void CMario::OnNoCollision(DWORD dt)
 {
 	x += vx * dt;
@@ -88,6 +96,8 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithMushroom(e);
 	else if (dynamic_cast<CLeaf*>(e->obj))
 		OnCollisionWithLeaf(e);
+	else if (dynamic_cast<CPSwitch*>(e->obj))
+		OnCollisionWithPSwitch(e);
 }
 
 //void CMario::RenderBoundingBox()
@@ -127,10 +137,18 @@ void CMario::OnCollisionWithBrick(LPCOLLISIONEVENT e)
 		// Big mario can hit normal brick
 		if (level == MARIO_LEVEL_BIG || level == MARIO_LEVEL_RACCOON)
 		{
-			if (brick->GetType() != BRICK_TYPE_DISABLE)
+			if (brick->GetType() == BRICK_TYPE_QUESTION)
 			{
 				brick->SetState(BRICK_STATE_BOUNCING);
 			}
+			if (brick->GetType() == BRICK_TYPE_NORMAL)
+				if (brick->GetItemType() != BRICK_ITEM_TYPE_PSWITCH)
+					brick->Delete();
+				else
+				{
+					brick->SetType(BRICK_TYPE_DISABLE);
+					brick->RevealItem();
+				}
 		}
 		// Small mario can only hit the question brick
 		else if (level == MARIO_LEVEL_SMALL)
@@ -199,8 +217,9 @@ void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 	//DebugOut(L">>Coin state = %d<<\n", coin->GetState());
 	if (coin->GetState() == COIN_STATE_IDLE)
 	{
+		CoinUp();
 		coin->Delete();
-		coin++;
+
 	}
 }
 
@@ -215,9 +234,9 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 {
 	CKoopa* koopa = dynamic_cast<CKoopa*>(e->obj);
 
-	// jump on top >> make koopa a shell
 	if (e->ny < 0)
 	{
+		// jump on top >> make koopa a shell
 		if (koopa->GetState() != SHELL_STATE_IDLING)
 		{
 			if (koopa->GetState() == KOOPA_STATE_WALKING_LEFT || koopa->GetState() == KOOPA_STATE_WALKING_RIGHT)
@@ -227,7 +246,14 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 				koopa->SetState(SHELL_STATE_IDLING);
 			}
 		}
-		
+	/*	else
+		{
+			if (e->nx > 0)
+				koopa->SetState(SHELL_STATE_ROLLING_LEFT);
+			else koopa->SetState(SHELL_STATE_ROLLING_RIGHT);
+			SetState(MARIO_STATE_KICK);
+			koopa->isVulnerable = false;
+		}*/
 	}
 	else // hit by koopa
 	{
@@ -256,6 +282,7 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 			}
 		}
 	}
+
 	// handle the shell
 	if (e->nx != 0)
 	{
@@ -267,7 +294,7 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 					isHolding = true;
 					koopa->isBeingHeld = true;
 				}
-				else
+				else // KICK THE SHELL
 				{
 					if (e->nx > 0)
 						koopa->SetState(SHELL_STATE_ROLLING_LEFT);
@@ -275,9 +302,6 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 					SetState(MARIO_STATE_KICK);
 					koopa->isVulnerable = false;
 				}
-
-			//pick the shell
-		
 		}
 	}
 	else // hit by SHELL
@@ -340,6 +364,17 @@ void CMario::OnCollisionWithLeaf(LPCOLLISIONEVENT e)
 		SetLevel(MARIO_LEVEL_RACCOON);
 		e->obj->Delete();
 	}
+}
+
+void CMario::OnCollisionWithPSwitch(LPCOLLISIONEVENT e)
+{
+	CPSwitch* pSwitch = dynamic_cast<CPSwitch*>(e->obj);
+	if (e->ny < 0)
+		if (pSwitch->GetState() != PSWITCH_STATE_PRESSED)
+		{
+			pSwitch->SetState(PSWITCH_STATE_PRESSED);
+			pSwitch->timeoutToBrick = GetTickCount64();
+		}
 }
 
 //
