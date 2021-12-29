@@ -14,6 +14,7 @@
 #include "Mushroom.h"
 #include "Leaf.h"
 #include "PSwitch.h"
+#include "DeadPlatform.h"
 
 #include "Collision.h"
 
@@ -98,6 +99,8 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithLeaf(e);
 	else if (dynamic_cast<CPSwitch*>(e->obj))
 		OnCollisionWithPSwitch(e);
+	else if (dynamic_cast<CDeadPlatform*>(e->obj))
+		OnCollisionWithDeadPlatform(e);
 }
 
 //void CMario::RenderBoundingBox()
@@ -375,6 +378,11 @@ void CMario::OnCollisionWithPSwitch(LPCOLLISIONEVENT e)
 			pSwitch->SetState(PSWITCH_STATE_PRESSED);
 			pSwitch->timeoutToBrick = GetTickCount64();
 		}
+}
+
+void CMario::OnCollisionWithDeadPlatform(LPCOLLISIONEVENT e)
+{
+	CDeadPlatform* dPlatform = dynamic_cast<CDeadPlatform*>(e->obj);
 }
 
 //

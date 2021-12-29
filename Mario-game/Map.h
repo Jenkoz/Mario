@@ -21,12 +21,22 @@ private:
 	int col;
 	int row;
 	int maxCol;
-	vector<vector<int>> mapTiles;
+	int** mapTiles_Graphics;
+	int** mapTiles_Shadings;
+	int** mapTiles_Backgrounds;
+	/*vector<vector<int>> mapTiles_Graphics;
+	vector<vector<int>> mapTiles_Shadings;
+	vector<vector<int>> mapTiles_Backgrounds;*/
+
 public:
 
 	CMaps();
 	~CMaps();
-	void LoadResourses(int mapId, LPCWSTR pathImg, int maxCol, int maxRow, LPCWSTR pathTxt);
+	void LoadResourses(int mapId, LPCWSTR pathImg, int maxCol, int maxRow, 
+		LPCWSTR backgroundPathTxt, LPCWSTR graphicPathTxt, LPCWSTR shadingPathTxt);
+	void LoadGraphics(LPCWSTR pathTxt);
+	void LoadShadings(LPCWSTR pathTxt);
+	void LoadBackgrounds(LPCWSTR pathTxt);
 	void Render();
 	float GetWidthMap();
 	float GetHeightMap();

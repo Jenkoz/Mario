@@ -10,15 +10,17 @@ class CPlatform : public CGameObject
 protected: 
 	int type;				// type of platform
 	int length;				// Unit: cell 
+	int depth;
 	float cellWidth;
 	float cellHeight;
 	int spriteId;
 public: 
 	CPlatform(float x, float y,
-		float cell_width, float cell_height, int length, int type,
+		float cell_width, float cell_height, int length, int depth, int type,
 		int sprite_id) :CGameObject(x, y)
 	{
 		this->length = length;
+		this->depth = depth;
 		this->cellWidth = cell_width;
 		this->cellHeight = cell_height;
 		this->type = type;

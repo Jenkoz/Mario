@@ -19,6 +19,7 @@
 #include "Mushroom.h"
 #include "Platform.h"
 #include "ColourPlatform.h"
+#include "DeadPlatform.h"
 #include "Portal.h"
 
 
@@ -158,19 +159,26 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		float cell_width = (float)atof(tokens[3].c_str());
 		float cell_height = (float)atof(tokens[4].c_str());
 		int length = atoi(tokens[5].c_str());
-		int type = atoi(tokens[6].c_str());
-		int sprite_id = atoi(tokens[7].c_str());
+		int depth = atoi(tokens[6].c_str());
+		int type = atoi(tokens[7].c_str());
+		int sprite_id = atoi(tokens[8].c_str());
 
 		if (type == 1 )
 			obj = new CPlatform(
 				x, y,
-				cell_width, cell_height, length, type,
+				cell_width, cell_height, length, depth, type,
 				sprite_id
 			);
 		else if (type == 2)
 			obj = new CColourPlatform(
 				x, y,
-				cell_width, cell_height, length, type,
+				cell_width, cell_height, length, depth, type,
+				sprite_id
+			);
+		else if (type == 3)
+			obj = new CDeadPlatform(
+				x, y,
+				cell_width, cell_height, length, depth, type,
 				sprite_id
 			);
 
@@ -203,15 +211,18 @@ void CPlayScene::_ParseSection_MAPS(string line)
 {
 	vector<string> tokens = split(line);
 
-	if (tokens.size() < 5) return;
+	if (tokens.size() < 7) return;
 
 	int mapId = atoi(tokens[0].c_str());
 	wstring path_img = ToWSTR(tokens[1]);
 	int maxCol = atoi(tokens[2].c_str());
 	int maxRow = atoi(tokens[3].c_str());
-	wstring path_txt = ToWSTR(tokens[4]);
+	wstring background_path_txt = ToWSTR(tokens[4]);
+	wstring graphic_path_txt = ToWSTR(tokens[5]);
+	wstring shading_path_txt = ToWSTR(tokens[6]);
 
-	CMaps::GetInstance()->LoadResourses(mapId, path_img.c_str(), maxCol, maxRow, path_txt.c_str());
+	CMaps::GetInstance()->LoadResourses(mapId, path_img.c_str(), maxCol, maxRow, 
+		background_path_txt.c_str(), graphic_path_txt.c_str(), shading_path_txt.c_str());
 }
 
 void CPlayScene::LoadAssets(LPCWSTR assetFile)

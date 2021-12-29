@@ -137,6 +137,9 @@
     <ClCompile Include="PSwitch.cpp">
       <Filter>GameObject\Other\PSwitch</Filter>
     </ClCompile>
+    <ClCompile Include="DeadPlatform.cpp">
+      <Filter>GameObject\Platform</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mario.h">
@@ -237,6 +240,9 @@
     </ClInclude>
     <ClInclude Include="PSwitch.h">
       <Filter>GameObject\Other\PSwitch</Filter>
+    </ClInclude>
+    <ClInclude Include="DeadPlatform.h">
+      <Filter>GameObject\Platform</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

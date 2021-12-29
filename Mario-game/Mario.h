@@ -6,8 +6,8 @@
 
 #include "debug.h"
 
-#define MARIO_WALKING_SPEED		0.1f
-#define MARIO_RUNNING_SPEED		0.2f
+#define MARIO_WALKING_SPEED		0.15f
+#define MARIO_RUNNING_SPEED		0.3f
 
 #define MARIO_ACCEL_WALK_X	0.0005f
 #define MARIO_ACCEL_RUN_X	0.0007f
@@ -17,7 +17,7 @@
 
 #define MARIO_GRAVITY			0.002f
 
-#define MARIO_JUMP_DEFLECT_SPEED  0.5f
+#define MARIO_JUMP_DEFLECT_SPEED  0.4f
 
 #define MARIO_STATE_DIE				-10
 #define MARIO_STATE_IDLE			0
@@ -187,6 +187,7 @@ class CMario : public CGameObject
 	void OnCollisionWithMushroom(LPCOLLISIONEVENT e);
 	void OnCollisionWithLeaf(LPCOLLISIONEVENT e);
 	void OnCollisionWithPSwitch(LPCOLLISIONEVENT e);
+	void OnCollisionWithDeadPlatform(LPCOLLISIONEVENT e);
 
 	int GetAniIdBig();
 	int GetAniIdSmall();
@@ -198,11 +199,15 @@ public:
 	CMario();
 	BOOLEAN isHolding;
 	BOOLEAN isKicking;
+	BOOLEAN isOnTerrainZone;
+	BOOLEAN isIntoMoneyZone;
 	CMario(float x, float y) : CGameObject(x, y)
 	{
 		isSitting = false;
 		isHolding = false;
 		isKicking = false;
+		isIntoMoneyZone = true;
+		isOnTerrainZone = false;
 		maxVx = 0.0f;
 		ax = 0.0f;
 		ay = MARIO_GRAVITY;
@@ -238,6 +243,8 @@ public:
 	float GetX() { return this->x; }
 	float GetCenter();
 
+	void SetPlayerIntoMoneyZone() { isIntoMoneyZone = true; isOnTerrainZone = false; }
+	void SetPlayesrOnTerrainZone() { isIntoMoneyZone = false; isOnTerrainZone = true; }
 
 	void OnNoCollision(DWORD dt);
 	void OnCollisionWith(LPCOLLISIONEVENT e);

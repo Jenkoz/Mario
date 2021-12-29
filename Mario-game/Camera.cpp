@@ -31,7 +31,16 @@ void CCamera::Update()
 	float mapEnd = CMaps::GetInstance()->GetWidthMap();
 	if (cx + game->GetBackBufferWidth() >= mapEnd) 
 		cx = mapEnd - game->GetBackBufferWidth();
-	SetCamPos(cx, 256.f/*cy*/);
+
+	/*if (cy >= CAM_Y_POSITION_MONEY_ZONE)
+		player->SetPlayerIntoMoneyZone();
+	else if (cy >= CAM_Y_POSITION_TERRAIN_ZONE)
+		player->SetPlayesrOnTerrainZone();
+	if (player->isOnTerrainZone)
+		cy = CAM_Y_POSITION_TERRAIN_ZONE;
+	else if (player->isIntoMoneyZone)
+		cy = CAM_Y_POSITION_MONEY_ZONE;*/
+	SetCamPos(cx, 304);
 }
 
 

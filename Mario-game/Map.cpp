@@ -4,25 +4,20 @@
 CMaps* CMaps::__instance = NULL;
 CMaps::CMaps() {}
 
-int w1id;
+int w_id;
 
 
-void CMaps::LoadResourses(int mapId, LPCWSTR pathTile, int maxCol, int maxRow, LPCWSTR pathTxt) {
-	ifstream File;
+
+void CMaps::LoadResourses(int mapId, LPCWSTR pathTile, int maxCol, int maxRow, 
+	LPCWSTR backgroundPathTxt, LPCWSTR graphicPathTxt, LPCWSTR shadingPathTxt)
+{
 	this->maxCol = maxCol;
-	//Get map-tiles's sprites
-	File.open(pathTxt);
-	File >> col >> row;
-	mapTiles.resize(row);
-	for (int r = 0; r < row; ++r) {
-		mapTiles[r].resize(col);
-		for (int c = 0; c < col; ++c) {
-			File >> mapTiles.at(r).at(c);
-		}
-	}
-	File.close();
+	LoadBackgrounds(backgroundPathTxt);
+	LoadGraphics(graphicPathTxt);
+	LoadShadings(shadingPathTxt);
 
-	w1id = mapId;
+	w_id = mapId;
+
 
 	//Load all sprites from pathIMG
 	CTextures* tex = CTextures::GetInstance();
@@ -44,6 +39,55 @@ void CMaps::LoadResourses(int mapId, LPCWSTR pathTile, int maxCol, int maxRow, L
 		}
 	}
 }
+void CMaps::LoadGraphics(LPCWSTR pathTxt)
+{
+	ifstream File;
+	File.open(pathTxt);
+	File >> col >> row;
+	mapTiles_Graphics = new int*[row];
+	for (int r = 0; r < row; ++r)
+	{
+		mapTiles_Graphics[r] = new int[col];
+		for (int c = 0; c < col; ++c)
+		{
+			File >> mapTiles_Graphics[r][c];
+		}
+	}
+	File.close();
+}
+void CMaps::LoadShadings(LPCWSTR pathTxt)
+{
+	ifstream File;
+	File.open(pathTxt);
+	File >> col >> row;
+	mapTiles_Shadings = new int* [row];
+	for (int r = 0; r < row; ++r)
+	{
+		mapTiles_Shadings[r] = new int[col];
+		for (int c = 0; c < col; ++c)
+		{
+			File >> mapTiles_Shadings[r][c];
+		}
+	}
+	File.close();
+}
+void CMaps::LoadBackgrounds(LPCWSTR pathTxt)
+{
+	ifstream File;
+	File.open(pathTxt);
+	File >> col >> row;
+	mapTiles_Backgrounds = new int* [row];
+	for (int r = 0; r < row; ++r)
+	{
+		mapTiles_Backgrounds[r] = new int[col];
+		for (int c = 0; c < col; ++c)
+		{
+			File >> mapTiles_Backgrounds[r][c];
+		}
+	}
+	File.close();
+}
+
 void CMaps::Render() 
 {
 	float cam_x, cam_y;
@@ -53,11 +97,26 @@ void CMaps::Render()
 	{
 		for (int j = cam_x/TILE_WIDTH; j < (cam_x + SCREEN_WIDTH)/TILE_WIDTH; ++j)
 		{
-			if (mapTiles[i][j] >= 0)
+			// render background
+			if (mapTiles_Backgrounds[i][j] != -1)
 			{
 				float x = j * TILE_WIDTH;
 				float y = i * TILE_HEIGHT;
-				sprites->Get(mapTiles.at(i).at(j) + w1id + 1)->Draw(x, y);
+				sprites->Get(mapTiles_Backgrounds[i][j] + w_id + 1)->Draw(x, y);
+			}
+			// render graphics
+			if (mapTiles_Graphics[i][j] != -1)
+			{
+				float x = j * TILE_WIDTH;
+				float y = i * TILE_HEIGHT;
+				sprites->Get(mapTiles_Graphics[i][j] + w_id + 1)->Draw(x, y);
+			}
+			// render shadings
+			if (mapTiles_Shadings[i][j] != -1)
+			{
+				float x = j * TILE_WIDTH;
+				float y = i * TILE_HEIGHT;
+				sprites->Get(mapTiles_Shadings[i][j] + w_id + 1)->Draw(x, y);
 			}
 		}
 	}
