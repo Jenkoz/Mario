@@ -3,8 +3,8 @@
 #include "GameGlobal.h"
 
 
-#define CAM_Y_POSITION_TERRAIN_ZONE 272
-#define CAM_Y_POSITION_MONEY_ZONE	496
+#define CAM_Y_POSITION_TERRAIN_ZONE 304
+#define CAM_Y_POSITION_MONEY_ZONE	608
 
 class CCamera
 {
@@ -27,6 +27,7 @@ public:
 	int GetHeight() { return height; }
 	int GetWidht() { return width; }
 	void Update();
+
 
 	static CCamera* GetInstance();
 

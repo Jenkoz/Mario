@@ -190,7 +190,8 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		float r = (float)atof(tokens[3].c_str());
 		float b = (float)atof(tokens[4].c_str());
 		int scene_id = atoi(tokens[5].c_str());
-		obj = new CPortal(x, y, r, b, scene_id);
+		int zone = atoi(tokens[6].c_str());
+		obj = new CPortal(x, y, r, b, scene_id, zone);
 	}
 	break;
 
@@ -323,9 +324,12 @@ void CPlayScene::Update(DWORD dt)
 
 void CPlayScene::Render()
 {
-	CMaps::GetInstance()->Render();
+	CMaps::GetInstance()->RenderBackground();
+	CMaps::GetInstance()->RenderShading();
+	CMaps::GetInstance()->RenderGraphic();
 	for (int i = 0; i < objects.size(); i++)
 		objects[i]->Render();
+
 }
 
 /*

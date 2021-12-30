@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "debug.h"
 #include "Utils.h"
+#include "Mario.h"
 
 #include "Texture.h"
 #include "Animations.h"
@@ -384,6 +385,12 @@ void CGame::InitKeyboard()
 void CGame::ProcessKeyboard()
 {
 	HRESULT hr;
+
+	CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+
+	if (mario->isPipeDown || mario->isPipeUp)
+		return;
+
 
 	// Collect all key states first
 	hr = didv->GetDeviceState(sizeof(keyStates), keyStates);

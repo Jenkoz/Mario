@@ -37,7 +37,9 @@ public:
 	void LoadGraphics(LPCWSTR pathTxt);
 	void LoadShadings(LPCWSTR pathTxt);
 	void LoadBackgrounds(LPCWSTR pathTxt);
-	void Render();
+	void RenderGraphic();
+	void RenderShading();
+	void RenderBackground();
 	float GetWidthMap();
 	float GetHeightMap();
 	static CMaps* GetInstance();

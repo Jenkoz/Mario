@@ -20,7 +20,7 @@ void CPSwitch::Render()
 	else
 		aniId = ID_ANI_PSWITCH_IDLE;
 	CAnimations::GetInstance()->Get(aniId)->Render(x, y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void CPSwitch::GetBoundingBox(float& l, float& t, float& r, float& b)

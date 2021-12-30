@@ -36,6 +36,7 @@
 #define MARIO_STATE_KICK			700
 
 
+
 #pragma region ANIMATION_ID
 
 #define ID_ANI_MARIO_IDLE_RIGHT			400
@@ -68,6 +69,8 @@
 #define ID_ANI_MARIO_BRAKING_RIGHT		1000
 #define ID_ANI_MARIO_BRAKING_LEFT		1001
 
+#define ID_ANI_MARIO_ENTERING_PIPE		1010
+
 #define ID_ANI_MARIO_DIE 999
 
 // SMALL MARIO
@@ -97,6 +100,8 @@
 
 #define ID_ANI_MARIO_SMALL_JUMP_RUN_RIGHT		1600
 #define ID_ANI_MARIO_SMALL_JUMP_RUN_LEFT		1601
+
+#define ID_ANI_MARIO_SMALL_ENTERING_PIPE		1610
 
 // RACCOON MARIO
 
@@ -133,6 +138,8 @@
 #define ID_ANI_MARIO_RACCOON_BRAKING_RIGHT		2301
 #define ID_ANI_MARIO_RACCOON_BRAKING_LEFT		2300
 
+#define ID_ANI_MARIO_RACCOON_ENTERING_PIPE		2310
+
 #pragma endregion
 
 #define GROUND_Y 160.0f
@@ -156,8 +163,12 @@
 #define MARIO_SMALL_BBOX_WIDTH  12
 #define MARIO_SMALL_BBOX_HEIGHT 12
 
-#define MARIO_UNTOUCHABLE_TIME	2500
-#define MARIO_KICKING_TIME		200	
+#define MARIO_UNTOUCHABLE_TIME		2500
+#define MARIO_KICKING_TIME			200	
+#define MARIO_PIPE_TIME				1000
+
+#define MARIO_IN_TERRAIN_ZONE 1
+#define MARIO_IN_OTHER_ZONE 2
 
 class CMario : public CGameObject
 {
@@ -165,11 +176,14 @@ class CMario : public CGameObject
 	float ax;				// acceleration on x 
 	float ay;				// acceleration on y 
 
+	int currentZone;
 	int life;
 	int level;
 	int untouchable;
 	ULONGLONG untouchable_start;
 	ULONGLONG kicking_start;
+	ULONGLONG pipeUp_start;
+	ULONGLONG pipeDown_start;
 
 	BOOLEAN isSitting;
 	BOOLEAN isOnPlatform;
@@ -199,26 +213,29 @@ public:
 	CMario();
 	BOOLEAN isHolding;
 	BOOLEAN isKicking;
-	BOOLEAN isOnTerrainZone;
-	BOOLEAN isIntoMoneyZone;
+	BOOLEAN isPipeDown;
+	BOOLEAN isPipeUp;
 	CMario(float x, float y) : CGameObject(x, y)
 	{
-		isSitting = false;
-		isHolding = false;
-		isKicking = false;
-		isIntoMoneyZone = true;
-		isOnTerrainZone = false;
-		maxVx = 0.0f;
-		ax = 0.0f;
-		ay = MARIO_GRAVITY;
+			isSitting = false;
+			isHolding = false;
+			isKicking = false;
+			isPipeDown = false;
+			isPipeUp = false;
+			maxVx = 0.0f;
+			ax = 0.0f;
+			ay = MARIO_GRAVITY;
 
-		level = MARIO_LEVEL_RACCOON;
-		kicking_start = 0;
-		untouchable = 0;
-		untouchable_start = -1;
-		isOnPlatform = false;
-		coin = 0;
-		life = 4;
+			level = MARIO_LEVEL_RACCOON;
+			kicking_start = 0;
+			untouchable = 0;
+			untouchable_start = -1;
+			pipeDown_start = 0;
+			pipeUp_start = 0;
+			isOnPlatform = false;
+			coin = 0;
+			life = 4;
+			currentZone = 1;
 	}
 
 	
@@ -233,18 +250,56 @@ public:
 
 	int IsCollidable()
 	{
-		return (state != MARIO_STATE_DIE);
+		return (state != MARIO_STATE_DIE && !isPipeDown && !isPipeUp);
 	}
 
-	int IsBlocking() { return (state != MARIO_STATE_DIE && untouchable == 0); }
+	int IsBlocking() 
+	{ 
+		return (state != MARIO_STATE_DIE && untouchable == 0);
+	}
 
 	int GetMarioDirection() { return this->nx; }
 	float GetY() { return this->y; }
 	float GetX() { return this->x; }
 	float GetCenter();
 
-	void SetPlayerIntoMoneyZone() { isIntoMoneyZone = true; isOnTerrainZone = false; }
-	void SetPlayesrOnTerrainZone() { isIntoMoneyZone = false; isOnTerrainZone = true; }
+	void SwitchZone()
+	{
+		if (currentZone == 1)
+		{
+			currentZone = 2;
+			SetPosition(1272, 608);
+		}
+		else
+		{
+			currentZone = 1;
+			SetPosition(2328, 448);
+		}
+	}
+
+	void StartPipeUp() 
+	{
+		pipeUp_start = GetTickCount64();
+		isPipeUp = true;		
+	}
+	void StartPipeDown() 
+	{
+		pipeDown_start = GetTickCount64();
+		isPipeDown = true;
+	}
+
+	void StopPipeUp() 
+	{
+		isPipeUp = false;
+		pipeUp_start = 0;
+	}
+	void StopPipeDown() 
+	{
+		isPipeDown = false;
+		pipeDown_start = 0;
+	}
+
+	int GetCurrentZone() { return currentZone; }
 
 	void OnNoCollision(DWORD dt);
 	void OnCollisionWith(LPCOLLISIONEVENT e);

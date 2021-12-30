@@ -32,16 +32,13 @@ void CCamera::Update()
 	if (cx + game->GetBackBufferWidth() >= mapEnd) 
 		cx = mapEnd - game->GetBackBufferWidth();
 
-	/*if (cy >= CAM_Y_POSITION_MONEY_ZONE)
-		player->SetPlayerIntoMoneyZone();
-	else if (cy >= CAM_Y_POSITION_TERRAIN_ZONE)
-		player->SetPlayesrOnTerrainZone();
-	if (player->isOnTerrainZone)
-		cy = CAM_Y_POSITION_TERRAIN_ZONE;
-	else if (player->isIntoMoneyZone)
-		cy = CAM_Y_POSITION_MONEY_ZONE;*/
-	SetCamPos(cx, 304);
+	if (player->GetCurrentZone() == MARIO_IN_TERRAIN_ZONE)
+		SetCamPos(cx, CAM_Y_POSITION_TERRAIN_ZONE);
+	else if (player->GetCurrentZone() == MARIO_IN_OTHER_ZONE)
+		SetCamPos(cx, CAM_Y_POSITION_MONEY_ZONE);
+
 }
+
 
 
 CCamera::~CCamera()
