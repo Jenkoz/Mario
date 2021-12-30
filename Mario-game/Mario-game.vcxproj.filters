@@ -140,6 +140,9 @@
     <ClCompile Include="DeadPlatform.cpp">
       <Filter>GameObject\Platform</Filter>
     </ClCompile>
+    <ClCompile Include="Tail.cpp">
+      <Filter>GameObject\Mario</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mario.h">
@@ -243,6 +246,9 @@
     </ClInclude>
     <ClInclude Include="DeadPlatform.h">
       <Filter>GameObject\Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="Tail.h">
+      <Filter>GameObject\Mario</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

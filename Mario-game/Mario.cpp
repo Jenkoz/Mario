@@ -49,7 +49,13 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		isKicking = false;
 		kicking_start = 0;
-		SetState(MARIO_STATE_IDLE);
+	}
+
+	// whiping state
+	if (GetTickCount64() - whiping_start > MARIO_WHIPING_TIME && whiping_start)
+	{
+		isWhiping = false;
+		kicking_start = 0;
 	}
 
 	 //pipe handle
@@ -90,6 +96,31 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	isOnPlatform = false;
 
 	CCollision::GetInstance()->Process(this, dt, coObjects);
+}
+
+void CMario::GetInjured()
+{
+	if (untouchable == 0)
+	{
+		if (level != MARIO_LEVEL_SMALL)
+		{
+			if (level == MARIO_LEVEL_BIG)
+			{
+				level = MARIO_LEVEL_SMALL;
+				StartUntouchable();
+			}
+			else
+			{
+				level = MARIO_LEVEL_BIG;
+				StartUntouchable();
+			}
+		}
+		else
+		{
+			DebugOut(L">>> Mario DIE >>> \n");
+			SetState(MARIO_STATE_DIE);
+		}
+	}
 }
 
 float CMario::GetCenter()
@@ -196,28 +227,11 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 	}
 	else // hit by Goomba
 	{
-		if (untouchable == 0)
+		if (goomba->GetState() != GOOMBA_STATE_DIE)
 		{
-			if (goomba->GetState() != GOOMBA_STATE_DIE)
+			if (untouchable == 0)
 			{
-				if (level != MARIO_LEVEL_SMALL)
-				{
-					if (level == MARIO_LEVEL_BIG)
-					{
-						level = MARIO_LEVEL_SMALL;
-						StartUntouchable();
-					}
-					else
-					{
-						level = MARIO_LEVEL_BIG;
-						StartUntouchable();
-					}
-				}
-				else
-				{
-					DebugOut(L">>> Mario DIE >>> \n");
-					SetState(MARIO_STATE_DIE);
-				}
+				GetInjured();
 			}
 		}
 	}
@@ -268,40 +282,12 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 				koopa->SetState(SHELL_STATE_IDLING);
 			}
 		}
-	/*	else
-		{
-			if (e->nx > 0)
-				koopa->SetState(SHELL_STATE_ROLLING_LEFT);
-			else koopa->SetState(SHELL_STATE_ROLLING_RIGHT);
-			SetState(MARIO_STATE_KICK);
-			koopa->isVulnerable = false;
-		}*/
 	}
 	else // hit by koopa
 	{
-		if (untouchable == 0)
+		if (koopa->GetState() != SHELL_STATE_IDLING)
 		{
-			if (koopa->GetState() != SHELL_STATE_IDLING)
-			{
-				if (level != MARIO_LEVEL_SMALL)
-				{
-					if (level == MARIO_LEVEL_BIG)
-					{
-						level = MARIO_LEVEL_SMALL;
-						StartUntouchable();
-					}
-					else
-					{
-						level = MARIO_LEVEL_BIG;
-						StartUntouchable();
-					}
-				}
-				else
-				{
-					DebugOut(L">>> Mario DIE >>> \n");
-					SetState(MARIO_STATE_DIE);
-				}
-			}
+			GetInjured();
 		}
 	}
 
@@ -311,7 +297,7 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 		if (koopa->GetState() == SHELL_STATE_IDLING)
 		{
 			//Pick the shell
-				if (state == MARIO_STATE_RUNNING_LEFT || state == MARIO_STATE_RUNNING_RIGHT)
+				if ((state == MARIO_STATE_RUNNING_LEFT || state == MARIO_STATE_RUNNING_RIGHT))
 				{	
 					isHolding = true;
 					koopa->isBeingHeld = true;
@@ -322,35 +308,17 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 						koopa->SetState(SHELL_STATE_ROLLING_LEFT);
 					else koopa->SetState(SHELL_STATE_ROLLING_RIGHT);
 					SetState(MARIO_STATE_KICK);
+					isHolding = false;
+					koopa->isBeingHeld = false;
 					koopa->isVulnerable = false;
 				}
 		}
 	}
 	else // hit by SHELL
 	{
-		if (untouchable == 0)
+		if (koopa->GetState() != SHELL_STATE_IDLING)
 		{
-			if (koopa->GetState() != SHELL_STATE_IDLING)
-			{
-				if (level != MARIO_LEVEL_SMALL)
-				{
-					if (level == MARIO_LEVEL_BIG)
-					{
-						level = MARIO_LEVEL_SMALL;
-						StartUntouchable();
-					}
-					else
-					{
-						level = MARIO_LEVEL_BIG;
-						StartUntouchable();
-					}
-				}
-				else
-				{
-					DebugOut(L">>> Mario DIE >>> \n");
-					SetState(MARIO_STATE_DIE);
-				}
-			}
+			GetInjured();
 		}
 	}
 }
@@ -531,17 +499,17 @@ int CMario::GetAniIdRaccoon()
 						{
 							aniId = ID_ANI_MARIO_RACCOON_IDLE_RIGHT;
 							if (isHolding)
-							{
 								aniId = ID_ANI_MARIO_RACCOON_HOLDING_IDLE_RIGHT;
-							}
+							if (isWhiping)
+								aniId = ID_ANI_MARIO_RACCOON_WHIPPING_RIGHT;
 						}
 						else
 						{
 							aniId = ID_ANI_MARIO_RACCOON_IDLE_LEFT;
 							if (isHolding)
-							{
 								aniId = ID_ANI_MARIO_RACCOON_HOLDING_IDLE_LEFT;
-							}
+							if (isWhiping)
+								aniId = ID_ANI_MARIO_RACCOON_WHIPPING_LEFT;
 						}
 					}
 					else if (vx > 0)
@@ -556,6 +524,8 @@ int CMario::GetAniIdRaccoon()
 						}
 						else if (ax == MARIO_ACCEL_WALK_X)
 							aniId = ID_ANI_MARIO_RACCOON_WALKING_RIGHT;
+						if (isWhiping)
+							aniId = ID_ANI_MARIO_RACCOON_WHIPPING_RIGHT;
 					}
 					else  if (vx < 0)
 					{
@@ -569,6 +539,8 @@ int CMario::GetAniIdRaccoon()
 						}
 						else if (ax == -MARIO_ACCEL_WALK_X)
 							aniId = ID_ANI_MARIO_RACCOON_WALKING_LEFT;
+						if (isWhiping)
+							aniId = ID_ANI_MARIO_RACCOON_WHIPPING_LEFT;
 					}
 
 	if (aniId == -1) aniId = ID_ANI_MARIO_RACCOON_IDLE_RIGHT;
@@ -686,11 +658,22 @@ void CMario::Render()
 
 	if (level != MARIO_LEVEL_RACCOON)
 		animations->Get(aniId)->Render(x, y);
-	else 
-		if(nx > 0)
-			animations->Get(aniId)->Render(x - 4, y);
-		else if (nx < 0)
-			animations->Get(aniId)->Render(x + 4, y);
+	else if (level == MARIO_LEVEL_RACCOON)
+	{
+		if (!isWhiping)
+		{
+			if(nx > 0)
+				animations->Get(aniId)->Render(x - 4, y);
+			else if (nx < 0)
+				animations->Get(aniId)->Render(x + 4, y);
+		}
+		else
+			if (nx > 0)
+				animations->Get(aniId)->Render(x + 4, y);
+			else if (nx < 0)
+				animations->Get(aniId)->Render(x - 4, y);
+	}
+
 
 	RenderBoundingBox();
 
@@ -776,6 +759,9 @@ void CMario::SetState(int state)
 		isKicking = true;
 		kicking_start = GetTickCount64();
 		break;
+	case MARIO_STATE_WHIPE:
+		isWhiping = true;
+		whiping_start = GetTickCount64();
 	}
 
 	CGameObject::SetState(state);

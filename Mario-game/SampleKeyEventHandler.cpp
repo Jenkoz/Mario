@@ -54,6 +54,11 @@ void CSampleKeyHandler::OnKeyUp(int KeyCode)
 		mario->SetState(MARIO_STATE_SIT_RELEASE);
 		break;
 	case DIK_A:
+		if (mario->GetLevel() == MARIO_LEVEL_RACCOON)
+		{
+			if (!mario->isHolding)
+			mario->SetState(MARIO_STATE_WHIPE);
+		}
 		mario->isHolding = false;
 		mario->SetState(MARIO_STATE_KICK);
 		break;

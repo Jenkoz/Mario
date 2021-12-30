@@ -34,6 +34,7 @@
 #define MARIO_STATE_SIT_RELEASE		601
 
 #define MARIO_STATE_KICK			700
+#define MARIO_STATE_WHIPE			800
 
 
 
@@ -140,6 +141,9 @@
 
 #define ID_ANI_MARIO_RACCOON_ENTERING_PIPE		2310
 
+#define ID_ANI_MARIO_RACCOON_WHIPPING_RIGHT		2321
+#define ID_ANI_MARIO_RACCOON_WHIPPING_LEFT		2320
+
 #pragma endregion
 
 #define GROUND_Y 160.0f
@@ -165,6 +169,7 @@
 
 #define MARIO_UNTOUCHABLE_TIME		2500
 #define MARIO_KICKING_TIME			200	
+#define MARIO_WHIPING_TIME			210
 #define MARIO_PIPE_TIME				1000
 
 #define MARIO_IN_TERRAIN_ZONE 1
@@ -184,10 +189,10 @@ class CMario : public CGameObject
 	ULONGLONG kicking_start;
 	ULONGLONG pipeUp_start;
 	ULONGLONG pipeDown_start;
+	ULONGLONG whiping_start;
 
 	BOOLEAN isSitting;
 	BOOLEAN isOnPlatform;
-	BOOLEAN isFlapping = false;
 	BOOLEAN isTailFlying = false;
 	BOOLEAN isFlappingTailWhileFlying = false;
 
@@ -215,6 +220,8 @@ public:
 	BOOLEAN isKicking;
 	BOOLEAN isPipeDown;
 	BOOLEAN isPipeUp;
+	//BOOLEAN isFlapping;
+	BOOLEAN isWhiping;
 	CMario(float x, float y) : CGameObject(x, y)
 	{
 			isSitting = false;
@@ -222,16 +229,21 @@ public:
 			isKicking = false;
 			isPipeDown = false;
 			isPipeUp = false;
+			//isFlapping = false;
+			isWhiping = false;
 			maxVx = 0.0f;
 			ax = 0.0f;
 			ay = MARIO_GRAVITY;
 
 			level = MARIO_LEVEL_RACCOON;
-			kicking_start = 0;
 			untouchable = 0;
+			//start
 			untouchable_start = -1;
+			kicking_start = 0;
 			pipeDown_start = 0;
 			pipeUp_start = 0;
+			whiping_start = 0;
+
 			isOnPlatform = false;
 			coin = 0;
 			life = 4;
@@ -263,6 +275,8 @@ public:
 	float GetX() { return this->x; }
 	float GetCenter();
 
+	void GetInjured();
+
 	void SwitchZone()
 	{
 		if (currentZone == 1)
@@ -277,6 +291,7 @@ public:
 		}
 	}
 
+	//start
 	void StartPipeUp() 
 	{
 		pipeUp_start = GetTickCount64();
@@ -288,6 +303,7 @@ public:
 		isPipeDown = true;
 	}
 
+	//stop
 	void StopPipeUp() 
 	{
 		isPipeUp = false;

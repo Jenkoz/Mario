@@ -158,21 +158,33 @@ void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	vx += ax * dt;
 
 	CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
-
+	//Start counting down to wake up
 	if ((state == SHELL_STATE_IDLING) && (GetTickCount64() - wakingUp_timer > SHELL_IDLING_TIMEOUT))
 	{
 		SetState(KOOPA_STATE_WAKING);
 		wakingUp_timer = 0;
-		return;
 	}
+	//Waking up timeout
 	if ((state == KOOPA_STATE_WAKING) && (GetTickCount64() - wakingUp_timeout > KOOPA_STANDUP_TIMEOUT))
 	{
-		switchState();
+		if (!mario->isHolding && !isBeingHeld)
+		{
+			switchState();
+		}
+		else // waking up on Mario's hands
+		{
+			mario->GetInjured();
+			mario->isHolding = false;
+			if (mario->GetMarioDirection() > 0)
+				SetState(KOOPA_STATE_WALKING_RIGHT);
+			else SetState(KOOPA_STATE_WALKING_LEFT);
+		}
+		isVulnerable = false;
+		isBeingHeld = false;
 		wakingUp_timeout = 0;
-		return;
 	}
 
-
+	
 	if (!mario->isHolding && isBeingHeld && isVulnerable)
 	{
 		isBeingHeld = false;
@@ -186,8 +198,10 @@ void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				SetState(SHELL_STATE_ROLLING_LEFT);
 		}
 	}
+	//when being held by mario
 	if (isBeingHeld)
 	{
+		//set height of koopashell
 		if (mario->GetLevel() != MARIO_LEVEL_SMALL)
 			y = mario->GetY() - 3; //TODO change const number
 		else y = mario->GetY() + 5;
@@ -265,7 +279,6 @@ void CKoopa::switchState()
 	{
 		y -= (KOOPA_BBOX_HEIGHT - SHELL_BBOX_HEIGHT) / 2;
 		SetState(last_state);
-		isVulnerable = false;
 	}
 }
 
