@@ -1,6 +1,7 @@
 #include "Camera.h"
 #include "Mario.h"
 #include "Map.h"
+#include "HUD.h"
 #include "PlayScene.h"
 CCamera* CCamera::__instance = NULL;
 
@@ -33,7 +34,7 @@ void CCamera::Update()
 		cx = mapEnd - game->GetBackBufferWidth();
 
 	if (player->GetCurrentZone() == MARIO_IN_TERRAIN_ZONE)
-		SetCamPos(cx, CAM_Y_POSITION_TERRAIN_ZONE);
+		SetCamPos(cx, CAM_Y_POSITION_TERRAIN_ZONE + HUD_BBOX_HEIGHT/2);
 	else if (player->GetCurrentZone() == MARIO_IN_OTHER_ZONE)
 		SetCamPos(cx, CAM_Y_POSITION_MONEY_ZONE);
 

@@ -16,6 +16,7 @@
 #include "PSwitch.h"
 #include "DeadPlatform.h"
 
+
 #include "Collision.h"
 
 CMario* CMario::__instance = NULL;
@@ -38,59 +39,19 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	if (abs(vx) > abs(maxVx)) vx = maxVx;
 
 	// reset untouchable timer if untouchable time has passed
-	if (GetTickCount64() - untouchable_start > MARIO_UNTOUCHABLE_TIME)
-	{
-		untouchable_start = 0;
-		untouchable = 0;
-	}
-
+	HandleMarioUntouchable();
 	// kicking state
-	if (GetTickCount64() - kicking_start > MARIO_KICKING_TIME && kicking_start)
-	{
-		isKicking = false;
-		kicking_start = 0;
-	}
-
+	HandleMarioKicking();
 	// whiping state
-	if (GetTickCount64() - whiping_start > MARIO_WHIPING_TIME && whiping_start)
-	{
-		isWhiping = false;
-		kicking_start = 0;
-	}
-
+	HandleMarioWhippingTail();
 	 //pipe handle
-	if (GetTickCount64() - pipeDown_start < MARIO_PIPE_TIME && isPipeDown)
-	{
-		vy = 0.03f;
-	}
-	if (GetTickCount64() - pipeDown_start >= MARIO_PIPE_TIME && isPipeDown)
-	{
-		if (currentZone == 1)
-		{
-			SwitchZone();
-			StartPipeDown();
-		}
-		else if (currentZone == 2)
-		{
-			StopPipeDown();
-		}
-	}
-	if (GetTickCount64() - pipeUp_start < MARIO_PIPE_TIME && isPipeUp)
-	{
-		vy = -0.03f;
-	}
-	if (GetTickCount64() - pipeUp_start >= MARIO_PIPE_TIME && isPipeUp)
-	{
-		if (currentZone == 2)
-		{
-			SwitchZone();
-			StartPipeUp();
-		}
-		else if (currentZone == 1)
-		{
-			StopPipeUp();
-		}
-	}
+	HandleMarioEnterPipe();
+	// 
+	// 
+	//HandleFlapping();
+	//HandleFlying();
+	HandleMarioStackSpeed();
+
 	
 
 	isOnPlatform = false;
@@ -98,7 +59,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
 
-void CMario::GetInjured()
+void CMario::HandleMarioGetInjured()
 {
 	if (untouchable == 0)
 	{
@@ -142,7 +103,8 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 	if (e->ny != 0 && e->obj->IsBlocking())
 	{
 		vy = 0;
-		if (e->ny < 0) isOnPlatform = true;
+		if (e->ny < 0) 
+			isOnPlatform = true;
 	}
 	else
 		if (e->nx != 0 && e->obj->IsBlocking())
@@ -168,6 +130,15 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithPSwitch(e);
 	else if (dynamic_cast<CDeadPlatform*>(e->obj))
 		OnCollisionWithDeadPlatform(e);
+}
+
+void CMario::HandleMarioUntouchable()
+{
+	if (GetTickCount64() - untouchable_start > MARIO_UNTOUCHABLE_TIME)
+	{
+		untouchable_start = 0;
+		untouchable = 0;
+	}
 }
 
 
@@ -231,7 +202,7 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 		{
 			if (untouchable == 0)
 			{
-				GetInjured();
+				HandleMarioGetInjured();
 			}
 		}
 	}
@@ -287,7 +258,7 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 	{
 		if (koopa->GetState() != SHELL_STATE_IDLING)
 		{
-			GetInjured();
+			HandleMarioGetInjured();
 		}
 	}
 
@@ -318,7 +289,7 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 	{
 		if (koopa->GetState() != SHELL_STATE_IDLING)
 		{
-			GetInjured();
+			HandleMarioGetInjured();
 		}
 	}
 }
@@ -500,7 +471,7 @@ int CMario::GetAniIdRaccoon()
 							aniId = ID_ANI_MARIO_RACCOON_IDLE_RIGHT;
 							if (isHolding)
 								aniId = ID_ANI_MARIO_RACCOON_HOLDING_IDLE_RIGHT;
-							if (isWhiping)
+							if (isWhipping)
 								aniId = ID_ANI_MARIO_RACCOON_WHIPPING_RIGHT;
 						}
 						else
@@ -508,7 +479,7 @@ int CMario::GetAniIdRaccoon()
 							aniId = ID_ANI_MARIO_RACCOON_IDLE_LEFT;
 							if (isHolding)
 								aniId = ID_ANI_MARIO_RACCOON_HOLDING_IDLE_LEFT;
-							if (isWhiping)
+							if (isWhipping)
 								aniId = ID_ANI_MARIO_RACCOON_WHIPPING_LEFT;
 						}
 					}
@@ -524,7 +495,7 @@ int CMario::GetAniIdRaccoon()
 						}
 						else if (ax == MARIO_ACCEL_WALK_X)
 							aniId = ID_ANI_MARIO_RACCOON_WALKING_RIGHT;
-						if (isWhiping)
+						if (isWhipping)
 							aniId = ID_ANI_MARIO_RACCOON_WHIPPING_RIGHT;
 					}
 					else  if (vx < 0)
@@ -539,7 +510,7 @@ int CMario::GetAniIdRaccoon()
 						}
 						else if (ax == -MARIO_ACCEL_WALK_X)
 							aniId = ID_ANI_MARIO_RACCOON_WALKING_LEFT;
-						if (isWhiping)
+						if (isWhipping)
 							aniId = ID_ANI_MARIO_RACCOON_WHIPPING_LEFT;
 					}
 
@@ -660,7 +631,7 @@ void CMario::Render()
 		animations->Get(aniId)->Render(x, y);
 	else if (level == MARIO_LEVEL_RACCOON)
 	{
-		if (!isWhiping)
+		if (!isWhipping )
 		{
 			if(nx > 0)
 				animations->Get(aniId)->Render(x - 4, y);
@@ -673,7 +644,6 @@ void CMario::Render()
 			else if (nx < 0)
 				animations->Get(aniId)->Render(x - 4, y);
 	}
-
 
 	RenderBoundingBox();
 
@@ -692,12 +662,22 @@ void CMario::SetState(int state)
 		maxVx = MARIO_RUNNING_SPEED;
 		ax = MARIO_ACCEL_RUN_X;
 		nx = 1;
+		isReadyToRun = true;
+		if (vx > MARIO_SPEED_STACK && isReadyToRun)
+			isRunning = true;
+		else 
+			isRunning = false;
 		break;
 	case MARIO_STATE_RUNNING_LEFT:
 		if (isSitting) break;
 		maxVx = -MARIO_RUNNING_SPEED;
 		ax = -MARIO_ACCEL_RUN_X;
 		nx = -1;
+		isReadyToRun = true;
+		if (vx < MARIO_SPEED_STACK && isReadyToRun) 
+			isRunning = true;
+		else
+			isRunning = false;
 		break;
 	case MARIO_STATE_WALKING_RIGHT:
 		if (isSitting) break;
@@ -720,10 +700,15 @@ void CMario::SetState(int state)
 			else
 				vy = -MARIO_JUMP_SPEED_Y;
 		}
+		else
+			if (level == MARIO_LEVEL_RACCOON && speedStack == MARIO_RUNNING_STACKS)
+			{
+				vy = -MARIO_FLY_MAX_STACK_SPEED_Y;
+			}
 		break;
 
 	case MARIO_STATE_RELEASE_JUMP:
-		if (vy < 0) vy += MARIO_JUMP_SPEED_Y / 2;
+		if (vy < 0) vy += MARIO_JUMP_SPEED_Y / 3;
 		break;
 
 	case MARIO_STATE_SIT:
@@ -748,6 +733,7 @@ void CMario::SetState(int state)
 	case MARIO_STATE_IDLE:
 		ax = 0.0f;
 		vx = 0.0f;
+		isRunning = false;
 		break;
 
 	case MARIO_STATE_DIE:
@@ -760,8 +746,24 @@ void CMario::SetState(int state)
 		kicking_start = GetTickCount64();
 		break;
 	case MARIO_STATE_WHIPE:
-		isWhiping = true;
-		whiping_start = GetTickCount64();
+		isWhipping = true;
+		whipping_start = GetTickCount64();
+		break;
+	case MARIO_STATE_FLYING:
+		/*if (isSitting) break;
+		if (isOnPlatform)
+		{
+			if (abs(this->vx) == MARIO_RUNNING_SPEED)
+				vy = -MARIO_JUMP_RUN_SPEED_Y;
+			else
+				vy = -MARIO_JUMP_SPEED_Y;
+		}
+		else
+			if (level == MARIO_LEVEL_RACCOON && speedStack == MARIO_RUNNING_STACKS)
+				vy = -MARIO_FLY_MAX_STACK_SPEED_Y;
+		flying_start = GetTickCount64();
+		isFlying = true;*/
+		break;
 	}
 
 	CGameObject::SetState(state);
@@ -797,6 +799,31 @@ void CMario::GetBoundingBox(float& left, float& top, float& right, float& bottom
 	}
 }
 
+void CMario::HandleMarioStackSpeed()
+{
+	if (GetTickCount64() - running_start > MARIO_SPEED_STACKING_TIME && isRunning && vx != 0 && isReadyToRun) 
+	{
+		running_start = GetTickCount64();
+		speedStack++;
+		if (speedStack > MARIO_RUNNING_STACKS) 
+		{
+			speedStack = MARIO_RUNNING_STACKS;
+		}
+	}
+	if (GetTickCount64() - running_stop > MARIO_SPEED_STOP_STACKING_TIME && !isRunning)
+	{
+		running_stop = GetTickCount64();
+		speedStack--;
+		if (speedStack < 0)
+		{
+			speedStack = 0;
+			isRunning = false;
+			isFlying = false;
+		}
+	}
+}
+
+
 void CMario::SetLevel(int l)
 {
 	// Adjust position to avoid falling off platform
@@ -806,4 +833,61 @@ void CMario::SetLevel(int l)
 	}
 	level = l;
 }
+
+void CMario::HandleMarioKicking()
+{
+	if (GetTickCount64() - kicking_start > MARIO_KICKING_TIME && kicking_start)
+	{
+		isKicking = false;
+		kicking_start = 0;
+	}
+
+}
+
+void CMario::HandleMarioEnterPipe()
+{
+	if (GetTickCount64() - pipeDown_start < MARIO_PIPE_TIME && isPipeDown)
+	{
+		vy = 0.03f;
+	}
+	if (GetTickCount64() - pipeDown_start >= MARIO_PIPE_TIME && isPipeDown)
+	{
+		if (currentZone == 1)
+		{
+			SwitchZone();
+			StartPipeDown();
+		}
+		else if (currentZone == 2)
+		{
+			StopPipeDown();
+		}
+	}
+	if (GetTickCount64() - pipeUp_start < MARIO_PIPE_TIME && isPipeUp)
+	{
+		vy = -0.03f;
+	}
+	if (GetTickCount64() - pipeUp_start >= MARIO_PIPE_TIME && isPipeUp)
+	{
+		if (currentZone == 2)
+		{
+			SwitchZone();
+			StartPipeUp();
+		}
+		else if (currentZone == 1)
+		{
+			StopPipeUp();
+		}
+	}
+}
+
+void CMario::HandleMarioWhippingTail()
+{
+	if (GetTickCount64() - whipping_start > MARIO_WHIPING_TIME && whipping_start)
+	{
+		isWhipping = false;
+		whipping_start = 0;
+	}
+}
+
+
 

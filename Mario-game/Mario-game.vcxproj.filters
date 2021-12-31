@@ -48,6 +48,9 @@
     <Filter Include="GameObject\Other\PSwitch">
       <UniqueIdentifier>{ac778298-f741-4f53-a644-9755685a1cea}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\Other\HUD">
+      <UniqueIdentifier>{a60879eb-7454-431c-83a2-45faa2b72062}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -142,6 +145,9 @@
     </ClCompile>
     <ClCompile Include="Tail.cpp">
       <Filter>GameObject\Mario</Filter>
+    </ClCompile>
+    <ClCompile Include="HUD.cpp">
+      <Filter>GameObject\Other\HUD</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -249,6 +255,9 @@
     </ClInclude>
     <ClInclude Include="Tail.h">
       <Filter>GameObject\Mario</Filter>
+    </ClInclude>
+    <ClInclude Include="HUD.h">
+      <Filter>GameObject\Other\HUD</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

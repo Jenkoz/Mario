@@ -167,13 +167,14 @@ void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	//Waking up timeout
 	if ((state == KOOPA_STATE_WAKING) && (GetTickCount64() - wakingUp_timeout > KOOPA_STANDUP_TIMEOUT))
 	{
+		// waking up on ground
 		if (!mario->isHolding && !isBeingHeld)
 		{
 			switchState();
 		}
 		else // waking up on Mario's hands
 		{
-			mario->GetInjured();
+			mario->HandleMarioGetInjured();
 			mario->isHolding = false;
 			if (mario->GetMarioDirection() > 0)
 				SetState(KOOPA_STATE_WALKING_RIGHT);
@@ -203,7 +204,7 @@ void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		//set height of koopashell
 		if (mario->GetLevel() != MARIO_LEVEL_SMALL)
-			y = mario->GetY() - 3; //TODO change const number
+			y = mario->GetY() - 1; //TODO change const number
 		else y = mario->GetY() + 5;
 		vy = 0;
 		int tmp = (int)mario->GetMarioDirection();
@@ -213,7 +214,7 @@ void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			if (tmp > 0)
 				x = mario->GetX() + tmp * (MARIO_SMALL_BBOX_WIDTH);
 			else
-				x = mario->GetX() + tmp * (KOOPA_BBOX_WIDTH);
+				x = mario->GetX() + tmp * (KOOPA_BBOX_WIDTH) + 3;
 			y -= (MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT);
 		}
 	}

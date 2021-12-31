@@ -6,14 +6,22 @@
 
 #include "debug.h"
 
+
+#define MARIO_WALKING_SPEED_START 0.0001f
 #define MARIO_WALKING_SPEED		0.15f
 #define MARIO_RUNNING_SPEED		0.3f
 
-#define MARIO_ACCEL_WALK_X	0.0005f
+#define MARIO_NORMAL_FLY_MAX 0.3f
+#define MARIO_SLOW_FALLING_SPEED	0.05f
+
+#define MARIO_SPEED_STACK			0.15f
+
+#define MARIO_ACCEL_WALK_X	0.0003f
 #define MARIO_ACCEL_RUN_X	0.0007f
 
 #define MARIO_JUMP_SPEED_Y		0.6f
 #define MARIO_JUMP_RUN_SPEED_Y	0.6f
+#define MARIO_FLY_MAX_STACK_SPEED_Y 0.4f
 
 #define MARIO_GRAVITY			0.002f
 
@@ -35,6 +43,7 @@
 
 #define MARIO_STATE_KICK			700
 #define MARIO_STATE_WHIPE			800
+#define MARIO_STATE_FLYING			900
 
 
 
@@ -169,11 +178,19 @@
 
 #define MARIO_UNTOUCHABLE_TIME		2500
 #define MARIO_KICKING_TIME			200	
-#define MARIO_WHIPING_TIME			210
+#define MARIO_WHIPING_TIME			280
 #define MARIO_PIPE_TIME				1000
+#define MARIO_SPEED_STACKING_TIME	200
+#define MARIO_SPEED_STOP_STACKING_TIME	200
+#define MARIO_MAX_STACK_TIME			2000
+#define MARIO_MAX_SPEED_FLYING_TIME		3000
 
 #define MARIO_IN_TERRAIN_ZONE 1
 #define MARIO_IN_OTHER_ZONE 2
+
+#define MARIO_RUNNING_STACKS 7
+
+
 
 class CMario : public CGameObject
 {
@@ -181,20 +198,23 @@ class CMario : public CGameObject
 	float ax;				// acceleration on x 
 	float ay;				// acceleration on y 
 
+
 	int currentZone;
 	int life;
+	int speedStack;
 	int level;
 	int untouchable;
+	
 	ULONGLONG untouchable_start;
 	ULONGLONG kicking_start;
 	ULONGLONG pipeUp_start;
 	ULONGLONG pipeDown_start;
-	ULONGLONG whiping_start;
 
-	BOOLEAN isSitting;
-	BOOLEAN isOnPlatform;
-	BOOLEAN isTailFlying = false;
-	BOOLEAN isFlappingTailWhileFlying = false;
+	ULONGLONG whipping_start;
+	ULONGLONG running_start;
+	ULONGLONG running_stop;
+	ULONGLONG flying_start;
+
 
 	int coin;
 
@@ -216,37 +236,39 @@ class CMario : public CGameObject
 public:
 	static CMario* GetInstance();
 	CMario();
-	BOOLEAN isHolding;
-	BOOLEAN isKicking;
-	BOOLEAN isPipeDown;
-	BOOLEAN isPipeUp;
-	//BOOLEAN isFlapping;
-	BOOLEAN isWhiping;
+
+	BOOLEAN isOnPlatform = false;
+	BOOLEAN isSitting = false;
+	BOOLEAN isHolding = false;
+	BOOLEAN isKicking = false;
+	BOOLEAN isPipeDown = false;
+	BOOLEAN isPipeUp = false;
+	BOOLEAN isRunning = false;
+	BOOLEAN isReadyToRun = false;
+	BOOLEAN isWhipping = false;
+	BOOLEAN isFlying = false;
+
 	CMario(float x, float y) : CGameObject(x, y)
 	{
-			isSitting = false;
-			isHolding = false;
-			isKicking = false;
-			isPipeDown = false;
-			isPipeUp = false;
-			//isFlapping = false;
-			isWhiping = false;
 			maxVx = 0.0f;
 			ax = 0.0f;
 			ay = MARIO_GRAVITY;
 
 			level = MARIO_LEVEL_RACCOON;
-			untouchable = 0;
 			//start
+			untouchable = 0;
 			untouchable_start = -1;
 			kicking_start = 0;
 			pipeDown_start = 0;
 			pipeUp_start = 0;
-			whiping_start = 0;
+			whipping_start = 0;
+			running_start = 0;
+			running_stop = 0;
+			flying_start = 0;
 
-			isOnPlatform = false;
 			coin = 0;
 			life = 4;
+			speedStack = 0;
 			currentZone = 1;
 	}
 
@@ -254,11 +276,10 @@ public:
 
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void Render();
-	void SetState(int state);
 
-	int GetLevel() { return this->level; }
 	void LifeUp() { life++; }
 	void CoinUp() { coin++; }
+
 
 	int IsCollidable()
 	{
@@ -269,14 +290,30 @@ public:
 	{ 
 		return (state != MARIO_STATE_DIE && untouchable == 0);
 	}
-
+	// Get prop
+	int GetLevel() { return this->level; }
 	int GetMarioDirection() { return this->nx; }
 	float GetY() { return this->y; }
 	float GetX() { return this->x; }
 	float GetCenter();
+	int GetSpeedStack() { return this->speedStack; }
 
-	void GetInjured();
+	//Set Prop
+	void SetLevel(int l);
+	void SetState(int state);
+	void SetAx(float ax) { this->ax = ax; };
+	void SetVx(float vx) { this->vx = vx; };
+	void SetAy(float ay) { this->ay = ay; };
+	void SetVy(float vy) { this->vy = vy; };
 
+
+	//Handle
+	void HandleMarioUntouchable();
+	void HandleMarioKicking();
+	void HandleMarioEnterPipe();
+	void HandleMarioWhippingTail();
+	void HandleMarioGetInjured();
+	void HandleMarioStackSpeed();
 	void SwitchZone()
 	{
 		if (currentZone == 1)
@@ -303,6 +340,7 @@ public:
 		isPipeDown = true;
 	}
 
+
 	//stop
 	void StopPipeUp() 
 	{
@@ -320,7 +358,6 @@ public:
 	void OnNoCollision(DWORD dt);
 	void OnCollisionWith(LPCOLLISIONEVENT e);
 	//void RenderBoundingBox();
-	void SetLevel(int l);
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount64(); }
 
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);

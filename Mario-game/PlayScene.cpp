@@ -21,6 +21,7 @@
 #include "ColourPlatform.h"
 #include "DeadPlatform.h"
 #include "Portal.h"
+#include "HUD.h"
 
 
 // MAP
@@ -143,6 +144,17 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	{
 		int lvl_koopa = atoi(tokens[3].c_str());
 		obj = new CKoopa(x, y, lvl_koopa); break;
+	}
+	case OBJECT_TYPE_HUD: 
+	{
+		if (hud != NULL)
+		{
+			DebugOut(L"[ERROR] HUD object was created before!\n");
+			return;
+		}
+		obj = new CHUD(x, y); 
+		hud = (CHUD*)obj;
+		break;
 	}
 	case OBJECT_TYPE_BRICK: 
 	{
@@ -305,14 +317,17 @@ void CPlayScene::Update(DWORD dt)
 	vector<LPGAMEOBJECT> coObjects;
 	for (size_t i = 0; i < objects.size(); i++)
 	{
+
 		if (objects[i] != player)
 			coObjects.push_back(objects[i]);
 	}
-
 	for (size_t i = 0; i < objects.size(); i++)
 	{
 		objects[i]->Update(dt, &coObjects);
 	}
+
+	if (hud != NULL)
+		hud->Update(dt, &coObjects);
 
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return; 
