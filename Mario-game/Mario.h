@@ -17,11 +17,14 @@
 #define MARIO_SPEED_STACK			0.15f
 
 #define MARIO_ACCEL_WALK_X	0.0003f
-#define MARIO_ACCEL_RUN_X	0.0007f
+#define MARIO_ACCEL_RUN_X	0.0006f
 
 #define MARIO_JUMP_SPEED_Y		0.6f
 #define MARIO_JUMP_RUN_SPEED_Y	0.6f
-#define MARIO_FLY_MAX_STACK_SPEED_Y 0.4f
+#define MARIO_FLY_MAX_STACK_SPEED_Y 0.35f
+
+#define MARIO_SPEED_FALL_SLOW_Y	0.0475f
+#define MARIO_SPEED_FALL_SLOW_X	0.075f
 
 #define MARIO_GRAVITY			0.002f
 
@@ -44,6 +47,7 @@
 #define MARIO_STATE_KICK			700
 #define MARIO_STATE_WHIPE			800
 #define MARIO_STATE_FLYING			900
+#define MARIO_STATE_FLAPPING		1000
 
 
 
@@ -153,6 +157,9 @@
 #define ID_ANI_MARIO_RACCOON_WHIPPING_RIGHT		2321
 #define ID_ANI_MARIO_RACCOON_WHIPPING_LEFT		2320
 
+#define ID_ANI_MARIO_RACCOON_FLAPPING_RIGHT		2331
+#define ID_ANI_MARIO_RACCOON_FLAPPING_LEFT		2330
+
 #pragma endregion
 
 #define GROUND_Y 160.0f
@@ -179,11 +186,11 @@
 #define MARIO_UNTOUCHABLE_TIME		2500
 #define MARIO_KICKING_TIME			200	
 #define MARIO_WHIPING_TIME			280
+#define MARIO_FLAPPING_TIME			200
 #define MARIO_PIPE_TIME				1000
 #define MARIO_SPEED_STACKING_TIME	200
 #define MARIO_SPEED_STOP_STACKING_TIME	200
-#define MARIO_MAX_STACK_TIME			2000
-#define MARIO_MAX_SPEED_FLYING_TIME		3000
+#define MARIO_MAX_STACK_TIME			3000
 
 #define MARIO_IN_TERRAIN_ZONE 1
 #define MARIO_IN_OTHER_ZONE 2
@@ -214,6 +221,7 @@ class CMario : public CGameObject
 	ULONGLONG running_start;
 	ULONGLONG running_stop;
 	ULONGLONG flying_start;
+	ULONGLONG flapping_start;
 
 
 	int coin;
@@ -243,10 +251,14 @@ public:
 	BOOLEAN isKicking = false;
 	BOOLEAN isPipeDown = false;
 	BOOLEAN isPipeUp = false;
+	BOOLEAN isFlapping = false;
 	BOOLEAN isRunning = false;
 	BOOLEAN isReadyToRun = false;
 	BOOLEAN isWhipping = false;
 	BOOLEAN isFlying = false;
+	BOOLEAN isChangeDirection = false;
+	BOOLEAN isFullStack = false;
+
 
 	CMario(float x, float y) : CGameObject(x, y)
 	{
@@ -265,6 +277,7 @@ public:
 			running_start = 0;
 			running_stop = 0;
 			flying_start = 0;
+			flapping_start = 0;
 
 			coin = 0;
 			life = 4;
@@ -314,6 +327,8 @@ public:
 	void HandleMarioWhippingTail();
 	void HandleMarioGetInjured();
 	void HandleMarioStackSpeed();
+	void HandleMarioFallingDown();
+	void HandleMarioFlying();
 	void SwitchZone()
 	{
 		if (currentZone == 1)
@@ -339,6 +354,12 @@ public:
 		pipeDown_start = GetTickCount64();
 		isPipeDown = true;
 	}
+	void StartFlying()
+	{
+		flying_start = GetTickCount64();
+		isFlying = true;
+	}
+
 
 
 	//stop
@@ -352,6 +373,12 @@ public:
 		isPipeDown = false;
 		pipeDown_start = 0;
 	}
+	void StopFlying()
+	{
+		flying_start = 0;
+		isFlying = false;
+	}
+
 
 	int GetCurrentZone() { return currentZone; }
 

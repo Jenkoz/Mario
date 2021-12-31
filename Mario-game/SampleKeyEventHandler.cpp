@@ -24,6 +24,7 @@ void CSampleKeyHandler::OnKeyDown(int KeyCode)
 	case DIK_A:
 		if (mario->GetLevel() == MARIO_LEVEL_RACCOON && !mario->isSitting && !mario->isHolding)
 			mario->SetState(MARIO_STATE_WHIPE);
+		
 		break;
 	case DIK_1:
 		mario->SetLevel(MARIO_LEVEL_SMALL);
@@ -63,6 +64,10 @@ void CSampleKeyHandler::OnKeyUp(int KeyCode)
 			mario->isHolding = false;
 			mario->SetState(MARIO_STATE_KICK);
 		}
+		else if (!mario->isOnPlatform && mario->GetLevel() == MARIO_LEVEL_RACCOON && !mario->isHolding)
+			mario->SetState(MARIO_STATE_FLAPPING);
+
+		mario->isRunning = false;
 		break;
 	}
 }
@@ -75,6 +80,7 @@ void CSampleKeyHandler::KeyState(BYTE *states)
 	{
 		if (game->IsKeyDown(DIK_A))
 		{
+
 			mario->SetState(MARIO_STATE_RUNNING_RIGHT);
 		}
 		else
