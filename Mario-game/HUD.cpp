@@ -4,23 +4,50 @@
 #include "Mario.h"
 
 
-void CHUD::Render() 
+CHUD::CHUD(float x, float y) : CGameObject(x, y)
 {
+}
+
+void CHUD::Render()
+{
+
+	float xx = x - 20.0f;
+	float yy = y - 4.0f;
 	CAnimations::GetInstance()->Get(ID_ANI_HUD_MAIN)->Render(x, y);
+	for (int i = 0; i < MARIO_RUNNING_STACKS + 1; i++)
+	{
+		if (i < MARIO_RUNNING_STACKS)
+			CAnimations::GetInstance()->Get(ID_ANI_STACK_OFF)->Render(xx + 9 * i, yy);
+		else 
+			if (speedStack < MARIO_RUNNING_STACKS)
+				CAnimations::GetInstance()->Get(ID_ANI_POWER_OFF)->Render(xx + 9 * i + 4, yy);
+			else
+				CAnimations::GetInstance()->Get(ID_ANI_POWER_ON)->Render(xx + 9 * i + 4, yy);
+	}
+	for (int i = 0; i < speedStack; i++)
+	{
+		if (i < MARIO_RUNNING_STACKS)
+			CAnimations::GetInstance()->Get(ID_ANI_STACK_ON)->Render(xx + 9 * i, yy);
+	}
 }
 
 void CHUD::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	CCamera::GetInstance()->GetCamPos(x, y);
-	x += CGame::GetInstance()->GetBackBufferHeight()/2;
-	y += float(CGame::GetInstance()->GetBackBufferHeight() - HUD_BBOX_HEIGHT/2);
+	float cx, cy;
+	CCamera::GetInstance()->GetCamPos(cx, cy);
+	
+	x = cx + (HUD_BBOX_WIDTH);
+	y = cy + (CGame::GetInstance()->GetBackBufferHeight() - (HUD_BBOX_HEIGHT)/2);
+
+	CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+	speedStack = mario->GetSpeedStack();
 }
 
 void CHUD::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
-	left = x - HUD_BBOX_WIDTH / 2;
-	top = y - HUD_BBOX_HEIGHT / 2;
-	right = left + HUD_BBOX_WIDTH / 2;
-	bottom = top + HUD_BBOX_HEIGHT / 2;
+	left = x - HUD_BBOX_WIDTH ;
+	top = y - HUD_BBOX_HEIGHT ;
+	right = left + HUD_BBOX_WIDTH ;
+	bottom = top + HUD_BBOX_HEIGHT ;
 }
 
