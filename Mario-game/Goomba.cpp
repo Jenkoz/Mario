@@ -31,7 +31,7 @@ CGoomba::CGoomba(float x, float y, int lvl) :CGameObject(x, y)
 
 void CGoomba::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {
-	if (state == GOOMBA_STATE_DIE)
+	if (state == GOOMBA_STATE_DIE || state == GOOMBA_STATE_DIE_DEFLECT_RIGHT || state == GOOMBA_STATE_DIE_DEFLECT_RIGHT)
 	{
 		left = x - GOOMBA_BBOX_WIDTH/2;
 		top = y - GOOMBA_BBOX_HEIGHT_DIE/2;
@@ -81,7 +81,7 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	vy += ay * dt;
 
-	if ( (state==GOOMBA_STATE_DIE) && (GetTickCount64() - die_start > GOOMBA_DIE_TIMEOUT) )
+	if ( (state==GOOMBA_STATE_DIE) || (state == GOOMBA_STATE_DIE_DEFLECT_LEFT ||state == GOOMBA_STATE_DIE_DEFLECT_RIGHT) && (GetTickCount64() - die_start > GOOMBA_DIE_TIMEOUT))
 	{
 		isDeleted = true;
 		return;
@@ -128,7 +128,7 @@ void CGoomba::Render()
 		aniId = ID_ANI_GOOMBA_WALKING;
 	else if (state == PARAGOOMBA_STATE_WALKING)
 		aniId = ID_ANI_PARAGOOMBA_WALKING;
-	else if (state == GOOMBA_STATE_DIE)
+	else if (state == GOOMBA_STATE_DIE || state == GOOMBA_STATE_DIE_DEFLECT_RIGHT || state == GOOMBA_STATE_DIE_DEFLECT_RIGHT)
 		aniId = ID_ANI_GOOMBA_DIE;
 	else if (state == PARAGOOMBA_STATE_JUMPING)
 		aniId = ID_ANI_PARAGOOMBA_JUMPING;
@@ -151,6 +151,20 @@ void CGoomba::SetState(int state)
 			vx = 0;
 			vy = 0;
 			ay = 0;
+			break;
+		case GOOMBA_STATE_DIE_DEFLECT_RIGHT:
+			die_start = GetTickCount64();
+			y += (GOOMBA_BBOX_HEIGHT - GOOMBA_BBOX_HEIGHT_DIE) / 2;
+			vx = GOOMBA_DIE_DEFLECT_SPEED;
+			vy = -GOOMBA_DIE_DEFLECT_SPEED;
+			ay = GOOMBA_GRAVITY;
+			break;
+		case GOOMBA_STATE_DIE_DEFLECT_LEFT:
+			die_start = GetTickCount64();
+			y += (GOOMBA_BBOX_HEIGHT - GOOMBA_BBOX_HEIGHT_DIE) / 2;
+			vx = -GOOMBA_DIE_DEFLECT_SPEED;
+			vy = -GOOMBA_DIE_DEFLECT_SPEED;
+			ay = GOOMBA_GRAVITY;
 			break;
 		case GOOMBA_STATE_WALKING: 
 			vx = -GOOMBA_WALKING_SPEED;

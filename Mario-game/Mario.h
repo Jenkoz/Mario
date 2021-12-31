@@ -21,7 +21,7 @@
 
 #define MARIO_JUMP_SPEED_Y		0.6f
 #define MARIO_JUMP_RUN_SPEED_Y	0.6f
-#define MARIO_FLY_MAX_STACK_SPEED_Y 0.35f
+#define MARIO_FLY_MAX_STACK_SPEED_Y 0.45f
 
 #define MARIO_SPEED_FALL_SLOW_Y	0.0475f
 #define MARIO_SPEED_FALL_SLOW_X	0.075f
@@ -160,6 +160,9 @@
 #define ID_ANI_MARIO_RACCOON_FLAPPING_RIGHT		2331
 #define ID_ANI_MARIO_RACCOON_FLAPPING_LEFT		2330
 
+#define ID_ANI_MARIO_RACCOON_FLYING_RIGHT	2341
+#define ID_ANI_MARIO_RACCOON_FLYING_LEFT	2340
+
 #pragma endregion
 
 #define GROUND_Y 160.0f
@@ -187,6 +190,7 @@
 #define MARIO_KICKING_TIME			200	
 #define MARIO_WHIPING_TIME			280
 #define MARIO_FLAPPING_TIME			200
+#define MARIO_FLYING_TIME			200
 #define MARIO_PIPE_TIME				1000
 #define MARIO_SPEED_STACKING_TIME	200
 #define MARIO_SPEED_STOP_STACKING_TIME	200
@@ -242,6 +246,7 @@ class CMario : public CGameObject
 
 	static CMario* __instance;
 public:
+	
 	static CMario* GetInstance();
 	CMario();
 
@@ -257,7 +262,6 @@ public:
 	BOOLEAN isWhipping = false;
 	BOOLEAN isFlying = false;
 	BOOLEAN isChangeDirection = false;
-	BOOLEAN isFullStack = false;
 
 
 	CMario(float x, float y) : CGameObject(x, y)
@@ -354,11 +358,6 @@ public:
 		pipeDown_start = GetTickCount64();
 		isPipeDown = true;
 	}
-	void StartFlying()
-	{
-		flying_start = GetTickCount64();
-		isFlying = true;
-	}
 
 
 
@@ -372,11 +371,6 @@ public:
 	{
 		isPipeDown = false;
 		pipeDown_start = 0;
-	}
-	void StopFlying()
-	{
-		flying_start = 0;
-		isFlying = false;
 	}
 
 

@@ -40,7 +40,10 @@ void CKoopa::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 		if (state == SHELL_STATE_ROLLING_LEFT || state == SHELL_STATE_ROLLING_RIGHT)
 			if ( e->nx != 0)
 			{
-				goomba->SetState(GOOMBA_STATE_DIE);
+				if(e->nx >0)
+					goomba->SetState(GOOMBA_STATE_DIE_DEFLECT_RIGHT);
+				else
+					goomba->SetState(GOOMBA_STATE_DIE_DEFLECT_LEFT);
 			}
 }
 

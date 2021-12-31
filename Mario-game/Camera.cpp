@@ -38,9 +38,9 @@ void CCamera::Update()
 	if (player->GetY() < CAM_Y_POSITION_TERRAIN_ZONE + 20)
 		SetCamPos(cx, cy + HUD_BBOX_HEIGHT / 2);
 	else if (player->GetCurrentZone() == MARIO_IN_TERRAIN_ZONE)
-		SetCamPos(cx, CAM_Y_POSITION_TERRAIN_ZONE + HUD_BBOX_HEIGHT/2 );
+		SetCamPos(cx, CAM_Y_POSITION_TERRAIN_ZONE + HUD_BBOX_HEIGHT / 2 );
 	else if (player->GetCurrentZone() == MARIO_IN_OTHER_ZONE)
-		SetCamPos(cx, CAM_Y_POSITION_MONEY_ZONE + HUD_BBOX_HEIGHT /2 );
+		SetCamPos(cx, CAM_Y_POSITION_MONEY_ZONE + HUD_BBOX_HEIGHT / 2 );
 
 }
 

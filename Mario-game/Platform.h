@@ -26,6 +26,7 @@ public:
 		this->type = type;
 		this->spriteId = sprite_id;
 	}
+	virtual int isBlocking() { return 1; }
 	virtual float GetEndPlatform() { return (x + length * cellWidth); }
 	virtual float GetX() { return x; }
 	virtual void Render();

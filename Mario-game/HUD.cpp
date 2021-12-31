@@ -45,8 +45,8 @@ void CHUD::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void CHUD::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
-	left = x - HUD_BBOX_WIDTH ;
-	top = y - HUD_BBOX_HEIGHT ;
+	left = x - HUD_BBOX_WIDTH /2;
+	top = y - HUD_BBOX_HEIGHT /2;
 	right = left + HUD_BBOX_WIDTH ;
 	bottom = top + HUD_BBOX_HEIGHT ;
 }

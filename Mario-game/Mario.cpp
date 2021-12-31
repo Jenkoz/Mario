@@ -4,6 +4,7 @@
 #include "Mario.h"
 #include "Game.h"
 #include "Camera.h"
+#include "Tail.h"
 
 #include "Goomba.h"
 #include "Koopa.h"
@@ -48,10 +49,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	HandleMarioEnterPipe();
 	HandleMarioStackSpeed();
 	HandleMarioFlying();
-	HandleMarioFallingDown();
-
-	DebugOut(L"vy = %f\n", vy);
-	
+	HandleMarioFallingDown();	
 
 	isOnPlatform = false;
 
@@ -445,6 +443,8 @@ int CMario::GetAniIdRaccoon()
 					aniId = ID_ANI_MARIO_RACCOON_HOLDING_JUMP_RIGHT;
 				if (isFlapping )
 					aniId = ID_ANI_MARIO_RACCOON_FLAPPING_RIGHT;
+				if (isFlying)
+					aniId = ID_ANI_MARIO_RACCOON_FLYING_RIGHT;
 			}
 			else
 			{
@@ -456,6 +456,8 @@ int CMario::GetAniIdRaccoon()
 					aniId = ID_ANI_MARIO_RACCOON_HOLDING_JUMP_LEFT;
 				if (isFlapping)
 					aniId = ID_ANI_MARIO_RACCOON_FLAPPING_LEFT;
+				if (isFlying)
+					aniId = ID_ANI_MARIO_RACCOON_FLYING_LEFT;
 			}
 		}
 			else
@@ -657,7 +659,6 @@ void CMario::SetState(int state)
 {
 	// DIE is the end state, cannot be changed! 
 	if (this->state == MARIO_STATE_DIE) return;
-
 	switch (state)
 	{
 	case MARIO_STATE_RUNNING_RIGHT:
@@ -695,12 +696,6 @@ void CMario::SetState(int state)
 			else
 				vy = -MARIO_JUMP_SPEED_Y;
 		}
-		else
-			if (level == MARIO_LEVEL_RACCOON && speedStack == MARIO_RUNNING_STACKS)
-			{
-				isFlying = true;
-				vy = -MARIO_FLY_MAX_STACK_SPEED_Y;
-			}
 		break;
 
 	case MARIO_STATE_RELEASE_JUMP:
@@ -744,7 +739,6 @@ void CMario::SetState(int state)
 		isWhipping = true;
 		whipping_start = GetTickCount64();
 		break;
-
 	case MARIO_STATE_FLAPPING:
 		isFlapping = true;
 		flapping_start = GetTickCount64();
@@ -752,6 +746,19 @@ void CMario::SetState(int state)
 			maxVx = MARIO_SPEED_FALL_SLOW_X;
 		else maxVx = -MARIO_SPEED_FALL_SLOW_X;
 		vy = MARIO_SPEED_FALL_SLOW_Y;
+		break;
+	case MARIO_STATE_FLYING:
+		isFlying = true;
+		flying_start = GetTickCount64();
+		if (isOnPlatform)
+		{
+			if (abs(this->vx) == MARIO_RUNNING_SPEED)
+				vy = -MARIO_JUMP_RUN_SPEED_Y;
+			else
+				vy = -MARIO_JUMP_SPEED_Y;
+		}
+		else
+			vy = -MARIO_FLY_MAX_STACK_SPEED_Y;
 		break;
 	}
 
@@ -797,15 +804,6 @@ void CMario::HandleMarioStackSpeed()
 		speedStack = MARIO_RUNNING_STACKS;
 	else	speedStack = (int)(abs)(vx / stack);
 
-	/*else 
-		if (GetTickCount64() - running_stop > MARIO_SPEED_STOP_STACKING_TIME)
-		{
-			running_stop = GetTickCount64();
-			speedStack--;
-			if (speedStack < 0)
-			speedStack = 0;
-		}*/
-
 }
 
 void CMario::HandleMarioFallingDown()
@@ -820,11 +818,10 @@ void CMario::HandleMarioFallingDown()
 
 void CMario::HandleMarioFlying()
 {
-	if (GetTickCount64() - flying_start > MARIO_MAX_STACK_TIME && isFlying && isFullStack)
+	if (GetTickCount64() - flying_start > MARIO_FLYING_TIME && isFlying)
 	{
-		StopFlying();
-		isFullStack = false;
-		speedStack = 0;
+		flying_start = 0;
+		isFlying = false;
 	}
 }
 
@@ -887,6 +884,27 @@ void CMario::HandleMarioEnterPipe()
 
 void CMario::HandleMarioWhippingTail()
 {
+	/*if (tail == NULL && isWhipping)
+	{
+
+		if (nx > 0)
+		{
+			tail = new CTail(x - TAIL_BBOX_WIDTH + 2, y);
+			tail->SetPosition(x - TAIL_BBOX_WIDTH + 2,y);
+			if (tail != NULL)
+				DebugOut(L"tail init left to right\n");
+		}
+		else
+		{
+			tail = new CTail(x + MARIO_BIG_BBOX_WIDTH - 2, y);
+			tail->SetPosition(x + MARIO_BIG_BBOX_WIDTH - 2,y);
+			if (tail != NULL)
+				DebugOut(L"tail init right to left\n");
+		}
+		((LPPLAYSCENE)(CGame::GetInstance()->GetCurrentScene()))->GetObjects().push_back(tail);
+		((LPPLAYSCENE)(CGame::GetInstance()->GetCurrentScene()))->LoadObject(tail);
+	}*/
+
 	if (GetTickCount64() - whipping_start > MARIO_WHIPING_TIME && whipping_start)
 	{
 		isWhipping = false;
