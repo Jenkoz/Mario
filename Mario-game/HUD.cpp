@@ -6,6 +6,7 @@
 
 CHUD::CHUD(float x, float y) : CGameObject(x, y)
 {
+
 }
 
 void CHUD::Render()
@@ -14,6 +15,9 @@ void CHUD::Render()
 	float xx = x - 20.0f;
 	float yy = y - 4.0f;
 	CAnimations::GetInstance()->Get(ID_ANI_HUD_MAIN)->Render(x, y);
+		CAnimations::GetInstance()->Get(ID_ANI_HUD_POWER)->Render(x + 100, y);
+		CAnimations::GetInstance()->Get(ID_ANI_HUD_POWER)->Render(x + 124, y);
+		CAnimations::GetInstance()->Get(ID_ANI_HUD_POWER)->Render(x + 148, y);
 	for (int i = 0; i < MARIO_RUNNING_STACKS + 1; i++)
 	{
 		if (i < MARIO_RUNNING_STACKS)
@@ -36,8 +40,8 @@ void CHUD::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	float cx, cy;
 	CCamera::GetInstance()->GetCamPos(cx, cy);
 	
-	x = cx + (HUD_BBOX_WIDTH);
-	y = cy + (CGame::GetInstance()->GetBackBufferHeight() - (HUD_BBOX_HEIGHT)/2);
+	x = cx + (HUD_BBOX_WIDTH/2) + 16;
+	y = cy + (CGame::GetInstance()->GetBackBufferHeight() - (HUD_BBOX_HEIGHT)/2) - 4;
 
 	CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 	speedStack = mario->GetSpeedStack();

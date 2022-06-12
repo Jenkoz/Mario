@@ -32,8 +32,8 @@ void CCamera::Update()
 	float mapEnd = CMaps::GetInstance()->GetWidthMap();
 	if (cx + game->GetBackBufferWidth() >= mapEnd) 
 		cx = mapEnd - game->GetBackBufferWidth();
-	if (cy < 0)
-		cy = 0;
+	if (cy < MAX_SKYZONE_HEIGHT)
+		cy = MAX_SKYZONE_HEIGHT;
 
 	if (player->GetY() < CAM_Y_POSITION_TERRAIN_ZONE + 20)
 		SetCamPos(cx, cy + HUD_BBOX_HEIGHT / 2);

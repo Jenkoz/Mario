@@ -69,7 +69,7 @@ assets\HUD.txt
 
 
 #goomba
-#2	224	464	1
+2	224	464	1
 2	528	464	1
 
 #koopa
@@ -79,7 +79,7 @@ assets\HUD.txt
 
 
 #Platform
-#id	x	y	cell_width	cell_height	length	depth	type	sprite
+#id	x	y	cell_width	cell_height	cell_length	cell_depth	type	sprite
 #type 1: normal platform, 2: colour platform, 3: dead platform
 # normal zone platform
 6	0	480	16	16	39	1	1	62000
