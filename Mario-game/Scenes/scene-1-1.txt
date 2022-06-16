@@ -61,17 +61,21 @@ assets\HUD.txt
 # type: 1 = disabled, 2 = normal, 3 = Question
 # itemId: 0 = none, 1 = ultility, 2 = dcoin, 3 = Coin, 4 = pswitch
 #id	x	y	type	itemId
-# NORMAL BRICK
+# QUESTION BRICK
 1	192	432	3	2
 1	176	432	3	2
 1	224	368	3	2
+1	416	384	3	2
+1	704	416	3	2
 
+1	1440	192	3	1
+1	1488	432	3	1
 1	240	368	3	1
 1	656	448	3	1
 # PSWITCH BRICK
 1	2032	432	2	4
 
-# QUESTION BRICK
+# NORMAL BRICK WITH COIN
 1	1952	464	2	3
 1	1968	464	2	3
 1	1984	464	2	3
