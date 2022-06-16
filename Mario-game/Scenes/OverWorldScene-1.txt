@@ -1,0 +1,8 @@
+[ASSETS]
+
+[OBJECTS]
+# MARIO
+
+[MAP]
+#id	filePath.png	maxCol	maxRow	firstLayerpPath.txt	secondLayerPath.txt	thirdLayerPath.txt
+700001	textures\WorldMap\overworld.png	16	12	textures\WorldMap\data\OverWorldMap_Background.txt	textures\WorldMap\data\OverWorldMap_Graphic.txt	textures\WorldMap\data\OverWorldMap_Misc.txt

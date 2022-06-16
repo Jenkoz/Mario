@@ -745,7 +745,7 @@ void CMario::SetState(int state)
 		if (nx > 0)
 			maxVx = MARIO_SPEED_FALL_SLOW_X;
 		else maxVx = -MARIO_SPEED_FALL_SLOW_X;
-		vy = MARIO_SPEED_FALL_SLOW_Y;
+		vy = -MARIO_SPEED_FALL_SLOW_Y;
 		break;
 	case MARIO_STATE_FLYING:
 		isFlying = true;

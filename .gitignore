@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/Mario-game/textures/WorldMap/data/OverWorldMap_Background.txt
+/Mario-game/textures/WorldMap/data/OverWorldMap_Graphic.txt
+/Mario-game/textures/WorldMap/data/OverWorldMap_Misc.txt
