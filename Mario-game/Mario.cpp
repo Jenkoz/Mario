@@ -176,21 +176,27 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 {
 	CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
 
-	// jump on top >> make paragoomba a goomba, if there's a goomba, it kills goomba
+	// jump on top goomba-paragoomba
 	if (e->ny < 0)
 	{
-		if (goomba->GetState() != GOOMBA_STATE_DIE)
-		{ 
-			if (goomba->GetLevel() == 2)
+		if (goomba->GetLevel() == LEVEL_GOOMBA)
+		{
+			if (goomba->GetState() != GOOMBA_STATE_DIE)
 			{
-				DebugOut(L">>> GOOMBA LEVEL %d >>> \n", goomba->GetLevel());
-				goomba->SetLevel(1);
-				goomba->SetState(GOOMBA_STATE_WALKING);
-				//DebugOut(L">>> GOOMBA LEVEL DOWN to %d >>> \n", goomba->GetState());
-			}
-			else
+				vy = -MARIO_JUMP_DEFLECT_SPEED;
 				goomba->SetState(GOOMBA_STATE_DIE);
-			vy = -MARIO_JUMP_DEFLECT_SPEED;
+			}
+		}
+		else if (goomba->GetLevel() == LEVEL_PARAGOOMBA)
+		{
+			if (goomba->GetState() != PARAGOOMBA_STATE_DIE)
+			{
+				vy = -MARIO_JUMP_DEFLECT_SPEED;
+				if (goomba->GetState() == PARAGOOMBA_STATE_WING_WALKING)
+					goomba->SetState(PARAGOOMBA_STATE_WALKING);
+				else if (goomba->GetState() == PARAGOOMBA_STATE_WALKING)
+					goomba->SetState(PARAGOOMBA_STATE_DIE);
+			}
 		}
 	}
 	else // hit by Goomba
