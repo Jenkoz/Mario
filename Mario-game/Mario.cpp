@@ -192,7 +192,7 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 			if (goomba->GetState() != PARAGOOMBA_STATE_DIE)
 			{
 				vy = -MARIO_JUMP_DEFLECT_SPEED;
-				if (goomba->GetState() == PARAGOOMBA_STATE_WING_WALKING)
+				if (goomba->GetState() != PARAGOOMBA_STATE_WALKING)
 					goomba->SetState(PARAGOOMBA_STATE_WALKING);
 				else if (goomba->GetState() == PARAGOOMBA_STATE_WALKING)
 					goomba->SetState(PARAGOOMBA_STATE_DIE);
@@ -249,12 +249,21 @@ void CMario::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 		// jump on top >> make koopa a shell
 		if (koopa->GetState() != SHELL_STATE_IDLING)
 		{
-			if (koopa->GetState() == KOOPA_STATE_WALKING_LEFT || koopa->GetState() == KOOPA_STATE_WALKING_RIGHT)
+			if (koopa->GetType() != KOOPA_TYPE_GREEN_PARA)
 			{
-				vy = -MARIO_JUMP_DEFLECT_SPEED;
-				koopa->setLastState(koopa->GetState());
-				koopa->SetState(SHELL_STATE_IDLING);
+				if (koopa->GetState() == KOOPA_STATE_WALKING_LEFT || koopa->GetState() == KOOPA_STATE_WALKING_RIGHT)
+				{
+					vy = -MARIO_JUMP_DEFLECT_SPEED;
+					koopa->setLastState(koopa->GetState());
+					koopa->SetState(SHELL_STATE_IDLING);
+				}
 			}
+			else
+			{
+					vy = -MARIO_JUMP_DEFLECT_SPEED;
+					koopa->SetType(KOOPA_TYPE_GREEN);
+					koopa->downGrade();
+			}	
 		}
 	}
 	else // hit by koopa
@@ -856,32 +865,32 @@ void CMario::HandleMarioEnterPipe()
 {
 	if (GetTickCount64() - pipeDown_start < MARIO_PIPE_TIME && isPipeDown)
 	{
-		vy = 0.03f;
+		vy = MARIO_PIPE_VY;
 	}
 	if (GetTickCount64() - pipeDown_start >= MARIO_PIPE_TIME && isPipeDown)
 	{
-		if (currentZone == 1)
+		if (currentZone == TERRAIN_ZONE)
 		{
 			SwitchZone();
 			StartPipeDown();
 		}
-		else if (currentZone == 2)
+		else if (currentZone == SECRET_ZONE)
 		{
 			StopPipeDown();
 		}
 	}
 	if (GetTickCount64() - pipeUp_start < MARIO_PIPE_TIME && isPipeUp)
 	{
-		vy = -0.03f;
+		vy = -MARIO_PIPE_VY;
 	}
 	if (GetTickCount64() - pipeUp_start >= MARIO_PIPE_TIME && isPipeUp)
 	{
-		if (currentZone == 2)
+		if (currentZone == SECRET_ZONE)
 		{
 			SwitchZone();
 			StartPipeUp();
 		}
-		else if (currentZone == 1)
+		else if (currentZone == TERRAIN_ZONE)
 		{
 			StopPipeUp();
 		}
