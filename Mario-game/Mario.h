@@ -6,6 +6,13 @@
 
 #include "debug.h"
 
+#define TERRAIN_ZONE 1
+#define SECRET_ZONE 2
+#define TERRAIN_ZONE_X_SPAWN 1272
+#define TERRAIN_ZONE_Y_SPAWN 608
+#define SECRET_ZONE_X_SPAWN 2328
+#define SECRET_ZONE_Y_SPAWN 448
+
 
 #define MARIO_WALKING_SPEED_START 0.0001f
 #define MARIO_WALKING_SPEED		0.15f
@@ -27,6 +34,7 @@
 #define MARIO_SPEED_FALL_SLOW_X	0.075f
 
 #define MARIO_GRAVITY			0.002f
+#define MARIO_PIPE_VY			0.03f
 
 #define MARIO_JUMP_DEFLECT_SPEED  0.4f
 
@@ -286,7 +294,7 @@ public:
 			coin = 0;
 			life = 4;
 			speedStack = 0;
-			currentZone = 1;
+			currentZone = TERRAIN_ZONE;
 	}
 
 	
@@ -335,15 +343,15 @@ public:
 	void HandleMarioFlying();
 	void SwitchZone()
 	{
-		if (currentZone == 1)
+		if (currentZone == TERRAIN_ZONE)
 		{
-			currentZone = 2;
-			SetPosition(1272, 608);
+			currentZone = SECRET_ZONE;
+			SetPosition(SECRET_ZONE_X_SPAWN, SECRET_ZONE_Y_SPAWN);
 		}
 		else
 		{
-			currentZone = 1;
-			SetPosition(2328, 448);
+			currentZone = TERRAIN_ZONE;
+			SetPosition(TERRAIN_ZONE_X_SPAWN, TERRAIN_ZONE_Y_SPAWN);
 		}
 	}
 
