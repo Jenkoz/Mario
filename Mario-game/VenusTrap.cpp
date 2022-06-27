@@ -83,17 +83,17 @@ void CVenusTrap::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			SetState(VENUS_TRAP_STATE_IDLING);
 		}
 	}
-	if ((GetTickCount64() - start_aiming > VENUS_TRAP_AIMING_TIME) && isAiming)
+	if ((GetTickCount64() - start_aiming > VENUS_TRAP_AIMING_TIMEOUT) && isAiming)
 	{
 		StopAiming();
 		SetState(VENUS_TRAP_STATE_SHOOTING);
 	}
-	if ((GetTickCount64() - start_shooting > VENUS_TRAP_SHOOTING_TIME) && isShooting)
+	if ((GetTickCount64() - start_shooting > VENUS_TRAP_SHOOTING_TIMEOUT) && isShooting)
 	{
 		StopShooting();
 		SetState(VENUS_TRAP_STATE_MOVING_DOWN);
 	}
-	if ((GetTickCount64() - start_idling > VENUS_TRAP_IDLING_TIME) && isIdling)
+	if ((GetTickCount64() - start_idling > VENUS_TRAP_IDLING_TIMEOUT) && isIdling)
 	{
 		StopIdling();
 		SetState(VENUS_TRAP_STATE_GROWING_UP);
@@ -162,7 +162,7 @@ void CVenusTrap::Render()
 	}
 
 	CAnimations::GetInstance()->Get(aniId)->Render(x, y);
-	//RenderBoundingBox();
+	RenderBoundingBox();
 }
 
 void CVenusTrap::SetState(int state)

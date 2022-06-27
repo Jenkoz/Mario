@@ -112,6 +112,15 @@ assets\venus_trap.txt
 3	576	416	1
 3	2096	416	1
 
+#piranha plant
+7	1800	454
+
+#venus Trap
+#id	x	y	type
+8	360	440	1
+8	1864	436	2
+
+
 
 #Platform
 #id	x	y	cell_width	cell_height	cell_length	cell_depth	type	sprite
