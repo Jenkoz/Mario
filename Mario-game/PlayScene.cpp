@@ -149,10 +149,10 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		int type_koopa = atoi(tokens[3].c_str());
 		obj = new CKoopa(x, y, type_koopa); break;
 	}
-	case OBJECT_TYPE_PIRANHA_PLANT:
+	/*case OBJECT_TYPE_PIRANHA_PLANT:
 	{
 		obj = new CPiranhaPlant(x, y); break;
-	}
+	}*/
 	case OBJECT_TYPE_VENUS_TRAP:
 	{
 		int type_venusTrap = atoi(tokens[3].c_str());

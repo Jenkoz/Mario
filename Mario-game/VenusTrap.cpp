@@ -4,13 +4,24 @@
 
 CVenusTrap::CVenusTrap(float x, float y, int type) :CGameObject(x, y)
 {
-	this->oldX = x;
-	this->oldY = y;
+
+	this->x_start = x;
+	this->y_start = y;
 	this->type = type;
-	//this->SetState(VENUS_TRAP_STATE_MOVE);
-	//this->ny = 1;
-	marioXX = 0;
-	marioYY = 0;
+	this->lastAni = -1;
+
+	isMovingDown = false;
+	isAiming = false;
+	isShooting = false;
+	isIdling = false;
+
+	start_aiming = 0;
+	start_shooting = 0;
+	start_idling = 0;
+
+	this->SetState(VENUS_TRAP_STATE_GROWING_UP);
+	marioX = 0;
+	marioY = 0;
 }
 
 void CVenusTrap::GetBoundingBox(float& left, float& top, float& right, float& bottom)
@@ -31,7 +42,6 @@ void CVenusTrap::GetBoundingBox(float& left, float& top, float& right, float& bo
 
 void CVenusTrap::OnNoCollision(DWORD dt)
 {
-	x += vx * dt;
 	y += vy * dt;
 }
 
@@ -45,63 +55,56 @@ void CVenusTrap::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	LPPLAYSCENE playscreen = (LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene();
 	CMario* mario = (CMario*)playscreen->GetPlayer();
 
-	mario->GetPosition(marioXX, marioYY);
-
-	if (marioXX < x) 
-	{
-		nx = -1;
-		if (marioYY < y)
-			ny = -1;
-		else 
-			ny = 1;
-	}
-	else if (marioXX > x) {
-		nx = 1;
-		if (marioYY < y) {
-			ny = -1;
-		}
-		else {
-			ny = 1;
-		}
-	}
-	//appear
-	Appear();
+	mario->GetPosition(marioX, marioY);
 
 	if (this->type == VENUS_TRAP_TYPE_RED) 
 	{
-		if (state == VENUS_TRAP_STATE_GROWING && this->y <= oldY - VENUS_TRAP_RED_BBOX_HEIGHT) 
+		if ((this->y <= y_start - VENUS_TRAP_RED_BBOX_HEIGHT) && isGrowingUp)
 		{
-			//shoot
-			ShootFireball();
+			StopGrowingUp();
+			SetState(VENUS_TRAP_STATE_AIMING);
 		}
-		else if (state == VENUS_TRAP_STATE_MOVE && this->y >= oldY) 
+		if ((this->y >= y_start) && isMovingDown)
 		{
-			vy = -VENUS_TRAP_SPEED;
+			StopMovingDown();
+			SetState(VENUS_TRAP_STATE_IDLING);
 		}
-
 	}
 	else if (this->type == VENUS_TRAP_TYPE_GREEN) 
 	{
-		if (state == VENUS_TRAP_STATE_GROWING && this->y <= oldY - VENUS_TRAP_GREEN_BBOX_HEIGHT)
+		if ((this->y <= y_start - VENUS_TRAP_GREEN_BBOX_HEIGHT) && isGrowingUp)
 		{
-			//shoot
-			ShootFireball();
+			StopGrowingUp();
+			SetState(VENUS_TRAP_STATE_AIMING);
 		}
-		else if (state == VENUS_TRAP_STATE_MOVE && this->y >= oldY) 
+		if ((this->y >= y_start) && isMovingDown)
 		{
-			vy = -VENUS_TRAP_SPEED;
+			StopMovingDown();
+			SetState(VENUS_TRAP_STATE_IDLING);
 		}
 	}
-	if (state == VENUS_TRAP_STATE_SHOOT && countFire > 0 && GetTickCount64() - fire_start > 1000) 
+	if ((GetTickCount64() - start_aiming > VENUS_TRAP_AIMING_TIME) && isAiming)
 	{
-		SetState(VENUS_TRAP_STATE_MOVE);
-		vy = -vy;
-		countFire = 0;
+		StopAiming();
+		SetState(VENUS_TRAP_STATE_SHOOTING);
 	}
+	if ((GetTickCount64() - start_shooting > VENUS_TRAP_SHOOTING_TIME) && isShooting)
+	{
+		StopShooting();
+		SetState(VENUS_TRAP_STATE_MOVING_DOWN);
+	}
+	if ((GetTickCount64() - start_idling > VENUS_TRAP_IDLING_TIME) && isIdling)
+	{
+		StopIdling();
+		SetState(VENUS_TRAP_STATE_GROWING_UP);
+	}
+	
+	
+
+	DebugOut(L"State: %d\n",state);
+	DebugOut(L"Y: %f\n", this->y);
 
 
-
-	//
 	CGameObject::Update(dt, coObjects);
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
@@ -113,56 +116,49 @@ void CVenusTrap::Render()
 	CMario* mario = (CMario*)playscreen->GetPlayer();
 	float marioX, marioY;
 	mario->GetPosition(marioX, marioY);
-
 	if (this->type == VENUS_TRAP_TYPE_RED) 
 	{
-		if (this->state == VENUS_TRAP_STATE_IDE || this->state == VENUS_TRAP_STATE_MOVE)
-			if (marioX < x)
-				aniId = ID_ANI_VENUS_TRAP_RED_LEFT_DOWN;
-			else
-				aniId = ID_ANI_VENUS_TRAP_RED_RIGHT_DOWN;
-		else if (this->state == VENUS_TRAP_STATE_SHOOT) 
+		if (this->state != VENUS_TRAP_STATE_MOVING_DOWN || this->state != VENUS_TRAP_STATE_SHOOTING)
 		{
-			if (marioX < x) 
+			if (marioY < y)
 			{
-				if (marioY < y) 
+				if (marioX < x)
 					aniId = ID_ANI_VENUS_TRAP_RED_LEFT_UP;
 				else 
-					aniId = ID_ANI_VENUS_TRAP_RED_LEFT_DOWN;
-			}
-			else if (marioX > x) 
-			{
-				if (marioY < y)
 					aniId = ID_ANI_VENUS_TRAP_RED_RIGHT_UP;
+			}
+			else
+			{
+				if (marioX < x)
+					aniId = ID_ANI_VENUS_TRAP_RED_LEFT_DOWN;
 				else
 					aniId = ID_ANI_VENUS_TRAP_RED_RIGHT_DOWN;
 			}
-
+			this->lastAni = aniId;
 		}
+		else aniId = this->lastAni;
 	}
-	else if (this->type == VENUS_TRAP_TYPE_GREEN) 
+	else if (this->type == VENUS_TRAP_TYPE_GREEN || this->state != VENUS_TRAP_STATE_SHOOTING)
 	{
-		if (this->state == VENUS_TRAP_STATE_IDE || this->state == VENUS_TRAP_STATE_MOVE)
-			if (marioX < x)
-				aniId = ID_ANI_VENUS_TRAP_GREEN_LEFT_DOWN;
-			else
-				aniId = ID_ANI_VENUS_TRAP_GREEN_RIGHT_DOWN;
-		else if (this->state == VENUS_TRAP_STATE_SHOOT) 
+		if (this->state != VENUS_TRAP_STATE_MOVING_DOWN)
 		{
-			if (marioX < x) 
+			if (marioY < y)
 			{
-				if (marioY < y)
+				if (marioX < x)
 					aniId = ID_ANI_VENUS_TRAP_GREEN_LEFT_UP;
 				else
-					aniId = ID_ANI_VENUS_TRAP_GREEN_LEFT_DOWN;
-			}
-			else if (marioX > x) {
-				if (marioY < y)
 					aniId = ID_ANI_VENUS_TRAP_GREEN_RIGHT_UP;
+			}
+			else
+			{
+				if (marioX < x)
+					aniId = ID_ANI_VENUS_TRAP_GREEN_LEFT_DOWN;
 				else
 					aniId = ID_ANI_VENUS_TRAP_GREEN_RIGHT_DOWN;
 			}
+			this->lastAni = aniId;
 		}
+		else aniId = this->lastAni;
 	}
 
 	CAnimations::GetInstance()->Get(aniId)->Render(x, y);
@@ -171,19 +167,28 @@ void CVenusTrap::Render()
 
 void CVenusTrap::SetState(int state)
 {
-	CGameObject::SetState(state);
 	switch (state)
 	{
-	case VENUS_TRAP_STATE_IDE:
-		vx = 0;
-		vy = 0;
-		break;
-	case VENUS_TRAP_STATE_MOVE:
+	case VENUS_TRAP_STATE_GROWING_UP:
+		StartGrowingUp();
 		vy = -VENUS_TRAP_SPEED;
 		break;
-	case VENUS_TRAP_STATE_SHOOT:
-		fire_start = GetTickCount64();
+	case VENUS_TRAP_STATE_AIMING:
+		StartAiming();
+		vy = 0;
+		break;
+	case VENUS_TRAP_STATE_MOVING_DOWN:
+		StartMovingDown();
+		vy = VENUS_TRAP_SPEED;
+		break;
+	case VENUS_TRAP_STATE_IDLING:
+		StartIdling();
+		vy = 0;
+		break;
+	case VENUS_TRAP_STATE_SHOOTING:
+		StartShooting();
 		vy = 0;
 		break;
 	}
+	CGameObject::SetState(state);
 }
