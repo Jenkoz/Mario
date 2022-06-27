@@ -123,6 +123,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	float y = (float)atof(tokens[2].c_str());
 
 	CGameObject *obj = NULL;
+	CGameObject *pipeObj = NULL;
 
 	switch (object_type)
 	{
@@ -151,12 +152,13 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	}
 	case OBJECT_TYPE_PIRANHA_PLANT:
 	{
-		obj = new CPiranhaPlant(x, y); break;
+		pipeObj = new CPiranhaPlant(x, y);
+		break;
 	}
 	case OBJECT_TYPE_VENUS_TRAP:
 	{
 		int type_venusTrap = atoi(tokens[3].c_str());
-		obj = new CVenusTrap(x, y, type_venusTrap);
+		pipeObj = new CVenusTrap(x, y, type_venusTrap);
 		break;
 	}
 	case OBJECT_TYPE_HUD: 
@@ -226,10 +228,16 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	}
 
 	// General object setup
-	obj->SetPosition(x, y);
-
-
-	objects.push_back(obj);
+	if (obj)
+	{
+		obj->SetPosition(x, y);
+		objects.push_back(obj);
+	}
+	else
+	{
+		pipeObj->SetPosition(x, y);
+		pipeObjects.push_back(pipeObj);
+	}
 }
 
 void CPlayScene::_ParseSection_MAPS(string line)
@@ -329,13 +337,20 @@ void CPlayScene::Update(DWORD dt)
 	vector<LPGAMEOBJECT> coObjects;
 	for (size_t i = 0; i < objects.size(); i++)
 	{
-
 		if (objects[i] != player)
 			coObjects.push_back(objects[i]);
+	}
+	for (size_t i = 0; i < pipeObjects.size(); i++)
+	{
+		coObjects.push_back(pipeObjects[i]);
 	}
 	for (size_t i = 0; i < objects.size(); i++)
 	{
 		objects[i]->Update(dt, &coObjects);
+	}
+	for (size_t i = 0; i < pipeObjects.size(); i++)
+	{
+		pipeObjects[i]->Update(dt, &coObjects);
 	}
 
 	/*if (hud != NULL)
@@ -355,6 +370,8 @@ void CPlayScene::Render()
 {
 	CMaps::GetInstance()->RenderBackground();
 	CMaps::GetInstance()->RenderShading();
+	for (int i = 0; (float)i < pipeObjects.size(); i++)
+		pipeObjects[i]->Render();
 	CMaps::GetInstance()->RenderGraphic();
 	for (int i = 0; (float)i < objects.size(); i++)
 		objects[i]->Render();
@@ -372,6 +389,11 @@ void CPlayScene::Clear()
 		delete (*it);
 	}
 	objects.clear();
+	for (it = pipeObjects.begin(); it != pipeObjects.end(); it++)
+	{
+		delete (*it);
+	}
+	pipeObjects.clear();
 }
 
 /*
@@ -384,7 +406,10 @@ void CPlayScene::Unload()
 {
 	for (int i = 0; (float)i < objects.size(); i++)
 		delete objects[i];
+	for (int i = 0; (float)i < pipeObjects.size(); i++)
+		delete pipeObjects[i];
 
+	pipeObjects.clear();
 	objects.clear();
 	player = NULL;
 
@@ -410,10 +435,22 @@ void CPlayScene::PurgeDeletedObjects()
 			*it = NULL;
 		}
 	}
+	for (it = pipeObjects.begin(); it != pipeObjects.end(); it++)
+	{
+		LPGAMEOBJECT o = *it;
+		if (o->IsDeleted())
+		{
+			delete o;
+			*it = NULL;
+		}
+	}
 
 	// NOTE: remove_if will swap all deleted items to the end of the vector
 	// then simply trim the vector, this is much more efficient than deleting individual items
 	objects.erase(
 		std::remove_if(objects.begin(), objects.end(), CPlayScene::IsGameObjectDeleted),
 		objects.end());
+	pipeObjects.erase(
+		std::remove_if(pipeObjects.begin(), pipeObjects.end(), CPlayScene::IsGameObjectDeleted),
+		pipeObjects.end());
 }

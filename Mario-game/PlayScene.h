@@ -15,6 +15,8 @@ protected:
 	LPGAMEOBJECT hud;
 
 	vector<LPGAMEOBJECT> objects;
+	vector<LPGAMEOBJECT> pipeObjects;
+
 
 	void _ParseSection_SPRITES(string line);
 	void _ParseSection_ANIMATIONS(string line);
