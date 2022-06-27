@@ -22,6 +22,8 @@
 #include "DeadPlatform.h"
 #include "Portal.h"
 #include "HUD.h"
+#include "VenusTrap.h"
+#include "PiranhaPlant.h"
 
 
 // MAP
@@ -125,6 +127,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	switch (object_type)
 	{
 	case OBJECT_TYPE_MARIO:
+	{
 		if (player!=NULL) 
 		{
 			DebugOut(L"[ERROR] MARIO object was created before!\n");
@@ -135,6 +138,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 		DebugOut(L"[INFO] Player object has been created!\n");
 		break;
+	}
 	case OBJECT_TYPE_GOOMBA: 
 	{
 		int lvl_goomba = atoi(tokens[3].c_str());
@@ -142,8 +146,18 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	}
 	case OBJECT_TYPE_KOOPA:
 	{
-		int lvl_koopa = atoi(tokens[3].c_str());
-		obj = new CKoopa(x, y, lvl_koopa); break;
+		int type_koopa = atoi(tokens[3].c_str());
+		obj = new CKoopa(x, y, type_koopa); break;
+	}
+	case OBJECT_TYPE_PIRANHA_PLANT:
+	{
+		obj = new CPiranhaPlant(x, y); break;
+	}
+	case OBJECT_TYPE_VENUS_TRAP:
+	{
+		int type_venusTrap = atoi(tokens[3].c_str());
+		obj = new CVenusTrap(x, y, type_venusTrap);
+		break;
 	}
 	case OBJECT_TYPE_HUD: 
 	{
@@ -164,7 +178,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		break;
 	}
 	case OBJECT_TYPE_COIN: obj = new CCoin(x, y); break;
-
 	case OBJECT_TYPE_PLATFORM:
 	{
 
@@ -196,7 +209,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 		break;
 	}
-
 	case OBJECT_TYPE_PORTAL:
 	{
 		float r = (float)atof(tokens[3].c_str());
@@ -204,8 +216,8 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		int scene_id = atoi(tokens[5].c_str());
 		int zone = atoi(tokens[6].c_str());
 		obj = new CPortal(x, y, r, b, scene_id, zone);
+		break;
 	}
-	break;
 
 
 	default:
