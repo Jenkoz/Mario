@@ -149,6 +149,9 @@
     <ClCompile Include="HUD.cpp">
       <Filter>GameObject\Other\HUD</Filter>
     </ClCompile>
+    <ClCompile Include="VenusTrap.cpp">
+      <Filter>GameObject\Enemy\PiranhaPlant</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mario.h">
@@ -258,6 +261,9 @@
     </ClInclude>
     <ClInclude Include="HUD.h">
       <Filter>GameObject\Other\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="VenusTrap.h">
+      <Filter>GameObject\Enemy\PiranhaPlant</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
