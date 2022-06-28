@@ -52,11 +52,11 @@ protected:
 	ULONGLONG start_idling;
 
 	float x_start, y_start;
+	int nx, ny;
 	int type;
 	int lastAni;
 	float marioX, marioY;
 
-	int countFire = 0;
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	virtual void Render();
@@ -69,6 +69,8 @@ protected:
 public:
 	CVenusTrap(float x, float y, int type);
 	virtual void SetState(int state);
+
+	void ShootingFireball();
 
 	//start
 	void StartGrowingUp()

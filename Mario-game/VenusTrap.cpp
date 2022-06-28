@@ -1,10 +1,12 @@
 #include "VenusTrap.h"
 #include "PlayScene.h"
+#include "Fireball.h"
 #include "Mario.h"
 
 CVenusTrap::CVenusTrap(float x, float y, int type) :CGameObject(x, y)
 {
-
+	nx = 0;
+	ny = 0;
 	this->x_start = x;
 	this->y_start = y;
 	this->type = type;
@@ -20,8 +22,11 @@ CVenusTrap::CVenusTrap(float x, float y, int type) :CGameObject(x, y)
 	start_idling = 0;
 
 	this->SetState(VENUS_TRAP_STATE_GROWING_UP);
-	marioX = 0;
-	marioY = 0;
+
+	LPPLAYSCENE scene = (LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene();
+	CMario* mario = (CMario*)scene->GetPlayer();
+
+	mario->GetPosition(marioX, marioY);
 }
 
 void CVenusTrap::GetBoundingBox(float& left, float& top, float& right, float& bottom)
@@ -52,47 +57,50 @@ void CVenusTrap::OnCollisionWith(LPCOLLISIONEVENT e)
 
 void CVenusTrap::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	LPPLAYSCENE playscreen = (LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene();
-	CMario* mario = (CMario*)playscreen->GetPlayer();
-
-	mario->GetPosition(marioX, marioY);
-
-	if (this->type == VENUS_TRAP_TYPE_RED) 
+	// Handle Moving up 
+	if (this->type == VENUS_TRAP_TYPE_RED) //RED
 	{
+		// then aiming
 		if ((this->y <= y_start - VENUS_TRAP_RED_BBOX_HEIGHT) && isGrowingUp)
 		{
 			StopGrowingUp();
 			SetState(VENUS_TRAP_STATE_AIMING);
 		}
+		//then stay idling
 		if ((this->y >= y_start) && isMovingDown)
 		{
 			StopMovingDown();
 			SetState(VENUS_TRAP_STATE_IDLING);
 		}
 	}
-	else if (this->type == VENUS_TRAP_TYPE_GREEN) 
+	else if (this->type == VENUS_TRAP_TYPE_GREEN) //GREEN
 	{
+		// then aiming
 		if ((this->y <= y_start - VENUS_TRAP_GREEN_BBOX_HEIGHT) && isGrowingUp)
 		{
 			StopGrowingUp();
 			SetState(VENUS_TRAP_STATE_AIMING);
 		}
+		//then stay idling
 		if ((this->y >= y_start) && isMovingDown)
 		{
 			StopMovingDown();
 			SetState(VENUS_TRAP_STATE_IDLING);
 		}
 	}
+	//Handle Aiming then shoot 
 	if ((GetTickCount64() - start_aiming > VENUS_TRAP_AIMING_TIMEOUT) && isAiming)
 	{
 		StopAiming();
 		SetState(VENUS_TRAP_STATE_SHOOTING);
 	}
+	//Handle Shooting then moving down
 	if ((GetTickCount64() - start_shooting > VENUS_TRAP_SHOOTING_TIMEOUT) && isShooting)
 	{
 		StopShooting();
 		SetState(VENUS_TRAP_STATE_MOVING_DOWN);
 	}
+	//Handle Handle Idling then growing up
 	if ((GetTickCount64() - start_idling > VENUS_TRAP_IDLING_TIMEOUT) && isIdling)
 	{
 		StopIdling();
@@ -114,22 +122,22 @@ void CVenusTrap::Render()
 	int aniId = -1;
 	LPPLAYSCENE playscreen = (LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene();
 	CMario* mario = (CMario*)playscreen->GetPlayer();
-	float marioX, marioY;
-	mario->GetPosition(marioX, marioY);
+	float marioXX, marioYY;
+	mario->GetPosition(marioXX, marioYY);
 	if (this->type == VENUS_TRAP_TYPE_RED) 
 	{
 		if (this->state != VENUS_TRAP_STATE_MOVING_DOWN || this->state != VENUS_TRAP_STATE_SHOOTING)
 		{
-			if (marioY < y)
+			if (marioYY < y)
 			{
-				if (marioX < x)
+				if (marioXX < x)
 					aniId = ID_ANI_VENUS_TRAP_RED_LEFT_UP;
 				else 
 					aniId = ID_ANI_VENUS_TRAP_RED_RIGHT_UP;
 			}
 			else
 			{
-				if (marioX < x)
+				if (marioXX < x)
 					aniId = ID_ANI_VENUS_TRAP_RED_LEFT_DOWN;
 				else
 					aniId = ID_ANI_VENUS_TRAP_RED_RIGHT_DOWN;
@@ -142,16 +150,16 @@ void CVenusTrap::Render()
 	{
 		if (this->state != VENUS_TRAP_STATE_MOVING_DOWN)
 		{
-			if (marioY < y)
+			if (marioYY < y)
 			{
-				if (marioX < x)
+				if (marioXX < x)
 					aniId = ID_ANI_VENUS_TRAP_GREEN_LEFT_UP;
 				else
 					aniId = ID_ANI_VENUS_TRAP_GREEN_RIGHT_UP;
 			}
 			else
 			{
-				if (marioX < x)
+				if (marioXX < x)
 					aniId = ID_ANI_VENUS_TRAP_GREEN_LEFT_DOWN;
 				else
 					aniId = ID_ANI_VENUS_TRAP_GREEN_RIGHT_DOWN;
@@ -187,8 +195,41 @@ void CVenusTrap::SetState(int state)
 		break;
 	case VENUS_TRAP_STATE_SHOOTING:
 		StartShooting();
+		ShootingFireball();
 		vy = 0;
 		break;
 	}
 	CGameObject::SetState(state);
+}
+
+void CVenusTrap::ShootingFireball()
+{
+	LPPLAYSCENE scene = (LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene();
+	CMario* mario = (CMario*)scene->GetPlayer();
+	float marioXX, marioYY;
+	mario->GetPosition(marioXX, marioYY);
+
+	if (marioYY < y)
+	{
+		if (marioXX < x)
+			nx = -1;
+		else
+			nx = 1;
+		ny = -1;
+	}
+	else
+	{
+		if (marioXX < x)
+			nx = -1;
+		else
+			nx = 1;
+		ny = 1;
+	}
+	CGameObject* obj = NULL;
+	if (marioX < x) 
+		obj = new CFireball(x - FIREBALL_BBOX_WIDTH, y - FIREBALL_BBOX_HEIGHT, nx, ny);
+	else 
+		obj = new CFireball(x + FIREBALL_BBOX_WIDTH, y - FIREBALL_BBOX_HEIGHT / 2, nx, ny);
+	obj->SetPosition(x, y);
+	((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->LoadObject(obj);
 }

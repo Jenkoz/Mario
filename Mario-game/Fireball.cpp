@@ -34,12 +34,8 @@ void CFireball::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void CFireball::Render()
 {
-	int aniId = -1;
-	if (vx < 0) {
-		aniId = ID_ANI_FIREBALL_LEFT;
-	}
-	else if (vx > 0)
-		aniId = ID_ANI_FIREBALL_RIGHT;
+	int aniId = ID_ANI_FIREBALL;
+
 	CAnimations::GetInstance()->Get(aniId)->Render(x, y);
 	//RenderBoundingBox();
 }
