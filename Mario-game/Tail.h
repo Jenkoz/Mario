@@ -1,27 +1,29 @@
 #pragma once
 #include "GameObject.h"
 
-#define TAIL_BBOX_WIDTH		8
-#define TAIL_BBOX_HEIGHT	6
-#define TAIL_STATE_HIT_FRONT 2
-#define TAIL_STATE_HIT_BACK	 1
-#define TAIL_STATE_HIDE 0
+#define TAIL_BBOX_WIDTH		5
+#define TAIL_BBOX_HEIGHT	5
+
+#define TAIL_STATE_HITTING	100
+#define TAIL_STATE_HIDING	 200
 
 #define TAIL_HIT_TIME 100
 
+
 class CTail :public CGameObject
 {
-	
-	/*void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
-	void OnCollisionWithKoopas(LPCOLLISIONEVENT e);*/
-	ULONGLONG hit_start = 0;
-	BOOLEAN isWhackkingBack = false;
-	BOOLEAN isWhackkingFront = false;
+	float x_start;
+	void OnCollisionWith(LPCOLLISIONEVENT e);
+	void OnCollisionWithVenusTrap(LPCOLLISIONEVENT e);
+	void OnCollisionWithPiranhaPlant(LPCOLLISIONEVENT e);
+	void OnCollisionWithBrick(LPCOLLISIONEVENT e);
+	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
+	void OnCollisionWithKoopa(LPCOLLISIONEVENT e);
 
 public:
 	CTail(float x, float y) : CGameObject(x, y) 
 	{
-		SetState(isWhackkingBack);
+		SetState(TAIL_STATE_HIDING);
 	}
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects = NULL);
 	virtual void Render();
@@ -30,4 +32,14 @@ public:
 	virtual int IsCollidable() { return 1; };
 	virtual int IsBlocking() { return 0; }
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
+
+	void Attack(float x, float y, int nx) {
+		this->x = x;
+		this->y = y;
+		this->x_start = x;
+		this->nx = nx;
+
+		this->SetState(TAIL_STATE_HITTING);
+	};
+	int GetWidth() { return TAIL_BBOX_WIDTH; };
 };
