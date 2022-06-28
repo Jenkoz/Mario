@@ -153,6 +153,7 @@
     <ClCompile Include="DCoin.cpp" />
     <ClCompile Include="DeadPlatform.cpp" />
     <ClCompile Include="debug.cpp" />
+    <ClCompile Include="Fireball.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Goomba.cpp" />
@@ -189,6 +190,7 @@
     <ClInclude Include="DCoin.h" />
     <ClInclude Include="DeadPlatform.h" />
     <ClInclude Include="debug.h" />
+    <ClInclude Include="Fireball.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameGlobal.h" />
     <ClInclude Include="GameObject.h" />

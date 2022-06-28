@@ -12,6 +12,7 @@ assets\pswitch.txt
 assets\HUD.txt
 assets\piranha_plant.txt
 assets\venus_trap.txt
+assets\fireball.txt
 [OBJECTS]
 # type	x	y	extra_settings per object type
 # type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopa, 4 = Coin , 6 = invisible_object, 7 = piranha_plant, 8 = venus_trap

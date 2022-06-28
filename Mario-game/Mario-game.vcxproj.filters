@@ -152,6 +152,9 @@
     <ClCompile Include="VenusTrap.cpp">
       <Filter>GameObject\Enemy\PiranhaPlant</Filter>
     </ClCompile>
+    <ClCompile Include="Fireball.cpp">
+      <Filter>GameObject\Enemy\PiranhaPlant</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mario.h">
@@ -263,6 +266,9 @@
       <Filter>GameObject\Other\HUD</Filter>
     </ClInclude>
     <ClInclude Include="VenusTrap.h">
+      <Filter>GameObject\Enemy\PiranhaPlant</Filter>
+    </ClInclude>
+    <ClInclude Include="Fireball.h">
       <Filter>GameObject\Enemy\PiranhaPlant</Filter>
     </ClInclude>
   </ItemGroup>
