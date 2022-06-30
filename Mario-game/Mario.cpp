@@ -19,6 +19,7 @@
 
 
 #include "Collision.h"
+#include "Fireball.h"
 
 CMario* CMario::__instance = NULL;
 
@@ -51,6 +52,11 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	HandleMarioFlying();
 	HandleMarioFallingDown();	
 
+	if (isInWorldMapScene)
+	{
+		ax = 0;
+		ay = 0;
+	}
 	isOnPlatform = false;
 
 	CCollision::GetInstance()->Process(this, dt, coObjects);
@@ -127,6 +133,8 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithPSwitch(e);
 	else if (dynamic_cast<CDeadPlatform*>(e->obj))
 		OnCollisionWithDeadPlatform(e);
+	else if (dynamic_cast<CFireball*>(e->obj))
+		OnCollisionWithFireball(e);
 }
 
 void CMario::HandleMarioUntouchable()
@@ -353,6 +361,15 @@ void CMario::OnCollisionWithPSwitch(LPCOLLISIONEVENT e)
 void CMario::OnCollisionWithDeadPlatform(LPCOLLISIONEVENT e)
 {
 	CDeadPlatform* dPlatform = dynamic_cast<CDeadPlatform*>(e->obj);
+}
+
+void CMario::OnCollisionWithFireball(LPCOLLISIONEVENT e)
+{
+	CFireball* fireball = dynamic_cast<CFireball*>(e->obj);
+	if (untouchable == 0)
+	{
+		HandleMarioGetInjured();
+	}
 }
 
 //
@@ -646,7 +663,11 @@ void CMario::Render()
 	{
 		aniId = GetAniIdRaccoon();
 	}
-
+	if (isInWorldMapScene)
+	{
+		aniId = ID_ANI_MARIO_IN_WORLD_MAP;
+		animations->Get(aniId)->Render(x, y);
+	}
 	if (level != MARIO_LEVEL_RACCOON)
 		animations->Get(aniId)->Render(x, y);
 	else if (level == MARIO_LEVEL_RACCOON)
@@ -924,6 +945,40 @@ void CMario::HandleMarioWhippingTail()
 	{
 		isWhipping = false;
 		whipping_start = 0;
+	}
+}
+
+void CMario::MoveLeft()
+{
+	if (isInWorldMapScene) 
+	{
+		this->x -= 16;
+		this->nx = -1;
+	}
+}
+
+void CMario::MoveRight()
+{
+	if (isInWorldMapScene)
+	{
+		this->x += 16;
+		this->nx = 1;
+	}
+}
+
+void CMario::MoveUp()
+{
+	if (isInWorldMapScene)
+	{
+		this->y -= 16;
+	}
+}
+
+void CMario::MoveDown()
+{
+	if (isInWorldMapScene)
+	{
+		this->y += 16;
 	}
 }
 

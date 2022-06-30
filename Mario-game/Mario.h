@@ -1,10 +1,12 @@
 #pragma once
 #include "GameObject.h"
+#include "AssetIDs.h"
 
 #include "Animation.h"
 #include "Animations.h"
 
 #include "debug.h"
+
 
 #define TERRAIN_ZONE 1
 #define SECRET_ZONE 2
@@ -94,6 +96,8 @@
 #define ID_ANI_MARIO_ENTERING_PIPE		1010
 
 #define ID_ANI_MARIO_DIE 999
+
+#define ID_ANI_MARIO_IN_WORLD_MAP		2500
 
 // SMALL MARIO
 #define ID_ANI_MARIO_SMALL_IDLE_RIGHT			1100
@@ -217,7 +221,7 @@ class CMario : public CGameObject
 	float ax;				// acceleration on x 
 	float ay;				// acceleration on y 
 
-
+	int spawnScene;
 	int currentZone;
 	int life;
 	int speedStack;
@@ -247,6 +251,7 @@ class CMario : public CGameObject
 	void OnCollisionWithLeaf(LPCOLLISIONEVENT e);
 	void OnCollisionWithPSwitch(LPCOLLISIONEVENT e);
 	void OnCollisionWithDeadPlatform(LPCOLLISIONEVENT e);
+	void OnCollisionWithFireball(LPCOLLISIONEVENT e);
 
 	int GetAniIdBig();
 	int GetAniIdSmall();
@@ -258,6 +263,9 @@ public:
 	static CMario* GetInstance();
 	CMario();
 
+	BOOLEAN isInWorldMapScene = false;
+	BOOLEAN isInIntroScene = false;
+	BOOLEAN isInPlayScene = false;
 	BOOLEAN isOnPlatform = false;
 	BOOLEAN isSitting = false;
 	BOOLEAN isHolding = false;
@@ -272,29 +280,36 @@ public:
 	BOOLEAN isChangeDirection = false;
 
 
-	CMario(float x, float y) : CGameObject(x, y)
+	CMario(float x, float y, int spawnScene) : CGameObject(x, y)
 	{
-			maxVx = 0.0f;
-			ax = 0.0f;
-			ay = MARIO_GRAVITY;
+			this->spawnScene = spawnScene;
+			if (this->spawnScene == WORLD_MAP_SCENE)
+			{
+				isInWorldMapScene = true;
+				isInIntroScene = false;
+				isInPlayScene = false;
+				ay = 0;
 
-			level = MARIO_LEVEL_RACCOON;
-			//start
-			untouchable = 0;
-			untouchable_start = -1;
-			kicking_start = 0;
-			pipeDown_start = 0;
-			pipeUp_start = 0;
-			whipping_start = 0;
-			running_start = 0;
-			running_stop = 0;
-			flying_start = 0;
-			flapping_start = 0;
-
-			coin = 0;
-			life = 4;
-			speedStack = 0;
-			currentZone = TERRAIN_ZONE;
+			}
+				level = MARIO_LEVEL_SMALL;
+				ay = MARIO_GRAVITY;
+				maxVx = 0.0f;
+				ax = 0.0f;
+				//start
+				untouchable = 0;
+				untouchable_start = -1;
+				kicking_start = 0;
+				pipeDown_start = 0;
+				pipeUp_start = 0;
+				whipping_start = 0;
+				running_start = 0;
+				running_stop = 0;
+				flying_start = 0;
+				flapping_start = 0;
+				coin = 0;
+				life = 4;
+				speedStack = 0;
+				currentZone = TERRAIN_ZONE;		
 	}
 
 	
@@ -390,4 +405,12 @@ public:
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount64(); }
 
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
+
+
+
+	//Mario in world map
+	void MoveLeft();
+	void MoveRight();
+	void MoveUp();
+	void MoveDown();
 };
