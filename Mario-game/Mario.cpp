@@ -16,10 +16,12 @@
 #include "Leaf.h"
 #include "PSwitch.h"
 #include "DeadPlatform.h"
+#include "Fireball.h"
+#include "VenusTrap.h"
+#include "PiranhaPlant.h"
 
 
 #include "Collision.h"
-#include "Fireball.h"
 
 CMario* CMario::__instance = NULL;
 
@@ -135,6 +137,10 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithDeadPlatform(e);
 	else if (dynamic_cast<CFireball*>(e->obj))
 		OnCollisionWithFireball(e);
+	else if (dynamic_cast<CVenusTrap*>(e->obj))
+		OnCollisionWithVenusTrap(e);
+	else if (dynamic_cast<CPiranhaPlant*>(e->obj))
+		OnCollisionWithPiranhaPlant(e);
 }
 
 void CMario::HandleMarioUntouchable()
@@ -369,6 +375,30 @@ void CMario::OnCollisionWithFireball(LPCOLLISIONEVENT e)
 	if (untouchable == 0)
 	{
 		HandleMarioGetInjured();
+	}
+}
+
+void CMario::OnCollisionWithVenusTrap(LPCOLLISIONEVENT e)
+{
+	CVenusTrap* venusTrap = dynamic_cast<CVenusTrap*>(e->obj);
+	if (venusTrap->GetState() != VENUS_TRAP_STATE_IDLING)
+	{
+		if (untouchable == 0)
+		{
+			HandleMarioGetInjured();
+		}
+	}
+}
+
+void CMario::OnCollisionWithPiranhaPlant(LPCOLLISIONEVENT e)
+{
+	CPiranhaPlant* piranhaPlant = dynamic_cast<CPiranhaPlant*>(e->obj);
+	if (piranhaPlant->GetState() != PIRANHA_PLANT_STATE_IDLING_DOWN)
+	{
+		if (untouchable == 0)
+		{
+			HandleMarioGetInjured();
+		}
 	}
 }
 

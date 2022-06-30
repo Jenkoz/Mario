@@ -5,6 +5,9 @@
 #include "Animation.h"
 #include "Animations.h"
 
+#include "Tail.h"
+#include "PlayScene.h"
+
 #include "debug.h"
 
 
@@ -217,6 +220,7 @@
 
 class CMario : public CGameObject
 {
+	CTail *tail;
 	float maxVx;
 	float ax;				// acceleration on x 
 	float ay;				// acceleration on y 
@@ -252,6 +256,8 @@ class CMario : public CGameObject
 	void OnCollisionWithPSwitch(LPCOLLISIONEVENT e);
 	void OnCollisionWithDeadPlatform(LPCOLLISIONEVENT e);
 	void OnCollisionWithFireball(LPCOLLISIONEVENT e);
+	void OnCollisionWithVenusTrap(LPCOLLISIONEVENT e);
+	void OnCollisionWithPiranhaPlant(LPCOLLISIONEVENT e);
 
 	int GetAniIdBig();
 	int GetAniIdSmall();
@@ -289,7 +295,22 @@ public:
 				isInIntroScene = false;
 				isInPlayScene = false;
 				ay = 0;
+			}
+			else if (this->spawnScene == PLAY_SCENE_1_1)
+			{
+				isInWorldMapScene = false;
+				isInIntroScene = false;
+				isInPlayScene = true;
 
+				
+			}
+			if (!isInWorldMapScene) 
+			{
+				CGameObject* obj = NULL;
+				LPPLAYSCENE scene = (LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene();
+				this->tail = new CTail(x, y);
+				obj = this->tail;
+				scene->LoadObject(obj);
 			}
 				level = MARIO_LEVEL_SMALL;
 				ay = MARIO_GRAVITY;
@@ -309,7 +330,9 @@ public:
 				coin = 0;
 				life = 4;
 				speedStack = 0;
-				currentZone = TERRAIN_ZONE;		
+				currentZone = TERRAIN_ZONE;
+
+
 	}
 
 	
