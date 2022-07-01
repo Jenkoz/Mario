@@ -43,8 +43,6 @@ void CTurnHeadObject::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		isOnPlatform = false;
 	}
 
-	DebugOut(L"vx = %f\n", vx);
-
 	CGameObject::Update(dt, coObjects);
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
@@ -52,5 +50,5 @@ void CTurnHeadObject::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void CTurnHeadObject::Render()
 {
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }

@@ -165,7 +165,7 @@ void CVenusTrap::Render()
 	}
 
 	CAnimations::GetInstance()->Get(aniId)->Render(x, y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void CVenusTrap::SetState(int state)

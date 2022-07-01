@@ -23,7 +23,7 @@ void CMushroom::Render()
 	else if (type == MUSHROOM_TYPE_RED)
 		aniId = ID_ANI_MUSHROOM_RED;
 	CAnimations::GetInstance()->Get(aniId)->Render(x, y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 

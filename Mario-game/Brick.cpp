@@ -96,10 +96,8 @@ void CBrick::RevealItem()
 	{
 		if (player->GetLevel() == MARIO_LEVEL_SMALL)
 			obj = new CMushroom(x, y, MUSHROOM_TYPE_RED);
-		else if (player->GetLevel() == MARIO_LEVEL_BIG)
+		else if (player->GetLevel() == MARIO_LEVEL_BIG || player->GetLevel() == MARIO_LEVEL_RACCOON)
 			obj = new CLeaf(x, y);
-		else if (player->GetLevel() == MARIO_LEVEL_RACCOON)
-			obj = new CMushroom(x, y, MUSHROOM_TYPE_GREEN);
 		break;
 	}
 	case 2:
@@ -110,6 +108,9 @@ void CBrick::RevealItem()
 		break;
 	case 4:
 		obj = new CPSwitch(x, y);
+		break;
+	case 5:
+		obj = new CMushroom(x, y, MUSHROOM_TYPE_GREEN);
 		break;
 	}
 	obj->SetPosition(x, y);

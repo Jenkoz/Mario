@@ -62,7 +62,7 @@ assets\fireball.txt
 
 #Brick 
 # type: 1 = disabled, 2 = normal, 3 = Question
-# itemId: 0 = none, 1 = ultility, 2 = dcoin, 3 = Coin, 4 = pswitch
+# itemId: 0 = none, 1 =Red Mushroom/Leaf, 2 = dcoin, 3 = Coin, 4 = pswitch, 5 = GreenMushroom
 #id	x	y	type	itemId
 # QUESTION BRICK
 1	192	432	3	2
@@ -71,8 +71,9 @@ assets\fireball.txt
 1	416	384	3	2
 1	704	416	3	2
 
-1	1440	192	3	1
-1	1488	432	3	1
+
+1	1440	192	3	5
+1	1472	432	3	1
 1	240	368	3	1
 1	656	448	3	1
 # PSWITCH BRICK
@@ -112,6 +113,10 @@ assets\fireball.txt
 #3	224	448	3
 3	576	416	1
 3	2096	416	1
+3	1328	352	3
+3	1376	352	3
+3	1424	352	3
+3	1472	448	2
 
 #piranha plant
 7	1800	454

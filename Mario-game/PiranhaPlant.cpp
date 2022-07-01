@@ -55,7 +55,7 @@ void CPiranhaPlant::Render()
 {
 	int aniId = ID_ANI_PIRANHA_PLANT;
 	CAnimations::GetInstance()->Get(aniId)->Render(x, y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void CPiranhaPlant::OnNoCollision(DWORD dt)

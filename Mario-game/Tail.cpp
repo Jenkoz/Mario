@@ -37,7 +37,24 @@ void CTail::OnCollisionWithPiranhaPlant(LPCOLLISIONEVENT e)
 }
 void CTail::OnCollisionWithBrick(LPCOLLISIONEVENT e)
 {
-
+	CBrick* brick = dynamic_cast<CBrick*>(e->obj);
+		if (e->nx != 0)
+		{
+			if (brick->GetType() == BRICK_TYPE_QUESTION)
+			{
+				brick->SetType(BRICK_TYPE_DISABLE);
+				brick->RevealItem();
+			}
+			if (brick->GetType() == BRICK_TYPE_NORMAL)
+				if (brick->GetItemType() != BRICK_ITEM_TYPE_PSWITCH)
+					brick->Delete();
+				else
+				{
+					brick->SetType(BRICK_TYPE_DISABLE);
+					brick->RevealItem();
+				}
+		}
+	vector<LPGAMEOBJECT> coObjects = ((LPPLAYSCENE)(CGame::GetInstance()->GetCurrentScene()))->GetObjects();
 }
 
 void CTail::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -103,7 +120,7 @@ void CTail::Render()
 {
 	if (state == TAIL_STATE_HIDING)
 		return;
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void CTail::SetState(int state)

@@ -9,6 +9,9 @@
 
 CKoopa::CKoopa(float x, float y, int type) :CGameObject(x, y)
 {
+	turnObj = NULL;
+	fly_start = 0;
+	jumpingTimer = 0;
 	isOnPlatform = true;
 	isBeingHeld = false;
 	isVulnerable = false;
@@ -40,8 +43,11 @@ CKoopa::CKoopa(float x, float y, int type) :CGameObject(x, y)
 		return;
 	}
 
-	LPPLAYSCENE scene = (LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene();
-	scene->LoadObject(turnObj);
+	if (this->type != KOOPA_TYPE_GREEN_PARA)
+	{
+		LPPLAYSCENE scene = (LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene();
+		scene->LoadObject(turnObj);
+	}
 }
 
 
@@ -288,13 +294,15 @@ void CKoopa::SetState(int state)
 		y += (KOOPA_BBOX_HEIGHT - SHELL_BBOX_HEIGHT) / 2;
 		break;
 	case KOOPA_STATE_WALKING_LEFT:
-		if (turnObj == NULL) {
+		if (turnObj == NULL) 
+		{
 			turnObj = new CTurnHeadObject(x - TURN_HEAD_OBJECT_BBOX_WIDTH, y);
 		}
 		vx = -KOOPA_WALKING_SPEED;
 		break;
 	case KOOPA_STATE_WALKING_RIGHT:
-		if (turnObj == NULL) {
+		if (turnObj == NULL) 
+		{
 			turnObj = new CTurnHeadObject(x - TURN_HEAD_OBJECT_BBOX_WIDTH, y);
 		}
 		vx = KOOPA_WALKING_SPEED;
