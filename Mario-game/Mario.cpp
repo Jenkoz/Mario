@@ -49,7 +49,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	HandleMarioWhippingTail();
 	 //pipe handle
 	HandleMarioEnterPipe();
-	HandleMarioStackSpeed();
+	HandleRunningStack();
+	HandleStopStack();
+	HandleFullStack();
 	HandleMarioFlying();
 	HandleMarioFallingDown();	
 
@@ -59,6 +61,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		ay = 0;
 	}
 	isOnPlatform = false;
+	
 
 	killInDeadZone();
 
@@ -109,7 +112,7 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 	if (e->ny != 0 && e->obj->IsBlocking())
 	{
 		vy = 0;
-		if (e->ny < 0) 
+		if (e->ny < 0)
 			isOnPlatform = true;
 	}
 	else
@@ -326,18 +329,19 @@ void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 	CMushroom* mushroom = dynamic_cast<CMushroom*>(e->obj);
 	
 	// Eat mushroom
-	if (mushroom->GetState() == MUSHROOM_STATE_MOVING)
+	if (e->nx != 0 || e->ny != 0)
 	{
-		if (level == MARIO_LEVEL_SMALL)
+		if (mushroom->GetState() == MUSHROOM_STATE_MOVING)
 		{
-			if (mushroom->GetType() == MUSHROOM_TYPE_RED)
-				SetLevel(MARIO_LEVEL_BIG);
-			else LifeUp();
-			e->obj->Delete();
-		}
-		else if (level == MARIO_LEVEL_BIG || level == MARIO_LEVEL_RACCOON)
-		{
-			LifeUp();
+			if (mushroom->GetType() == MUSHROOM_TYPE_GREEN)
+			{
+				LifeUp();
+			}
+			if (level == MARIO_LEVEL_SMALL)
+			{
+				if (mushroom->GetType() == MUSHROOM_TYPE_RED)
+					SetLevel(MARIO_LEVEL_BIG);
+			}
 			e->obj->Delete();
 		}
 	}
@@ -347,9 +351,16 @@ void CMario::OnCollisionWithLeaf(LPCOLLISIONEVENT e)
 {
 	// Big Mario eat Leaf
 	CLeaf* leaf = dynamic_cast<CLeaf*>(e->obj);
-	if (level == MARIO_LEVEL_BIG)
+	if (e->nx != 0 || e->ny != 0)
 	{
-		SetLevel(MARIO_LEVEL_RACCOON);
+		if (level == MARIO_LEVEL_BIG)
+		{
+			SetLevel(MARIO_LEVEL_RACCOON);
+		}
+		else if (level == MARIO_LEVEL_RACCOON)
+		{
+			LifeUp();
+		}
 		e->obj->Delete();
 	}
 }
@@ -499,6 +510,8 @@ int CMario::GetAniIdRaccoon()
 					aniId = ID_ANI_MARIO_RACCOON_FLAPPING_RIGHT;
 				if (isFlying)
 					aniId = ID_ANI_MARIO_RACCOON_FLYING_RIGHT;
+				if (isWhipping)
+					aniId = ID_ANI_MARIO_RACCOON_WHIPPING_RIGHT;
 			}
 			else
 			{
@@ -512,6 +525,8 @@ int CMario::GetAniIdRaccoon()
 					aniId = ID_ANI_MARIO_RACCOON_FLAPPING_LEFT;
 				if (isFlying)
 					aniId = ID_ANI_MARIO_RACCOON_FLYING_LEFT;
+				if (isWhipping)
+					aniId = ID_ANI_MARIO_RACCOON_WHIPPING_LEFT;
 			}
 		}
 			else
@@ -730,6 +745,8 @@ void CMario::SetState(int state)
 		ax = MARIO_ACCEL_RUN_X;
 		nx = 1;
 		isRunning = true;
+		isStacking = true;
+		stacking_start = GetTickCount64();
 		break;
 	case MARIO_STATE_RUNNING_LEFT:
 		if (isSitting) break;
@@ -737,6 +754,8 @@ void CMario::SetState(int state)
 		ax = -MARIO_ACCEL_RUN_X;
 		nx = -1;
 		isRunning = true;
+		isStacking = true;
+		stacking_start = GetTickCount64();
 		break;
 	case MARIO_STATE_WALKING_RIGHT:
 		if (isSitting) break;
@@ -762,7 +781,8 @@ void CMario::SetState(int state)
 		break;
 
 	case MARIO_STATE_RELEASE_JUMP:
-		if (vy < 0) vy += MARIO_JUMP_SPEED_Y / 4;
+
+		if (vy < 0) vy += MARIO_JUMP_SPEED_Y / 2;
 		break;
 
 	case MARIO_STATE_SIT:
@@ -787,6 +807,7 @@ void CMario::SetState(int state)
 	case MARIO_STATE_IDLE:
 		ax = 0.0f;
 		vx = 0.0f;
+		isOnPlatform = true;
 		break;
 	case MARIO_STATE_DIE:
 		vy = -MARIO_JUMP_DEFLECT_SPEED;
@@ -872,15 +893,58 @@ void CMario::GetBoundingBox(float& left, float& top, float& right, float& bottom
 	}
 }
 
-void CMario::HandleMarioStackSpeed()
+
+void CMario::HandleRunningStack()
 {
-	int resetStack = 0;
-	float stack = MARIO_RUNNING_SPEED / MARIO_RUNNING_STACKS;
+	if (GetTickCount64() - stacking_start < MARIO_SPEED_STACKING_TIME && isStacking)
+	{
+		float stack = MARIO_RUNNING_SPEED / MARIO_RUNNING_STACKS;
 
-	if (speedStack == MARIO_RUNNING_STACKS)
+		if (speedStack == MARIO_RUNNING_STACKS)
+		{
+			isFullStack = true;
+			fullstack_start = GetTickCount64();
+		}
+		else	speedStack = (int)(abs)(vx / stack);
+	}
+	if (GetTickCount64() - stacking_start >= MARIO_SPEED_STACKING_TIME && isStacking)
+	{
+		stacking_start = 0;
+		isStacking = false;
+		stacking_stop = GetTickCount64();
+		isStopStacking = true;
+	}
+}
+
+void CMario::HandleStopStack()
+{
+	if (GetTickCount64() - stacking_stop < MARIO_SPEED_STOP_STACKING_TIME && isStopStacking)
+	{
+		float stack = 0.5f;
+		speedStack -= stack;
+		if (speedStack <= 0)
+			speedStack = 0;
+	}
+	if (GetTickCount64() - stacking_stop >= MARIO_SPEED_STOP_STACKING_TIME && isStopStacking)
+	{
+		stacking_stop = 0;
+		isStopStacking = false;
+	}
+}
+
+void CMario::HandleFullStack()
+{
+	if (GetTickCount64() - fullstack_start < MARIO_MAX_STACK_TIME && isFullStack)
+	{
 		speedStack = MARIO_RUNNING_STACKS;
-	else	speedStack = (int)(abs)(vx / stack);
-
+	}
+	if (GetTickCount64() - fullstack_start >= MARIO_MAX_STACK_TIME && isFullStack)
+	{
+		fullstack_start = 0;
+		isFullStack = false;
+		stacking_stop = GetTickCount64();
+		isStopStacking = true;
+	}
 }
 
 void CMario::HandleMarioFallingDown()
@@ -891,7 +955,6 @@ void CMario::HandleMarioFallingDown()
 	}
 	if (GetTickCount64() - flapping_start >= MARIO_FLAPPING_TIME && isFlapping)
 	{
-
 		flapping_start = 0;
 		isFlapping = false;
 	}
@@ -900,7 +963,7 @@ void CMario::HandleMarioFallingDown()
 
 void CMario::HandleMarioFlying()
 {
-	if (GetTickCount64() - flying_start < MARIO_FLYING_TIME && isFlying)
+	if (GetTickCount64() - flying_start < MARIO_FLYING_TIME && isFlying && isFullStack)
 	{
 		vy = -MARIO_FLY_MAX_STACK_SPEED_Y;
 	}

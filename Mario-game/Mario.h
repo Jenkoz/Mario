@@ -218,7 +218,7 @@
 #define MARIO_PIPE_TIME				1000
 #define MARIO_SPEED_STACKING_TIME	200
 #define MARIO_SPEED_STOP_STACKING_TIME	200
-#define MARIO_MAX_STACK_TIME			3000
+#define MARIO_MAX_STACK_TIME			7000
 
 #define MARIO_IN_TERRAIN_ZONE 1
 #define MARIO_IN_SECRET_ZONE 2
@@ -246,9 +246,11 @@ class CMario : public CGameObject
 	ULONGLONG pipeUp_start;
 	ULONGLONG pipeDown_start;
 
+	ULONGLONG fullstack_start;
+
 	ULONGLONG whipping_start;
-	ULONGLONG running_start;
-	ULONGLONG running_stop;
+	ULONGLONG stacking_start;
+	ULONGLONG stacking_stop;
 	ULONGLONG flying_start;
 	ULONGLONG flapping_start;
 
@@ -289,10 +291,13 @@ public:
 	BOOLEAN isPipeUp = false;
 	BOOLEAN isFlapping = false;
 	BOOLEAN isRunning = false;
-	BOOLEAN isReadyToRun = false;
+	BOOLEAN isStacking = false;
+	BOOLEAN isStopStacking = false;
 	BOOLEAN isWhipping = false;
 	BOOLEAN isFlying = false;
 	BOOLEAN isChangeDirection = false;
+
+	BOOLEAN isFullStack = false;
 
 
 	CMario(float x, float y, int spawnScene) : CGameObject(x, y)
@@ -338,13 +343,14 @@ public:
 				pipeDown_start = 0;
 				pipeUp_start = 0;
 				whipping_start = 0;
-				running_start = 0;
-				running_stop = 0;
+				stacking_start = 0;
+				stacking_stop = 0;
 				flying_start = 0;
 				flapping_start = 0;
 				coin = 0;
 				life = 4;
 				speedStack = 0;
+				fullstack_start = 0;
 
 
 	}
@@ -390,7 +396,9 @@ public:
 	void HandleMarioEnterPipe();
 	void HandleMarioWhippingTail();
 	void HandleMarioGetInjured();
-	void HandleMarioStackSpeed();
+	void HandleRunningStack();
+	void HandleStopStack();
+	void HandleFullStack();
 	void HandleMarioFallingDown();
 	void HandleMarioFlying();
 	void SwitchZone()

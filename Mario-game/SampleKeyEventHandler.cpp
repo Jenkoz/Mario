@@ -19,11 +19,23 @@ void CSampleKeyHandler::OnKeyDown(int KeyCode)
 		mario->SetState(MARIO_STATE_SIT);
 		break;
 	case DIK_S:
-		if (mario->GetLevel() == MARIO_LEVEL_RACCOON && mario->GetSpeedStack() == MARIO_RUNNING_STACKS)
-			mario->SetState(MARIO_STATE_FLYING);
-		else
-			mario->SetState(MARIO_STATE_JUMP);
+	{
+		if(!mario->isOnPlatform)
+		{
+			if (mario->GetLevel() == MARIO_LEVEL_RACCOON)
+			{
+				if (!mario->isFullStack)
+					mario->SetState(MARIO_STATE_FLAPPING);
+				else mario->SetState(MARIO_STATE_FLYING);
+			}
+		}
+
+		mario->SetState(MARIO_STATE_JUMP);
+
+		DebugOut(L"isOnPlatform = %d\n",mario->isOnPlatform);
 		break;
+
+	}
 	case DIK_A:
 		if (mario->GetLevel() == MARIO_LEVEL_RACCOON && !mario->isSitting && !mario->isHolding)
 			mario->SetState(MARIO_STATE_WHIPE);
@@ -66,9 +78,6 @@ void CSampleKeyHandler::OnKeyUp(int KeyCode)
 			mario->isHolding = false;
 			mario->SetState(MARIO_STATE_KICK);
 		}
-		else if (!mario->isOnPlatform && mario->GetLevel() == MARIO_LEVEL_RACCOON && !mario->isHolding)
-			mario->SetState(MARIO_STATE_FLAPPING);
-
 		mario->isRunning = false;
 		break;
 	}
@@ -80,7 +89,7 @@ void CSampleKeyHandler::KeyState(BYTE *states)
 	CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 	if (game->IsKeyDown(DIK_RIGHT))
 	{
-		if (game->IsKeyDown(DIK_A) && !game->IsKeyDown(DIK_S))
+		if (game->IsKeyDown(DIK_A) && !game->IsKeyDown(DIK_S) && !mario->isWhipping)
 		{
 			mario->SetState(MARIO_STATE_RUNNING_RIGHT);
 		}
@@ -89,7 +98,7 @@ void CSampleKeyHandler::KeyState(BYTE *states)
 	}
 	else if (game->IsKeyDown(DIK_LEFT))
 	{
-		if (game->IsKeyDown(DIK_A) && !game->IsKeyDown(DIK_S))
+		if (game->IsKeyDown(DIK_A) && !game->IsKeyDown(DIK_S) && !mario->isWhipping)
 			mario->SetState(MARIO_STATE_RUNNING_LEFT);
 		else
 			mario->SetState(MARIO_STATE_WALKING_LEFT);
