@@ -817,7 +817,7 @@ void CMario::SetState(int state)
 		if (nx > 0)
 			maxVx = MARIO_SPEED_FALL_SLOW_X;
 		else maxVx = -MARIO_SPEED_FALL_SLOW_X;
-		vy = -MARIO_SPEED_FALL_SLOW_Y;
+
 		break;
 	case MARIO_STATE_FLYING:
 		isFlying = true;
@@ -829,8 +829,7 @@ void CMario::SetState(int state)
 			else
 				vy = -MARIO_JUMP_SPEED_Y;
 		}
-		else
-			vy = -MARIO_FLY_MAX_STACK_SPEED_Y;
+		break;
 	case MARIO_WORLDMAP_STATE_IDLING:
 		
 		break;
@@ -886,8 +885,13 @@ void CMario::HandleMarioStackSpeed()
 
 void CMario::HandleMarioFallingDown()
 {
-	if (GetTickCount64() - flapping_start > MARIO_FLAPPING_TIME && isFlapping)
+	if (GetTickCount64() - flapping_start < MARIO_FLAPPING_TIME && isFlapping)
 	{
+		vy = MARIO_SPEED_FALL_SLOW_Y;
+	}
+	if (GetTickCount64() - flapping_start >= MARIO_FLAPPING_TIME && isFlapping)
+	{
+
 		flapping_start = 0;
 		isFlapping = false;
 	}
@@ -896,7 +900,11 @@ void CMario::HandleMarioFallingDown()
 
 void CMario::HandleMarioFlying()
 {
-	if (GetTickCount64() - flying_start > MARIO_FLYING_TIME && isFlying)
+	if (GetTickCount64() - flying_start < MARIO_FLYING_TIME && isFlying)
+	{
+		vy = -MARIO_FLY_MAX_STACK_SPEED_Y;
+	}
+	if (GetTickCount64() - flying_start >= MARIO_FLYING_TIME && isFlying)
 	{
 		flying_start = 0;
 		isFlying = false;

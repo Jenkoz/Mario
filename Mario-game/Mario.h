@@ -36,7 +36,7 @@
 
 #define MARIO_JUMP_SPEED_Y		0.6f
 #define MARIO_JUMP_RUN_SPEED_Y	0.6f
-#define MARIO_FLY_MAX_STACK_SPEED_Y 0.45f
+#define MARIO_FLY_MAX_STACK_SPEED_Y 0.075f
 
 #define MARIO_SPEED_FALL_SLOW_Y	0.0475f
 #define MARIO_SPEED_FALL_SLOW_X	0.075f
@@ -298,6 +298,10 @@ public:
 	CMario(float x, float y, int spawnScene) : CGameObject(x, y)
 	{
 			this->spawnScene = spawnScene;
+			ay = MARIO_GRAVITY;
+			currentZone = TERRAIN_ZONE;
+			level = MARIO_LEVEL_SMALL;
+			tail = NULL;
 			if (this->spawnScene == WORLD_MAP_SCENE)
 			{
 				isInWorldMapScene = true;
@@ -316,9 +320,6 @@ public:
 				isInWorldMapScene = false;
 				isInIntroScene = false;
 				isInPlayScene = true;
-				level = MARIO_LEVEL_SMALL;
-				ay = MARIO_GRAVITY;
-				currentZone = TERRAIN_ZONE;
 			}
 			if (!isInWorldMapScene) 
 			{
