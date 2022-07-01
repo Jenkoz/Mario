@@ -51,6 +51,9 @@
     <Filter Include="GameObject\Other\HUD">
       <UniqueIdentifier>{a60879eb-7454-431c-83a2-45faa2b72062}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\Other\OverWorld">
+      <UniqueIdentifier>{10c82859-1400-4afd-bf51-5084dc7ec452}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -163,6 +166,12 @@
     </ClCompile>
     <ClCompile Include="WorldMapSceneKeyHandler.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DancingTree.cpp">
+      <Filter>GameObject\Other\OverWorld</Filter>
+    </ClCompile>
+    <ClCompile Include="TurnHeadObject.cpp">
+      <Filter>GameObject\Enemy\Koopa</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -288,6 +297,12 @@
     </ClInclude>
     <ClInclude Include="WorldMapSceneKeyHandler.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DancingTree.h">
+      <Filter>GameObject\Other\OverWorld</Filter>
+    </ClInclude>
+    <ClInclude Include="TurnHeadObject.h">
+      <Filter>GameObject\Enemy\Koopa</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

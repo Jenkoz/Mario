@@ -39,6 +39,9 @@ CKoopa::CKoopa(float x, float y, int type) :CGameObject(x, y)
 		DebugOut(L"[ERROR] Invalid Koopa type: %d\n", this->type);
 		return;
 	}
+
+	LPPLAYSCENE scene = (LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene();
+	scene->LoadObject(turnObj);
 }
 
 
@@ -67,30 +70,6 @@ void CKoopa::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
 	}*/
 }
 
-void CKoopa::OnCollisionWithPlatform(LPCOLLISIONEVENT e)
-{
-	CPlatform* platform = dynamic_cast<CPlatform*>(e->obj);
-	vector<LPGAMEOBJECT> coObjects = ((LPPLAYSCENE)(CGame::GetInstance()->GetCurrentScene()))->GetObjects();
-
-	if (state == KOOPA_STATE_WALKING_LEFT || state == KOOPA_STATE_WALKING_RIGHT)
-
-		for (UINT i = 0; i < coObjects.size(); i++)
-		{
-			if (e->ny < 0 && platform == coObjects[i])
-			{
-				if (platform == coObjects[i])
-				{
-					platform = (CPlatform*)coObjects[i];
-					if (x <= platform->GetBeginPlatform() - KOOPA_BBOX_WIDTH / 2)
-						SetState(KOOPA_STATE_WALKING_RIGHT);
-					else if (x + KOOPA_BBOX_WIDTH / 2 >= platform->GetEndPlatform())
-						SetState(KOOPA_STATE_WALKING_LEFT);
-				}
-				vy = 0;
-			}
-		}
-}
-
 void CKoopa::OnCollisionWithBrick(LPCOLLISIONEVENT e)
 {
 	CBrick* brick = dynamic_cast<CBrick*>(e->obj);
@@ -109,23 +88,6 @@ void CKoopa::OnCollisionWithBrick(LPCOLLISIONEVENT e)
 			}
 		}
 	vector<LPGAMEOBJECT> coObjects = ((LPPLAYSCENE)(CGame::GetInstance()->GetCurrentScene()))->GetObjects();
-
-	if (state == KOOPA_STATE_WALKING_LEFT || state == KOOPA_STATE_WALKING_RIGHT)
-		for (UINT i = 0; i < coObjects.size(); i++)
-		{
-			if (e->ny < 0 && brick == coObjects[i])
-			{
-				if (brick == coObjects[i])
-				{
-					brick = (CBrick*)coObjects[i];
-					if (x <= brick->GetBeginPlatform() - KOOPA_BBOX_WIDTH / 2)
-						SetState(KOOPA_STATE_WALKING_RIGHT);
-					else if (x + KOOPA_BBOX_WIDTH / 2 >= brick->GetEndPlatform())
-						SetState(KOOPA_STATE_WALKING_LEFT);
-				}
-				vy = 0;
-			}
-		}
 }
 
 
@@ -146,21 +108,12 @@ void CKoopa::OnCollisionWith(LPCOLLISIONEVENT e)
 	}
 	else if (e->nx != 0 && e->obj->IsBlocking())
 	{
-		if (state == KOOPA_STATE_WALKING_LEFT || state == KOOPA_STATE_WALKING_RIGHT)
-			if (e->nx > 0)
-				SetState(KOOPA_STATE_WALKING_RIGHT);
-			else SetState(KOOPA_STATE_WALKING_LEFT);
-		else if (state == SHELL_STATE_ROLLING_LEFT || state == SHELL_STATE_ROLLING_RIGHT)
-			if (e->nx > 0)
-				SetState(SHELL_STATE_ROLLING_RIGHT);
-			else SetState(SHELL_STATE_ROLLING_LEFT);
+		vx = -vx;
 	}
 	if (dynamic_cast<CKoopa*>(e->obj))
 		OnCollisionWithKoopa(e);
 	else if (dynamic_cast<CGoomba*>(e->obj))
 		OnCollisionWithGoomba(e);
-	else if (dynamic_cast<CPlatform*>(e->obj))
-		OnCollisionWithPlatform(e);
 	else if (dynamic_cast<CBrick*>(e->obj))
 		OnCollisionWithBrick(e);
 }
@@ -174,7 +127,8 @@ void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	//Start counting down to wake up
 
 
-	if (this->type == KOOPA_TYPE_GREEN_PARA) {
+	if (this->type == KOOPA_TYPE_GREEN_PARA) 
+	{
 
 		if (isOnPlatform && (state == KOOPA_STATE_BOUNCING_LEFT || state == KOOPA_STATE_BOUNCING_RIGHT) 
 			&& GetTickCount64() - fly_start > PARAKOOPA_BOUNCING_TIMEOUT) 
@@ -245,7 +199,27 @@ void CKoopa::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}
 	}
 
+	if (state == KOOPA_STATE_WALKING_LEFT || state == KOOPA_STATE_WALKING_RIGHT)
+	{
+		turnObj->setSpeed(vx);
+		if (!turnObj->getIsOnPlatform())
+		{
+			vx = -vx;
+			if (vx > 0)
+			{
+				SetState(KOOPA_STATE_WALKING_RIGHT);
+				turnObj->SetPosition(x + KOOPA_BBOX_WIDTH / 2, y);
+			}
+			else if (vx < 0)
+			{
+				SetState(KOOPA_STATE_WALKING_LEFT);
+				turnObj->SetPosition(x - KOOPA_BBOX_WIDTH / 2, y);
+			}
+		}
+	}
 
+
+	CGameObject::killInDeadZone();
 	CGameObject::Update(dt, coObjects);
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
@@ -256,8 +230,8 @@ void CKoopa::Render()
 	int aniId = -1;
 	switch (this->type)
 	{
-		case KOOPA_TYPE_RED:
-		{
+	case KOOPA_TYPE_RED:
+	{
 		if (state == KOOPA_STATE_WALKING_LEFT)
 			aniId = ID_ANI_RED_KOOPA_WALKING_LEFT;
 		else if (state == KOOPA_STATE_WALKING_RIGHT)
@@ -306,21 +280,31 @@ void CKoopa::SetState(int state)
 	switch (state)
 	{
 	case SHELL_STATE_IDLING:
+		if (turnObj != NULL)
+			turnObj->SetSpeed(0, 0);
 		isVulnerable = true;
 		wakingUp_timer = GetTickCount64();
 		vx = 0;
 		y += (KOOPA_BBOX_HEIGHT - SHELL_BBOX_HEIGHT) / 2;
 		break;
 	case KOOPA_STATE_WALKING_LEFT:
+		if (turnObj == NULL) {
+			turnObj = new CTurnHeadObject(x - TURN_HEAD_OBJECT_BBOX_WIDTH, y);
+		}
 		vx = -KOOPA_WALKING_SPEED;
 		break;
 	case KOOPA_STATE_WALKING_RIGHT:
+		if (turnObj == NULL) {
+			turnObj = new CTurnHeadObject(x - TURN_HEAD_OBJECT_BBOX_WIDTH, y);
+		}
 		vx = KOOPA_WALKING_SPEED;
 		break;
 	case SHELL_STATE_ROLLING_LEFT:
+		isVulnerable = false;
 		vx = -SHELL_ROLLING_SPEED;
 		break;
 	case SHELL_STATE_ROLLING_RIGHT:
+		isVulnerable = false;
 		vx = SHELL_ROLLING_SPEED;
 		break;
 	case KOOPA_STATE_WAKING:
@@ -328,9 +312,11 @@ void CKoopa::SetState(int state)
 		vx = 0;
 		break;
 	case KOOPA_STATE_BOUNCING_LEFT:
+		isVulnerable = false;
 		vx = -KOOPA_WALKING_SPEED;
 		break;
 	case KOOPA_STATE_BOUNCING_RIGHT:
+		isVulnerable = false;
 		vx = KOOPA_WALKING_SPEED;
 		break;
 	}

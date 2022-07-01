@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject.h"
+#include "TurnHeadObject.h"
 
 #define KOOPA_TYPE_RED 1
 #define KOOPA_TYPE_GREEN 2
@@ -48,9 +49,10 @@ class CKoopa : public CGameObject
 {
 	int type;
 
+	CTurnHeadObject* turnObj = NULL;
+
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithKoopa(LPCOLLISIONEVENT e);
-	void OnCollisionWithPlatform(LPCOLLISIONEVENT e);
 	void OnCollisionWithBrick(LPCOLLISIONEVENT e);
 
 protected:

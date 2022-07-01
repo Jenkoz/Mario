@@ -150,6 +150,7 @@
     <ClCompile Include="Coin.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="ColourPlatform.cpp" />
+    <ClCompile Include="DancingTree.cpp" />
     <ClCompile Include="DCoin.cpp" />
     <ClCompile Include="DeadPlatform.cpp" />
     <ClCompile Include="debug.cpp" />
@@ -175,6 +176,7 @@
     <ClCompile Include="Sprites.cpp" />
     <ClCompile Include="Tail.cpp" />
     <ClCompile Include="Textures.cpp" />
+    <ClCompile Include="TurnHeadObject.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="VenusTrap.cpp" />
     <ClCompile Include="WorldMapScene.cpp" />
@@ -190,6 +192,7 @@
     <ClInclude Include="Coin.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="ColourPlatform.h" />
+    <ClInclude Include="DancingTree.h" />
     <ClInclude Include="DCoin.h" />
     <ClInclude Include="DeadPlatform.h" />
     <ClInclude Include="debug.h" />
@@ -218,6 +221,7 @@
     <ClInclude Include="Tail.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Textures.h" />
+    <ClInclude Include="TurnHeadObject.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="VenusTrap.h" />
     <ClInclude Include="WorldMapScene.h" />
