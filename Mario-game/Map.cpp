@@ -1,6 +1,7 @@
 #include "Map.h"
 #include "Textures.h"
 #include "Mario.h"
+#include "AssetIDs.h"
 CMaps* CMaps::__instance = NULL;
 CMaps::CMaps() {}
 
@@ -33,6 +34,43 @@ void CMaps::LoadResourses(int mapId, LPCWSTR pathTile, int maxCol, int maxRow,
 			int top = (TILE_HEIGHT + 1) * r;
 			int right =  (TILE_WIDTH + 1) * (c + 1);
 			int bottom = (TILE_HEIGHT + 1) * (r + 1);
+			sprites->Add(idTile + mapId, left, top, right, bottom, texMap);
+
+			idTile++;
+		}
+	}
+}
+void CMaps::LoadResoursesWorldMap(int mapId, LPCWSTR pathTile, int maxCol, int maxRow,
+	LPCWSTR backgroundPathTxt, LPCWSTR graphicPathTxt, LPCWSTR shadingPathTxt)
+{
+	this->maxCol = maxCol;
+	LoadBackgrounds(backgroundPathTxt);
+	LoadGraphics(graphicPathTxt);
+	LoadShadings(shadingPathTxt);
+
+	w_id = mapId;
+
+
+	//Load all sprites from pathIMG
+	CTextures* tex = CTextures::GetInstance();
+	tex->Add(mapId, pathTile);
+	LPTEXTURE texMap = tex->Get(mapId);
+
+	int idTile = 1;
+	for (int r = 0; r < maxRow; r++)
+	{
+		for (int c = 0; c < maxCol; c++)
+		{
+			int left = TILE_WIDTH * c;
+			int top = TILE_HEIGHT * r;
+			int bottom;
+			if (r != 0)
+				bottom = (top + TILE_HEIGHT) - 1;
+			else bottom = TILE_HEIGHT - 1;
+			int right;
+			if (c != 0)
+				right = (left + TILE_WIDTH) - 1;
+			else right = TILE_WIDTH - 1;
 			sprites->Add(idTile + mapId, left, top, right, bottom, texMap);
 
 			idTile++;
@@ -140,6 +178,58 @@ void CMaps::RenderGraphic()
 				float x = float(j * TILE_WIDTH);
 				float y = float(i * TILE_HEIGHT);
 				sprites->Get(mapTiles_Graphics[i][j] + w_id + 1)->Draw(x, y);
+			}
+		}
+	}
+}
+
+
+void CMaps::RenderWorldMapGraphic()
+{
+	for (int i = 0; i < row; ++i)
+	{
+		for (int j = 0; j < col; ++j)
+		{
+			if (mapTiles_Graphics[i][j] >= 0)
+			{
+				// render Graphic
+				float x = float(j * TILE_WIDTH);
+				float y = float(i * TILE_HEIGHT);
+				sprites->Get(mapTiles_Graphics[i][j] + w_id + 1)->Draw(x, y);
+			}
+		}
+	}
+}
+
+void CMaps::RenderWorldMapBackground()
+{
+	for (int i = 0; i < row; ++i)
+	{
+		for (int j = 0; j < col; ++j)
+		{
+			if (mapTiles_Backgrounds[i][j] >= 0)
+			{
+				// render background
+				float x = float(j * TILE_WIDTH);
+				float y = float(i * TILE_HEIGHT);
+				sprites->Get(mapTiles_Backgrounds[i][j] + w_id + 1)->Draw(x, y);
+			}
+		}
+	}
+}
+
+void CMaps::RenderWorldMapMisc()
+{
+	for (int i = 0; i < row; ++i)
+	{
+		for (int j = 0; j < col; ++j)
+		{
+			// render shading/misc
+			if (mapTiles_Shadings[i][j] >= 0)
+			{
+				float x = float(j * TILE_WIDTH);
+				float y = float(i * TILE_HEIGHT);
+				sprites->Get(mapTiles_Shadings[i][j] + w_id + 1)->Draw(x, y);
 			}
 		}
 	}

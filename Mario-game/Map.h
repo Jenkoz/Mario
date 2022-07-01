@@ -32,14 +32,24 @@ public:
 
 	CMaps();
 	~CMaps();
+	//render map for playscene
 	void LoadResourses(int mapId, LPCWSTR pathImg, int maxCol, int maxRow, 
 		LPCWSTR backgroundPathTxt, LPCWSTR graphicPathTxt, LPCWSTR shadingPathTxt);
-	void LoadGraphics(LPCWSTR pathTxt);
-	void LoadShadings(LPCWSTR pathTxt);
-	void LoadBackgrounds(LPCWSTR pathTxt);
 	void RenderGraphic();
 	void RenderShading();
 	void RenderBackground();
+
+	//rener map for worldmap scene
+	void LoadResoursesWorldMap(int mapId, LPCWSTR pathImg, int maxCol, int maxRow,
+		LPCWSTR backgroundPathTxt, LPCWSTR graphicPathTxt, LPCWSTR shadingPathTxt);
+	void RenderWorldMapGraphic();
+	void RenderWorldMapBackground();
+	void RenderWorldMapMisc();
+
+
+	void LoadGraphics(LPCWSTR pathTxt);
+	void LoadShadings(LPCWSTR pathTxt);
+	void LoadBackgrounds(LPCWSTR pathTxt);
 	float GetWidthMap();
 	float GetHeightMap();
 	static CMaps* GetInstance();

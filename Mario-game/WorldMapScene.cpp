@@ -119,9 +119,10 @@ void CWorldMapScene::_ParseSection_OBJECTS(string line)
 			DebugOut(L"[ERROR] MARIO object was created before!\n");
 			return;
 		}
-		int spawnScene = atoi(tokens[3].c_str());
-		obj = new CMario(x, y, spawnScene);
+		int sceneID = atoi(tokens[3].c_str());
+		obj = new CMario(x, y, sceneID);
 		player = (CMario*)obj;
+
 		DebugOut(L"[INFO] Player object has been created!\n");
 		break;
 	}
@@ -171,7 +172,7 @@ void CWorldMapScene::_ParseSection_MAPS(string line)
 	wstring graphic_path_txt = ToWSTR(tokens[5]);
 	wstring shading_path_txt = ToWSTR(tokens[6]);
 
-	CMaps::GetInstance()->LoadResourses(mapId, path_img.c_str(), maxCol, maxRow,
+	CMaps::GetInstance()->LoadResoursesWorldMap(mapId, path_img.c_str(), maxCol, maxRow,
 		background_path_txt.c_str(), graphic_path_txt.c_str(), shading_path_txt.c_str());
 }
 
@@ -267,7 +268,8 @@ void CWorldMapScene::Update(DWORD dt)
 	if (player == NULL) return;
 
 	// Update camera to follow mario
-	CCamera::GetInstance()->Update();
+	CCamera::GetInstance()->SetCameraWorldMap();
+	//CCamera::GetInstance()->Update();
 	if (hud != NULL)
 		hud->Update(dt, &coObjects);
 	PurgeDeletedObjects();
@@ -275,9 +277,11 @@ void CWorldMapScene::Update(DWORD dt)
 
 void CWorldMapScene::Render()
 {
-	CMaps::GetInstance()->RenderBackground();
-	CMaps::GetInstance()->RenderShading();
-	CMaps::GetInstance()->RenderGraphic();
+	DebugOut(L"Map start rendering!!\n");
+	CMaps::GetInstance()->RenderWorldMapBackground();
+
+	CMaps::GetInstance()->RenderWorldMapMisc();
+	CMaps::GetInstance()->RenderWorldMapGraphic();
 	for (int i = 0; (float)i < objects.size(); i++)
 		objects[i]->Render();
 }

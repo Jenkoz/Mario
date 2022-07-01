@@ -1,10 +1,11 @@
 [ASSETS]
 assets\worldmap.txt
+assets\mario.txt
 
 [OBJECTS]
 # MARIO
-0	67	50	100
+0	10	10	100
 
 [MAP]
 #id	filePath.png	maxCol	maxRow	firstLayerpPath.txt	secondLayerPath.txt	thirdLayerPath.txt
-700011	textures\WorldMap\overworld.png	16	12	textures\WorldMap\data\OverWorldMap_Background.txt	textures\WorldMap\data\OverWorldMap_Graphic.txt	textures\WorldMap\data\OverWorldMap_Misc.txt
+810011	textures\WorldMap\overworld.png	16	4	textures\WorldMap\data\OverWorldMap_Background.txt	textures\WorldMap\data\OverWorldMap_Graphic.txt	textures\WorldMap\data\OverWorldMap_Misc.txt
