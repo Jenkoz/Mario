@@ -39,7 +39,7 @@ void CCamera::Update()
 		SetCamPos(cx, cy + HUD_BBOX_HEIGHT / 2);
 	else if (player->GetCurrentZone() == MARIO_IN_TERRAIN_ZONE)
 		SetCamPos(cx, CAM_Y_POSITION_TERRAIN_ZONE + HUD_BBOX_HEIGHT / 2 );
-	else if (player->GetCurrentZone() == MARIO_IN_OTHER_ZONE)
+	else if (player->GetCurrentZone() == MARIO_IN_SECRET_ZONE)
 		SetCamPos(cx, CAM_Y_POSITION_MONEY_ZONE + HUD_BBOX_HEIGHT / 2 );
 
 }
