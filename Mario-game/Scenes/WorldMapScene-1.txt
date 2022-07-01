@@ -1,10 +1,70 @@
 [ASSETS]
 assets\worldmap.txt
 assets\mario.txt
-
+assets\invisible_object.txt
 [OBJECTS]
 # MARIO
-0	10	10	100
+0	64	48	100
+
+# HUD
+#51	0	160
+
+# TREE
+#id	x	y
+9	48	16
+9	64	16
+9	80	16
+9	240	16
+9	256	16
+9	48	32
+9	64	32
+9	80	32
+9	112	32
+9	128	32
+9	144	32
+9	176	32
+9	192	32
+9	208	32
+9	240	32
+9	256	32
+9	112	48
+9	128	48
+9	144	48
+9	240	48
+9	256	48
+9	48	64
+9	64	64
+9	80	64
+9	112	64
+9	128	64
+9	144	64
+9	176	64
+9	192	64
+9	208	64
+9	224	64
+9	240	64
+9	256	64
+9	48	80
+9	64	80
+9	80	80
+9	176	80
+9	192	80
+9	256	80
+9	48	96
+9	128	96
+9	144	96
+9	160	96
+9	256	96
+9	256	112
+9	256	128
+9	256	144
+
+#invisible block
+#id	x	y	cell_width	cell_height	cell_length	cell_depth	type	sprite
+#6	48	48	16	16	1	1	1	62000
+#6	64	64	16	16	1	3	1	62000
+#6	64	16	16	16	2	2	1	62000
+#6	112	32	16	16	3	3	1	62000
 
 [MAP]
 #id	filePath.png	maxCol	maxRow	firstLayerpPath.txt	secondLayerPath.txt	thirdLayerPath.txt
