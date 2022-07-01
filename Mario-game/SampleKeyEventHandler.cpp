@@ -29,8 +29,8 @@ void CSampleKeyHandler::OnKeyDown(int KeyCode)
 				else mario->SetState(MARIO_STATE_FLYING);
 			}
 		}
-
-		mario->SetState(MARIO_STATE_JUMP);
+		
+			mario->SetState(MARIO_STATE_JUMP);
 
 		DebugOut(L"isOnPlatform = %d\n",mario->isOnPlatform);
 		break;

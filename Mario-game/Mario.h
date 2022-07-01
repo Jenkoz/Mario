@@ -168,9 +168,6 @@
 #define ID_ANI_MARIO_RACCOON_SITTING_RIGHT		2201
 #define ID_ANI_MARIO_RACCOON_SITTING_LEFT		2200
 
-//#define ID_ANI_MARIO_RACCOON_WALKING_FAST_RIGHT	32
-//#define ID_ANI_MARIO_RACCOON_WALKING_FAST_LEFT	40
-
 #define ID_ANI_MARIO_RACCOON_BRAKING_RIGHT		2301
 #define ID_ANI_MARIO_RACCOON_BRAKING_LEFT		2300
 
@@ -312,7 +309,6 @@ public:
 				isInWorldMapScene = true;
 				isInIntroScene = false;
 				isInPlayScene = false;
-				ay = 0;
 				vy = 0;
 				vx = 0;
 				level = MARIO_LEVEL_WORLDMAP;

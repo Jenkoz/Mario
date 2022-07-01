@@ -782,7 +782,7 @@ void CMario::SetState(int state)
 
 	case MARIO_STATE_RELEASE_JUMP:
 
-		if (vy < 0) vy += MARIO_JUMP_SPEED_Y / 2;
+		if (vy < 0) vy += MARIO_JUMP_SPEED_Y / 4;
 		break;
 
 	case MARIO_STATE_SIT:
@@ -807,7 +807,6 @@ void CMario::SetState(int state)
 	case MARIO_STATE_IDLE:
 		ax = 0.0f;
 		vx = 0.0f;
-		isOnPlatform = true;
 		break;
 	case MARIO_STATE_DIE:
 		vy = -MARIO_JUMP_DEFLECT_SPEED;
@@ -957,6 +956,8 @@ void CMario::HandleMarioFallingDown()
 	{
 		flapping_start = 0;
 		isFlapping = false;
+		if (!isOnPlatform)
+			SetState(MARIO_STATE_RELEASE_JUMP);
 	}
 }
 
