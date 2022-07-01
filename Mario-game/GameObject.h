@@ -8,6 +8,7 @@
 #include "Animations.h"
 #include "Sprites.h"
 #include "Collision.h"
+#include "GameGlobal.h"
 
 using namespace std;
 
@@ -76,6 +77,8 @@ public:
 	// Is this object blocking other object? If YES, collision framework will automatically push the other object
 	virtual int IsBlocking() { return 1; }
 
+
+	virtual void killInDeadZone() { if (this->y >= DEAD_ZONE_POS) this->Delete(); }
 	~CGameObject();
 
 	static bool IsDeleted(const LPGAMEOBJECT &o) { return o->isDeleted; }
