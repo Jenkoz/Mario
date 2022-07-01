@@ -19,6 +19,7 @@ height	240
 12	textures\enemies_3.png
 21	textures\misc_2.png
 22	textures\HUD.png
+23	textures\backgroundHUD.png
 30	textures\tiles.png
 31	textures\WorldMap\overworld.png
 
