@@ -27,6 +27,62 @@ void CTail::OnCollisionWith(LPCOLLISIONEVENT e)
 	else if (dynamic_cast<CPiranhaPlant*>(e->obj))
 		OnCollisionWithPiranhaPlant(e);
 }
+void CTail::OnCollisionWithVenusTrap(LPCOLLISIONEVENT e)
+{
+
+}
+void CTail::OnCollisionWithPiranhaPlant(LPCOLLISIONEVENT e)
+{
+
+}
+void CTail::OnCollisionWithBrick(LPCOLLISIONEVENT e)
+{
+
+}
+
+void CTail::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
+{
+	if (e->nx != 0) 
+	{
+		CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
+		if (goomba->GetLevel() == LEVEL_GOOMBA)
+		{
+			vx = -TAIL_ATTACK_DEFLECT * nx;
+			if (goomba->GetState() != GOOMBA_STATE_DIE)
+				goomba->SetState(GOOMBA_STATE_DIE);
+		}
+		else if (goomba->GetLevel() == LEVEL_PARAGOOMBA)
+		{
+			if (goomba->GetState() != PARAGOOMBA_STATE_DIE)
+			{
+				vx = -TAIL_ATTACK_DEFLECT * nx;
+				if (goomba->GetState() != PARAGOOMBA_STATE_WALKING)
+					goomba->SetState(PARAGOOMBA_STATE_WALKING);
+				else 
+					goomba->SetState(PARAGOOMBA_STATE_DIE);
+			}
+		}
+	}
+
+}
+void CTail::OnCollisionWithKoopa(LPCOLLISIONEVENT e)
+{
+	CKoopa* koopa = dynamic_cast<CKoopa*>(e->obj);
+	if (koopa->GetState() != SHELL_STATE_IDLING || koopa->GetState() != SHELL_STATE_ROLLING_LEFT || koopa->GetState() != SHELL_STATE_ROLLING_RIGHT)
+	{
+		vx = -TAIL_ATTACK_DEFLECT * nx;
+		if (e->nx != 0)
+			koopa->SetState(SHELL_STATE_IDLING);
+	}
+	else if (koopa->GetState() == SHELL_STATE_IDLING)
+	{
+		vx = -TAIL_ATTACK_DEFLECT * nx;
+		if (e->nx > 0)
+			koopa->SetState(SHELL_STATE_ROLLING_LEFT);
+		else if (e->nx < 0)
+			koopa->SetState(SHELL_STATE_ROLLING_RIGHT);
+	}
+}
 //
 void CTail::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) 
 {
@@ -36,6 +92,11 @@ void CTail::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	CGameObject::Update(dt, coObjects);
 	CCollision::GetInstance()->Process(this, dt, coObjects);
+}
+
+void CTail::OnNoCollision(DWORD dt)
+{
+	x += vx * dt;
 }
 
 void CTail::Render() 
@@ -50,7 +111,7 @@ void CTail::SetState(int state)
 	switch  (state)
 	{
 	case TAIL_STATE_HITTING:
-		vx = 0.2f * nx;
+		vx = TAIL_ATTACK_RANGE * nx;
 		vy = 0;
 		break;
 	case TAIL_STATE_HIDING:

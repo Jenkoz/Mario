@@ -13,11 +13,14 @@
 
 #define TERRAIN_ZONE 1
 #define SECRET_ZONE 2
-#define TERRAIN_ZONE_X_SPAWN 1272
-#define TERRAIN_ZONE_Y_SPAWN 608
-#define SECRET_ZONE_X_SPAWN 2328
-#define SECRET_ZONE_Y_SPAWN 448
+#define WORLDMAP_ZONE 3
 
+#define TERRAIN_ZONE_X_SPAWN 2328
+#define TERRAIN_ZONE_Y_SPAWN 448
+#define SECRET_ZONE_X_SPAWN 1272
+#define SECRET_ZONE_Y_SPAWN 608
+
+#define MARIO_STEP 16.0f
 
 #define MARIO_WALKING_SPEED_START 0.0001f
 #define MARIO_WALKING_SPEED		0.15f
@@ -62,6 +65,9 @@
 #define MARIO_STATE_FLYING			900
 #define MARIO_STATE_FLAPPING		1000
 
+#define MARIO_WORLDMAP_STATE_IDLING 1100
+#define MARIO_WORLDMAP_STATE_MOVING	1101
+
 
 
 #pragma region ANIMATION_ID
@@ -100,7 +106,8 @@
 
 #define ID_ANI_MARIO_DIE 999
 
-#define ID_ANI_MARIO_IN_WORLD_MAP		2500
+#define ID_ANI_MARIO_IN_WORLDMAP_MOVING		2500
+#define ID_ANI_MARIO_IN_WORLDMAP_IDLING		2501
 
 // SMALL MARIO
 #define ID_ANI_MARIO_SMALL_IDLE_RIGHT			1100
@@ -189,6 +196,8 @@
 #define	MARIO_LEVEL_BIG		2
 #define MARIO_LEVEL_RACCOON	3
 
+#define MARIO_LEVEL_WORLDMAP 4
+
 //BIG Mario BBOX
 #define MARIO_BIG_BBOX_WIDTH  13
 #define MARIO_BIG_BBOX_HEIGHT 24
@@ -212,7 +221,7 @@
 #define MARIO_MAX_STACK_TIME			3000
 
 #define MARIO_IN_TERRAIN_ZONE 1
-#define MARIO_IN_OTHER_ZONE 2
+#define MARIO_IN_SECRET_ZONE 2
 
 #define MARIO_RUNNING_STACKS 6
 
@@ -295,14 +304,21 @@ public:
 				isInIntroScene = false;
 				isInPlayScene = false;
 				ay = 0;
+				vy = 0;
+				vx = 0;
+				level = MARIO_LEVEL_WORLDMAP;
+				currentZone = WORLDMAP_ZONE;
+				state = MARIO_WORLDMAP_STATE_IDLING;
+				DebugOut(L"level mario: %d\n", this->level);
 			}
 			else if (this->spawnScene == PLAY_SCENE_1_1)
 			{
 				isInWorldMapScene = false;
 				isInIntroScene = false;
 				isInPlayScene = true;
-
-				
+				level = MARIO_LEVEL_SMALL;
+				ay = MARIO_GRAVITY;
+				currentZone = TERRAIN_ZONE;
 			}
 			if (!isInWorldMapScene) 
 			{
@@ -312,8 +328,6 @@ public:
 				obj = this->tail;
 				scene->LoadObject(obj);
 			}
-				level = MARIO_LEVEL_SMALL;
-				ay = MARIO_GRAVITY;
 				maxVx = 0.0f;
 				ax = 0.0f;
 				//start
@@ -330,7 +344,6 @@ public:
 				coin = 0;
 				life = 4;
 				speedStack = 0;
-				currentZone = TERRAIN_ZONE;
 
 
 	}
@@ -405,7 +418,11 @@ public:
 		isPipeDown = true;
 	}
 
-
+	void killInDeadZone() 
+	{ 
+		if (y >= DEAD_ZONE_POS)
+			SetState(MARIO_STATE_DIE);
+	}
 
 	//stop
 	void StopPipeUp() 

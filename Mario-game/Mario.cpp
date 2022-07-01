@@ -20,7 +20,6 @@
 #include "VenusTrap.h"
 #include "PiranhaPlant.h"
 
-
 #include "Collision.h"
 
 CMario* CMario::__instance = NULL;
@@ -60,6 +59,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		ay = 0;
 	}
 	isOnPlatform = false;
+
+	killInDeadZone();
 
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
@@ -372,10 +373,7 @@ void CMario::OnCollisionWithDeadPlatform(LPCOLLISIONEVENT e)
 void CMario::OnCollisionWithFireball(LPCOLLISIONEVENT e)
 {
 	CFireball* fireball = dynamic_cast<CFireball*>(e->obj);
-	if (untouchable == 0)
-	{
-		HandleMarioGetInjured();
-	}
+	HandleMarioGetInjured();
 }
 
 void CMario::OnCollisionWithVenusTrap(LPCOLLISIONEVENT e)
@@ -383,10 +381,7 @@ void CMario::OnCollisionWithVenusTrap(LPCOLLISIONEVENT e)
 	CVenusTrap* venusTrap = dynamic_cast<CVenusTrap*>(e->obj);
 	if (venusTrap->GetState() != VENUS_TRAP_STATE_IDLING)
 	{
-		if (untouchable == 0)
-		{
-			HandleMarioGetInjured();
-		}
+		HandleMarioGetInjured();
 	}
 }
 
@@ -395,10 +390,7 @@ void CMario::OnCollisionWithPiranhaPlant(LPCOLLISIONEVENT e)
 	CPiranhaPlant* piranhaPlant = dynamic_cast<CPiranhaPlant*>(e->obj);
 	if (piranhaPlant->GetState() != PIRANHA_PLANT_STATE_IDLING_DOWN)
 	{
-		if (untouchable == 0)
-		{
-			HandleMarioGetInjured();
-		}
+		HandleMarioGetInjured();
 	}
 }
 
@@ -693,9 +685,14 @@ void CMario::Render()
 	{
 		aniId = GetAniIdRaccoon();
 	}
-	if (isInWorldMapScene)
+	if (level == MARIO_LEVEL_WORLDMAP)
 	{
-		aniId = ID_ANI_MARIO_IN_WORLD_MAP;
+		if (state == MARIO_WORLDMAP_STATE_MOVING)
+			aniId = ID_ANI_MARIO_IN_WORLDMAP_MOVING;
+		else if (state == MARIO_WORLDMAP_STATE_IDLING)
+			aniId = ID_ANI_MARIO_IN_WORLDMAP_IDLING;
+		DebugOut(L"state: %d\n", this->state);
+
 		animations->Get(aniId)->Render(x, y);
 	}
 	if (level != MARIO_LEVEL_RACCOON)
@@ -716,7 +713,7 @@ void CMario::Render()
 				animations->Get(aniId)->Render(x - 4, y);
 	}
 
-	RenderBoundingBox();
+	//RenderBoundingBox();
 
 	DebugOutTitle(L"Coins: %d", coin);
 }
@@ -791,11 +788,11 @@ void CMario::SetState(int state)
 		ax = 0.0f;
 		vx = 0.0f;
 		break;
-
 	case MARIO_STATE_DIE:
 		vy = -MARIO_JUMP_DEFLECT_SPEED;
 		vx = 0;
 		ax = 0;
+		CGame::GetInstance()->InitiateSwitchScene(100);
 		break;
 	case MARIO_STATE_KICK:
 		isKicking = true;
@@ -804,6 +801,15 @@ void CMario::SetState(int state)
 	case MARIO_STATE_WHIPE:
 		isWhipping = true;
 		whipping_start = GetTickCount64();
+		if (nx > 0)
+		{
+			tail->Attack(x, (y + 5), this->nx);
+		}
+		if (nx < 0)
+		{
+			tail->Attack(x, (y + 5), this->nx);
+		}
+		tail->SetState(TAIL_STATE_HITTING);
 		break;
 	case MARIO_STATE_FLAPPING:
 		isFlapping = true;
@@ -825,6 +831,12 @@ void CMario::SetState(int state)
 		}
 		else
 			vy = -MARIO_FLY_MAX_STACK_SPEED_Y;
+	case MARIO_WORLDMAP_STATE_IDLING:
+		
+		break;
+
+	case MARIO_WORLDMAP_STATE_MOVING:
+
 		break;
 	}
 
@@ -950,31 +962,12 @@ void CMario::HandleMarioEnterPipe()
 
 void CMario::HandleMarioWhippingTail()
 {
-	/*if (tail == NULL && isWhipping)
-	{
 
-		if (nx > 0)
-		{
-			tail = new CTail(x - TAIL_BBOX_WIDTH + 2, y);
-			tail->SetPosition(x - TAIL_BBOX_WIDTH + 2,y);
-			if (tail != NULL)
-				DebugOut(L"tail init left to right\n");
-		}
-		else
-		{
-			tail = new CTail(x + MARIO_BIG_BBOX_WIDTH - 2, y);
-			tail->SetPosition(x + MARIO_BIG_BBOX_WIDTH - 2,y);
-			if (tail != NULL)
-				DebugOut(L"tail init right to left\n");
-		}
-		((LPPLAYSCENE)(CGame::GetInstance()->GetCurrentScene()))->GetObjects().push_back(tail);
-		((LPPLAYSCENE)(CGame::GetInstance()->GetCurrentScene()))->LoadObject(tail);
-	}*/
-
-	if (GetTickCount64() - whipping_start > MARIO_WHIPING_TIME && whipping_start)
+	if (GetTickCount64() - whipping_start > MARIO_WHIPING_TIME && whipping_start && level == MARIO_LEVEL_RACCOON)
 	{
 		isWhipping = false;
 		whipping_start = 0;
+		this->tail->SetState(TAIL_STATE_HIDING);
 	}
 }
 
@@ -982,8 +975,8 @@ void CMario::MoveLeft()
 {
 	if (isInWorldMapScene) 
 	{
-		this->x -= 16;
-		this->nx = -1;
+		SetState(MARIO_WORLDMAP_STATE_MOVING);
+		this->x -= MARIO_STEP;
 	}
 }
 
@@ -991,8 +984,8 @@ void CMario::MoveRight()
 {
 	if (isInWorldMapScene)
 	{
-		this->x += 16;
-		this->nx = 1;
+		SetState(MARIO_WORLDMAP_STATE_MOVING);
+		this->x += MARIO_STEP;
 	}
 }
 
@@ -1000,7 +993,8 @@ void CMario::MoveUp()
 {
 	if (isInWorldMapScene)
 	{
-		this->y -= 16;
+		SetState(MARIO_WORLDMAP_STATE_MOVING);
+		this->y -= MARIO_STEP;
 	}
 }
 
@@ -1008,7 +1002,8 @@ void CMario::MoveDown()
 {
 	if (isInWorldMapScene)
 	{
-		this->y += 16;
+		SetState(MARIO_WORLDMAP_STATE_MOVING);
+		this->y += MARIO_STEP;
 	}
 }
 

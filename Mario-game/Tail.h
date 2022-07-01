@@ -7,6 +7,8 @@
 #define TAIL_STATE_HITTING	100
 #define TAIL_STATE_HIDING	 200
 
+#define TAIL_ATTACK_DEFLECT 0.05f
+#define TAIL_ATTACK_RANGE 0.05f
 #define TAIL_HIT_TIME 100
 
 
@@ -21,6 +23,9 @@ class CTail :public CGameObject
 	void OnCollisionWithKoopa(LPCOLLISIONEVENT e);
 
 public:
+
+	void OnNoCollision(DWORD dt);
+
 	CTail(float x, float y) : CGameObject(x, y) 
 	{
 		SetState(TAIL_STATE_HIDING);
@@ -33,7 +38,8 @@ public:
 	virtual int IsBlocking() { return 0; }
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 
-	void Attack(float x, float y, int nx) {
+	void Attack(float x, float y, int nx) 
+	{
 		this->x = x;
 		this->y = y;
 		this->x_start = x;
