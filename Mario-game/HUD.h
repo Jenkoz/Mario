@@ -19,7 +19,11 @@
 #define POWER_NONE 0;
 #define POWER_MUSHROOM 1;
 #define POWER_FLOWER 2;
-#define PWER_STAR 3;
+#define POWER_STAR 3;
+
+#define POWER_BOX_1_POS 100
+#define POWER_BOX_2_POS 124
+#define POWER_BOX_3_POS 148
 
 
 

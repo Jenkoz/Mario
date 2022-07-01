@@ -106,11 +106,6 @@ void CVenusTrap::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		StopIdling();
 		SetState(VENUS_TRAP_STATE_GROWING_UP);
 	}
-	
-	
-
-	DebugOut(L"State: %d\n",state);
-	DebugOut(L"Y: %f\n", this->y);
 
 
 	CGameObject::Update(dt, coObjects);

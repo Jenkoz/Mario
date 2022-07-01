@@ -32,7 +32,7 @@ void CLeaf::Render()
 	else if (state == LEAF_STATE_UP)
 		aniId = ID_ANI_LEAF_SWING_LEFT;
 	CAnimations::GetInstance()->Get(aniId)->Render(x, y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void CLeaf::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) {
