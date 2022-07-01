@@ -11,8 +11,13 @@
 
 //Map
 #include "Map.h"
-
+// OBJ
+#include "DancingTree.h"
 #include "Mario.h"
+#include "HUD.h"
+#include "Platform.h"
+#include "ColourPlatform.h"
+#include "DeadPlatform.h"
 //Key
 #include "WorldMapSceneKeyHandler.h"
 
@@ -135,12 +140,55 @@ void CWorldMapScene::_ParseSection_OBJECTS(string line)
 		obj = new CPortal(x, y, r, b, scene_id, zone);
 		break;
 	}
-	//case OBJECT_TYPE_TREE_WORLD_MAP: {
-	//	int type = atoi(tokens[3].c_str());
-	//	obj = new CTreeWorldMap(x, y, type);
-	//	//DebugOut(L"[INFO] Tree world map object has been created!\n");
-	//	break;
-	//}
+
+	case OBJECT_TYPE_PLATFORM:
+	{
+
+		float cell_width = (float)atof(tokens[3].c_str());
+		float cell_height = (float)atof(tokens[4].c_str());
+		int length = atoi(tokens[5].c_str());
+		int depth = atoi(tokens[6].c_str());
+		int type = atoi(tokens[7].c_str());
+		int sprite_id = atoi(tokens[8].c_str());
+
+		if (type == 1)
+			obj = new CPlatform(
+				x, y,
+				cell_width, cell_height, length, depth, type,
+				sprite_id
+			);
+		else if (type == 2)
+			obj = new CColourPlatform(
+				x, y,
+				cell_width, cell_height, length, depth, type,
+				sprite_id
+			);
+		else if (type == 3)
+			obj = new CDeadPlatform(
+				x, y,
+				cell_width, cell_height, length, depth, type,
+				sprite_id
+			);
+
+		break;
+	}
+	/*case OBJECT_TYPE_HUD:
+	{
+		if (hud != NULL)
+		{
+			DebugOut(L"[ERROR] HUD object was created before!\n");
+			return;
+		}
+		obj = new CHUD(x, y);
+		hud = (CHUD*)obj;
+		break;
+	}*/
+	case OBJECT_TYPE_DANCING_TREE: 
+	{
+		obj = new CDancingTree(x, y);
+		//DebugOut(L"[INFO] Tree world map object has been created!\n");
+		break;
+	}
 	default:
 		DebugOut(L"[ERROR] Invalid object type: %d\n", object_type);
 		return;
@@ -270,8 +318,8 @@ void CWorldMapScene::Update(DWORD dt)
 	// Update camera to follow mario
 	CCamera::GetInstance()->SetCameraWorldMap();
 	//CCamera::GetInstance()->Update();
-	if (hud != NULL)
-		hud->Update(dt, &coObjects);
+	//if (hud != NULL)
+		//hud->Update(dt, &coObjects);
 	PurgeDeletedObjects();
 }
 
@@ -279,7 +327,6 @@ void CWorldMapScene::Render()
 {
 	DebugOut(L"Map start rendering!!\n");
 	CMaps::GetInstance()->RenderWorldMapBackground();
-
 	CMaps::GetInstance()->RenderWorldMapMisc();
 	CMaps::GetInstance()->RenderWorldMapGraphic();
 	for (int i = 0; (float)i < objects.size(); i++)

@@ -43,4 +43,34 @@ void CWorldMapSceneKeyHandler::OnKeyDown(int KeyCode)
 
 void CWorldMapSceneKeyHandler::OnKeyUp(int KeyCode)
 {
+
+	CMario* mario = (CMario*)((LPWORLDMAP)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+
+	switch (KeyCode)
+	{
+	case DIK_DOWN:
+	{
+		if (mario->GetState() == MARIO_WORLDMAP_STATE_MOVING)
+		mario->SetState(MARIO_WORLDMAP_STATE_IDLING);
+		break;
+	}
+	case DIK_UP:
+	{
+		if (mario->GetState() == MARIO_WORLDMAP_STATE_MOVING)
+		mario->SetState(MARIO_WORLDMAP_STATE_IDLING);
+		break;
+	}
+	case DIK_LEFT:
+	{
+		if (mario->GetState() == MARIO_WORLDMAP_STATE_MOVING)
+		mario->SetState(MARIO_WORLDMAP_STATE_IDLING);
+		break;
+	}
+	case DIK_RIGHT:
+	{
+		if (mario->GetState() == MARIO_WORLDMAP_STATE_MOVING)
+		mario->SetState(MARIO_WORLDMAP_STATE_IDLING);
+		break;
+	}
+	}
 }
